@@ -1,0 +1,15 @@
+---
+applications:
+- name: pre_prod_gap
+  memory: 256M
+  routes:
+    - route: prep_gap.apps.internal
+  instances: 1
+  env:
+    GAP_API_URL: https://pre-prod-gap-backend.london.cloudapps.digital/
+    NODE_ENV: prod
+  services:
+    - pre-prod-postgres
+    - pre-prod-opensearch
+  buildpacks:
+  - https://github.com/cloudfoundry/nodejs-buildpack.git#v1.7.67

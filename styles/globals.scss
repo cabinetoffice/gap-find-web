@@ -1,0 +1,60 @@
+$govuk-new-link-styles: true;
+
+@import '../node_modules/govuk-frontend/govuk/all';
+
+//Custom global styles below
+@import 'navigation';
+@import 'components/moj-pagination';
+@import 'components/date-picker';
+@import 'components/js-select';
+@import 'custom/gap-custom';
+
+html,
+body {
+  margin: 0;
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.govuk-border-colour {
+  border: 1px solid #1d70b8;
+}
+
+.app-width-container {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/***** COMPONENT LEVEL, TODO: REFACTOR *****/
+
+.gap-contact-inset {
+  border-left: 1px solid #b1b4b6;
+  padding-left: 15px;
+}
+
+.gap-contact-inset p {
+  margin: 0;
+}
+//search bar component
+.gap-search-area {
+  background-color: #f3f2f1;
+}
+
+.gap-overflow-wrap {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+//
+ul {
+  &.grants_list {
+    list-style: none;
+    padding-left: 0;
+  }
+}
+
+.govuk-back-link {
+  cursor: pointer;
+}

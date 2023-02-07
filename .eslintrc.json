@@ -1,0 +1,13 @@
+{
+  "extends": ["next/core-web-vitals", "next", "prettier", "eslint:recommended"],
+  "env": {
+    "jest": true,
+    "amd": true,
+    "es6": true
+  },
+  "globals": {
+    "cy": true,
+    "cypress":true,
+    "after": true
+}
+}

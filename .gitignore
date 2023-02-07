@@ -1,0 +1,10 @@
+.next/
+.env*
+build/
+node_modules/
+ADD-TO-ROOT-OF-BUILD/
+logs
+manifest.yml
+package-lock.json
+src/assets/.DS_Store
+coverage

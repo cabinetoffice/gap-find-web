@@ -1,0 +1,15 @@
+---
+applications:
+- name: q_gap
+  memory: 256M
+  routes:
+    - route: q_gap.apps.internal
+  instances: 1
+  env:
+    GAP_API_URL: https://gap-backend.london.cloudapps.digital/
+    NODE_ENV: prod
+  services:
+    - qat-postgres
+    - qat-opensearch
+  buildpacks:
+  - https://github.com/cloudfoundry/nodejs-buildpack.git#v1.7.67

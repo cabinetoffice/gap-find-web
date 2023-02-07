@@ -1,0 +1,1 @@
+web: NODE_OPTIONS='-r next-logger' yarn start

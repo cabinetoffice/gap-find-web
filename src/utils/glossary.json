@@ -1,0 +1,43 @@
+{
+  "title": "GOV-UK Find a grant",
+  "buttons": {
+    "back": "Back",
+    "newApplication": "Start new application"
+  },
+  "browse": {
+    "title": "Browse grants",
+    "sortBy": "Sort by",
+    "sortByOptions": {
+      "openingDate": "Opening date",
+      "closingDate": "Closing date",
+      "minValue": "Grant value: Low to high",
+      "maxValue": "Grant value: High to low"
+    },
+    "description": "Description",
+    "location": "Location",
+    "schemeSize": "Total size of grant scheme",
+    "size": "How much you can get",
+    "funders": "Funding organisation",
+    "whoCanApply": "Who can apply",
+    "opens": "Opening date",
+    "closes": "Closing date"
+  },
+  "grantDetails": {
+    "opens": "Opening date",
+    "closes": "Closing date",
+    "timeZone": "UK time",
+    "tabs": {
+      "summary": "Summary",
+      "eligibility": "Eligibility",
+      "objectives": "Objectives",
+      "dates": "Dates",
+      "apply": "How to apply",
+      "info": "Supporting information",
+      "faqs": "FAQs",
+      "awarded": "Awarded grants",
+      "emptyTab": "No content has been entered in this area",
+      "fileType": "File type",
+      "test_pipeline": ""
+    }
+  }
+}
