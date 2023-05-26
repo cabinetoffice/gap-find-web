@@ -17,7 +17,7 @@ on:
       - '*.md'
 env:
   DATABASE_URL: postgres://postgres:mysecretpassword@localhost:5432/notifications
-  
+
 jobs:
   Build:
     name: Build Feature
