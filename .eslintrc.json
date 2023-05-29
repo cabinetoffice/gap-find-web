@@ -1,5 +1,10 @@
 {
   "extends": ["next/core-web-vitals", "next", "prettier", "eslint:recommended"],
+  "rules": {
+    "no-unused-vars": "off",
+    "no-extra-boolean-cast": "off",
+    "@next/next/no-server-import-in-page": "off"
+  },
   "env": {
     "jest": true,
     "amd": true,
