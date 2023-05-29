@@ -44,7 +44,8 @@ jobs:
           APPLY_FOR_A_GRANT_APPLICANT_URL=${{ secrets.DEV_APPLY_FOR_A_GRANT_APPLICANT_URL}}
           ENABLE_FAQ_TAB=false
           ENABLE_AWARDS_TAB=false
-         EOF
+          EOF
+
       - name: Read .nvmrc
         run: echo "::set-output name=NVMRC::$(cat .nvmrc)"
         id: nvm
