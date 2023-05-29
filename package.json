@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:image": "npm run build && docker build -t gap-web-docker .",
     "test": "jest --watch",
     "format": "prettier --write .",
     "coverage": "jest --coverage",
