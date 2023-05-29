@@ -136,10 +136,10 @@ jobs:
             ${{ github.workspace }}/.next/cache
           key: gap-cache-build-${{ github.event.pull_request.head.sha }}
 
-      - name: Run cypress tests
+      - name: Run cypress tests (accessibility only)
         uses: cypress-io/github-action@v2
         with:
-          start: yarn dev
+          start: yarn start
           record: false
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 60
