@@ -3,7 +3,6 @@ import { render, screen, within } from '@testing-library/react';
 import SignupConfirmation, {
   getServerSideProps,
 } from '../../../pages/subscriptions/confirmation';
-import * as contentful from '../../../src/utils/contentFulPage';
 import userEvent from '@testing-library/user-event';
 import { generateSignedApiKey } from '../../../src/service/api-key-service';
 import { sendEmail } from '../../../src/service/gov_notify_service';
@@ -24,7 +23,6 @@ const props = {
 };
 const component = <SignupConfirmation {...props} />;
 
-jest.spyOn(contentful, 'fetchEntry').mockReturnValue(props);
 
 jest.mock('next/router', () => ({
   useRouter() {
