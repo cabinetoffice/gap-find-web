@@ -1,4 +1,4 @@
-import Cypress from 'cypress';
+/* eslint no-undef: "off"*/
 import { APPLY_FOR_A_GRANT_APPLICANT_URL } from '../../../constants/constants';
 import cy_visit from '../../../utils/cyVisit';
 

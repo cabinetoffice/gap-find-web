@@ -1,4 +1,4 @@
-import Cypress, { before } from 'cypress';
+/* eslint no-undef: "off"*/
 import cy_visit from '../../../utils/cyVisit';
 
 describe('Links on the accessibility', () => {
