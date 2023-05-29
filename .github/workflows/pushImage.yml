@@ -115,23 +115,6 @@ jobs:
           # Fetch all commits since we use the total commit count to determine the build version
           fetch-depth: 0
 
-      - name: Generate .env
-        run: |
-          cat << EOF > .env
-          CONTENTFUL_SPACE_ID=${{ secrets.QA_CONTENTFUL_SPACE_ID }}
-          CONTENTFUL_ACCESS_TOKEN=${{ secrets.QA_CONTENTFUL_ACCESS_TOKEN }}
-          CONTENTFUL_PREVIEW_ACCESS_TOKEN=${{ secrets.QA_CONTENTFUL_PREVIEW_ACCESS_TOKEN }}
-          CONTENTFUL_ENVIRONMENT=${{ secrets.QA_CONTENTFUL_ENVIRONMENT }}
-          GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE=${{ secrets.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE }}
-          GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE=${{ secrets.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE }}
-          GOV_NOTIFY_API_KEY=${{ secrets.GOV_NOTIFY_API_KEY }}
-          ENCRYPTION_KEY_NAME=${{ secrets.QA_ENCRYPTION_KEY_NAME }}
-          ENCRYPTION_KEY_NAMESPACE=${{ secrets.QA_ENCRYPTION_KEY_NAMESPACE }}
-          ENCRYPTION_ORIGIN=${{ secrets.QA_ENCRYPTION_ORIGIN }}
-          ENCRYPTION_STAGE=${{ secrets.QA_ENCRYPTION_STAGE }}
-          ENCRYPTION_WRAPPING_KEY=${{ secrets.QA_ENCRYPTION_WRAPPING_KEY }}
-          GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE=${{ secrets.QA_GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE }}
-          EOF
       - name: Setup AWS credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -148,12 +131,14 @@ jobs:
           GIT_COUNT=$(git rev-list $GITHUB_SHA --count)
           echo "BUILD_VERSION=b_$GIT_COUNT" >> $GITHUB_ENV
           echo BUILD_VERSION is ${{ env.BUILD_VERSION }}
+
       - name: Build, tag and push Docker image to AWS ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker build -t $ECR_REGISTRY/find-a-grant-client:${{ env.BUILD_VERSION }} .
           docker push $ECR_REGISTRY/find-a-grant-client:${{ env.BUILD_VERSION }}
+
       - name: Create env tag
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -161,6 +146,7 @@ jobs:
           ENV_TAG=${{ (github.ref == 'refs/heads/develop' && 'develop') || (startsWith(github.ref, 'refs/heads/release') && 'test') }}
           docker tag $ECR_REGISTRY/find-a-grant-client:${{ env.BUILD_VERSION }} $ECR_REGISTRY/find-a-grant-client:$ENV_TAG
           docker push $ECR_REGISTRY/find-a-grant-client:$ENV_TAG
+
       - name: Create release tag - if we are committing to a release branch
         if: ${{ startsWith(github.ref, 'refs/heads/release/') }}
         env:
@@ -169,6 +155,7 @@ jobs:
           RELEASE_VERSION=V_${GITHUB_REF##*/}
           docker tag $ECR_REGISTRY/find-a-grant-client:${{ env.BUILD_VERSION }} $ECR_REGISTRY/find-a-grant-client:$RELEASE_VERSION
           docker push $ECR_REGISTRY/find-a-grant-client:$RELEASE_VERSION
+          
   postBuildTest: 
     needs: [build, imageBuild]
 
