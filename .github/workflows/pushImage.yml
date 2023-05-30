@@ -190,10 +190,7 @@ jobs:
           docker push $ECR_REGISTRY/find-a-grant-client:$RELEASE_VERSION
 
       - name: Wait for CodePipeline completion
-        run: |
-          while [[ $(aws codepipeline get-pipeline-state --name ${{ (github.ref == 'refs/heads/develop' && secrets.AWS_DEV_CODEPIPELINE) || (startsWith(github.ref, 'refs/heads/release') && secrets.AWS_TEST_CODEPIPELINE) }} --query "pipelineState.status") != "\"Succeeded\"" ]]; do
-            sleep 10
-          done
+        run: aws codepipeline get-pipeline-state --name Build-Find-Frontend
 
   postBuildTest: 
     needs: [build, imageBuild]
