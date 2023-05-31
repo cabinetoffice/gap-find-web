@@ -191,8 +191,8 @@ jobs:
 
       - name: Wait for CodePipeline
         run: |
-          while [[ $(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query join('', stageStates[?stageName].latestExecution.status)) != 'SucceededSucceededSucceeded' ]]; do
-            echo $(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query join('', stageStates[?stageName].latestExecution.status))
+          while [[ $(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "join('', stageStates[?stageName].latestExecution.status)") != 'SucceededSucceededSucceeded' ]]; do
+            echo $(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "join('', stageStates[?stageName].latestExecution.status)")
             sleep 10
           done
 
