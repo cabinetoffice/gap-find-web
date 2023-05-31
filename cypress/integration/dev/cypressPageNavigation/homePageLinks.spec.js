@@ -7,13 +7,13 @@ describe('Links on the homepage', () => {
     cy_visit('/');
   });
   it('should be able to access the home page', () => {
-    cy.url().should('eq', Cypress.config().baseUrl + '/');
+    cy.url().should('eq', Cypress.config().baseUrl);
     cy.get('[data-cy=cyHomePageTitle').should('exist');
   });
 
   it('should have links to the grants via the browse grants text link', () => {
     cy.get('[data-cy=cyBrowseGrantsHomePageTextLink]').click();
-    cy.url().should('eq', Cypress.config().baseUrl + '/grants');
+    cy.url().should('eq', Cypress.config().baseUrl + 'grants');
   });
 
   it('should take the user to the blog page via the in text link', () => {

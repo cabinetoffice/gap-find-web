@@ -7,7 +7,7 @@ describe('Links on the accessibility', () => {
   });
 
   it('should be able to access the About Us page', () => {
-    cy.url().should('eq', Cypress.config().baseUrl + '/info/accessibility');
+    cy.url().should('eq', Cypress.config().baseUrl + 'info/accessibility');
     cy.get('[data-cy=cyAccessibilityTitle').should('exist');
   });
 
