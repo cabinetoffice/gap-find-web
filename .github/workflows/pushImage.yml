@@ -193,8 +193,8 @@ jobs:
         run: |
           TIME_TAKEN=0
           PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "join(' ', stageStates[?stageName].latestExecution.status)")
-          while [[ printf '%s\n' "${PIPELINE_STATE[@]}" | grep -qEv "Succeeded" ]]; do
-            echo $PIPELINE_STATE
+          echo $PIPELINE_STATE
+          while printf '%s\n' "${PIPELINE_STATE[@]}" | grep -qEv "Succeeded"; do
             TIME_TAKEN=$TIME_TAKEN + 10
             if [[ $TIME_TAKEN > 600 ]]; then
               echo "Waiting for CodePipeline timed out after 10 minutes. Exiting."
@@ -202,6 +202,7 @@ jobs:
             fi
             sleep 10
             PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "stageStates[?stageName].latestExecution.status")
+            echo $PIPELINE_STATE
           done
 
   postBuildTest: 
