@@ -191,9 +191,14 @@ jobs:
 
       - name: Wait for CodePipeline
         run: |
+          TIME_TAKEN=0
           PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "join('', stageStates[?stageName].latestExecution.status)")
           while [[ $PIPELINE_STATE != "\"SucceededSucceededSucceeded\"" ]]; do
             echo $PIPELINE_STATE
+            TIME_TAKEN=$TIME_TAKEN + 10
+            if [[ $TIME_TAKEN > 600 ]]; then
+              exit 1
+            fi
             sleep 10
           done
 
