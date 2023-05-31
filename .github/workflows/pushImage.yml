@@ -189,8 +189,15 @@ jobs:
           docker tag $ECR_REGISTRY/find-a-grant-client:${{ env.BUILD_VERSION }} $ECR_REGISTRY/find-a-grant-client:$RELEASE_VERSION
           docker push $ECR_REGISTRY/find-a-grant-client:$RELEASE_VERSION
 
-      - name: Wait for CodePipeline completion
-        run: aws codepipeline get-pipeline-state --name Build-Find-Frontend
+      - name: Wait for CodePipeline
+        run: |
+          PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend)
+          while [[ PIPELINE_STATE.stageStates[0].actionStates[0].latestExecution.status != 'Succeeded' && 
+                   PIPELINE_STATE.stageStates[1].actionStates[0].latestExecution.status != 'Succeeded' &&
+                   PIPELINE_STATE.stageStates[2].actionStates[0].latestExecution.status != 'Succeeded']]; do
+            sleep 10
+            PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend)
+          done
 
   postBuildTest: 
     needs: [build, imageBuild]
