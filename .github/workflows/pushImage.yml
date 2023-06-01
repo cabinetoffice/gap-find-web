@@ -191,15 +191,14 @@ jobs:
 
       - name: Wait for CodePipeline
         run: |
-          sleep 30
+          sleep 10
           TIME_TAKEN=0
           PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "join(' ', stageStates[?stageName].latestExecution.status)")
           delimiter=' ' read -ra states <<< "${PIPELINE_STATE[0]}"
           declare -p states 
-          echo $PIPELINE_STATE
 
           while printf '%s\n' "${states[@]}" | grep -qEv "Succeeded"; do
-            TIME_TAKEN=$TIME_TAKEN + 10
+            TIME_TAKEN=$(($TIME_TAKEN + 10))
             if [[ $TIME_TAKEN > 600 ]]; then
               echo "Waiting for CodePipeline timed out after 10 minutes. Exiting."
               exit 1
