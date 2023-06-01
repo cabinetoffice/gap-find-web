@@ -193,7 +193,7 @@ jobs:
         run: |
           sleep 10
           TIME_TAKEN=0
-          PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "join(' ', stageStates[?stageName].latestExecution.status)")
+          PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name ${{ (github.ref == 'refs/heads/develop' && 'Build-Find-Frontend') || (startsWith(github.ref, 'refs/heads/release') && 'Build-Find-Frontend-Test') }} --query "join(' ', stageStates[?stageName].latestExecution.status)")
           delimiter=' ' read -ra states <<< "${PIPELINE_STATE[0]}"
           declare -p states
 
@@ -206,7 +206,7 @@ jobs:
 
             sleep 10
 
-            PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "join(' ', stageStates[?stageName].latestExecution.status)")
+            PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name ${{ (github.ref == 'refs/heads/develop' && 'Build-Find-Frontend') || (startsWith(github.ref, 'refs/heads/release') && 'Build-Find-Frontend-Test') }} --query "join(' ', stageStates[?stageName].latestExecution.status)")
             delimiter=' ' read -ra states <<< "${PIPELINE_STATE[0]}"
             declare -p states
           done
@@ -266,7 +266,7 @@ jobs:
           runTests: true
           spec: cypress/integration/dev/**/*
         env:
-          CYPRESS_APPLY_FOR_A_GRANT_APPLICANT_URL: https://sandbox-gap.service.cabinetoffice.gov.uk/apply/applicant
+          CYPRESS_APPLY_FOR_A_GRANT_APPLICANT_URL: ${{ (github.ref == 'refs/heads/develop' && 'https://sandbox-gap.service.cabinetoffice.gov.uk/apply/applicant') || (startsWith(github.ref, 'refs/heads/release') && 'https://test-gap.service.cabinetoffice.gov.uk/apply/applicant') }}
 
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.7.0
