@@ -1,4 +1,4 @@
-import * as apikeyservice from '../../../src/service/api-key-service';
+import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
 import {
@@ -9,13 +9,13 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import subject from './unsubscribe';
 jest.mock('../../../src/utils/encryption');
+jest.mock('../../../src/service/api-key-service');
 
 describe('newsletter unsubscribe api', () => {
   const newsletterSubscriptionServiceSpy = jest.spyOn(
     NewsletterSubscriptionService,
     'getInstance'
   );
-  const apiKeyServiceSpy = jest.spyOn(apikeyservice, 'decryptSignedApiKey');
   const mockDecrypt = decrypt as jest.Mock;
   const mockNewsletterService = {
     getByEmailAndNewsletterType: jest.fn(),
@@ -35,7 +35,7 @@ describe('newsletter unsubscribe api', () => {
 
   it('should remove a newsletter subscription then redirect', async () => {
     newsletterSubscriptionServiceSpy.mockReturnValue(mockNewsletterService);
-    apiKeyServiceSpy.mockReturnValue(cookie);
+    (decryptSignedApiKey as jest.Mock).mockReturnValue(cookie);
     mockDecrypt.mockResolvedValue(decryptedEmail);
 
     const req = {
@@ -50,13 +50,14 @@ describe('newsletter unsubscribe api', () => {
     await subject(req as any, res as any);
 
     expect(newsletterSubscriptionServiceSpy).toBeCalledTimes(1);
-    expect(apiKeyServiceSpy).toBeCalledTimes(1);
-    expect(apiKeyServiceSpy).toBeCalledWith(cookie);
+    expect(decryptSignedApiKey as jest.Mock).toBeCalledTimes(1);
+    expect(decryptSignedApiKey as jest.Mock).toBeCalledWith(cookie);
     expect(mockDecrypt).toBeCalledTimes(1);
     expect(mockDecrypt).toBeCalledWith(encryptedEmail);
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(1);
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
-      decryptedEmail, NewsletterType.NEW_GRANTS
+      decryptedEmail,
+      NewsletterType.NEW_GRANTS
     );
     expect(res.redirect).toBeCalledTimes(1);
     expect(res.redirect).toBeCalledWith(expectedUrl);
@@ -66,7 +67,7 @@ describe('newsletter unsubscribe api', () => {
     const error = new Error('failed');
     const consoleSpy = jest.spyOn(global.console, 'error').mockImplementation();
     newsletterSubscriptionServiceSpy.mockReturnValue(mockNewsletterService);
-    apiKeyServiceSpy.mockReturnValue(cookie);
+    (decryptSignedApiKey as jest.Mock).mockReturnValue(cookie);
     mockDecrypt.mockResolvedValue(decryptedEmail);
     mockNewsletterService.unsubscribeFromNewsletter.mockImplementation(() => {
       throw error;
@@ -85,13 +86,14 @@ describe('newsletter unsubscribe api', () => {
     await subject(req as any, res as any);
 
     expect(newsletterSubscriptionServiceSpy).toBeCalledTimes(1);
-    expect(apiKeyServiceSpy).toBeCalledTimes(1);
-    expect(apiKeyServiceSpy).toBeCalledWith(cookie);
+    expect(decryptSignedApiKey as jest.Mock).toBeCalledTimes(1);
+    expect(decryptSignedApiKey as jest.Mock).toBeCalledWith(cookie);
     expect(mockDecrypt).toBeCalledTimes(1);
     expect(mockDecrypt).toBeCalledWith(encryptedEmail);
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(1);
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
-      decryptedEmail, NewsletterType.NEW_GRANTS
+      decryptedEmail,
+      NewsletterType.NEW_GRANTS
     );
     expect(consoleSpy).toBeCalledTimes(1);
     expect(consoleSpy).toBeCalledWith(error);
@@ -99,9 +101,9 @@ describe('newsletter unsubscribe api', () => {
     expect(res.redirect).toBeCalledWith(expectedUrl);
   });
 
-  it("should redirect to the login page if the user is not authenticated", async () => {
+  it('should redirect to the login page if the user is not authenticated', async () => {
     newsletterSubscriptionServiceSpy.mockReturnValue(mockNewsletterService);
-    apiKeyServiceSpy.mockReturnValue(cookie);
+    (decryptSignedApiKey as jest.Mock).mockReturnValue(cookie);
     mockDecrypt.mockResolvedValue(decryptedEmail);
 
     const req = {
@@ -121,10 +123,9 @@ describe('newsletter unsubscribe api', () => {
       },
     });
     expect(newsletterSubscriptionServiceSpy).toBeCalledTimes(1);
-    expect(apiKeyServiceSpy).toBeCalledTimes(0);
+    expect(decryptSignedApiKey as jest.Mock).toBeCalledTimes(0);
     expect(mockDecrypt).toBeCalledTimes(0);
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(0);
     expect(res.redirect).toBeCalledTimes(0);
-
-  })
+  });
 });

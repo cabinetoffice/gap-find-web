@@ -6,6 +6,7 @@ export enum ContentfulPage {
   ACCESSIBILITY,
   TERMS_AND_CONDITIONS,
   PRIVACY_NOTICE,
+  WRITING_GOOD_ADVERTS,
 }
 
 export class ContentfulPageService {
@@ -15,6 +16,7 @@ export class ContentfulPageService {
     [ContentfulPage.ACCESSIBILITY, '3XBdOrkbhCgCXaicYITa55'],
     [ContentfulPage.TERMS_AND_CONDITIONS, '4LpG03zszchmqjKyM1IcvX'],
     [ContentfulPage.PRIVACY_NOTICE, '7dqCl5jZWdKbcnf8zxbuHZ'],
+    [ContentfulPage.WRITING_GOOD_ADVERTS, '70CQ73YlVJuQ2qVMjktpv'],
   ]);
 
   private constructor() {}

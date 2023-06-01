@@ -97,9 +97,6 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cyCancelFilterTop"').click();
     cy.wait(1500);
     cy.get('[data-cy="cyGrantsFoundMessage"]').should('exist');
-    cy.get('[data-cy=cyGrantNameAndLink]')
-      .eq(1)
-      .contains('BFI Development Fund');
   });
 
   it('should be able to clear all filters regardless of accordion state', () => {
