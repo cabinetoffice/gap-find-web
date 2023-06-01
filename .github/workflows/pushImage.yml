@@ -266,7 +266,7 @@ jobs:
           runTests: true
           spec: cypress/integration/dev/**/*
         env:
-          CYPRESS_APPLY_FOR_A_GRANT_APPLICANT_URL: ${{ (github.ref == 'refs/heads/develop' && 'https://sandbox-gap.service.cabinetoffice.gov.uk/apply/applicant') || (startsWith(github.ref, 'refs/heads/release') && 'https://test-gap.service.cabinetoffice.gov.uk/apply/applicant') }}
+          CYPRESS_APPLY_FOR_A_GRANT_APPLICANT_URL: 'https://sandbox-gap.service.cabinetoffice.gov.uk/apply/applicant'
 
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.7.0
