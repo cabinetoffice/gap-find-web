@@ -206,7 +206,7 @@ jobs:
 
             sleep 10
 
-            PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "stageStates[?stageName].latestExecution.status")
+            PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name Build-Find-Frontend --query "join(' ', stageStates[?stageName].latestExecution.status)")
             delimiter=' ' read -ra states <<< "${PIPELINE_STATE[0]}"
             declare -p states
           done
