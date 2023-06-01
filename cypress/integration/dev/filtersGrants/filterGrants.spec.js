@@ -99,7 +99,7 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cyGrantsFoundMessage"]').should('exist');
     cy.get('[data-cy=cyGrantNameAndLink]')
       .eq(1)
-      .contains('BFI Development Fund');
+      .contains('Trees, woodlands and forestry - Woodland Creation Planning Grant');
   });
 
   it('should be able to clear all filters regardless of accordion state', () => {

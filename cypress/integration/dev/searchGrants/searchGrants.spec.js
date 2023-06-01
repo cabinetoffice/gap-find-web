@@ -77,7 +77,7 @@ describe('searchGrants', () => {
     cy.get('[data-cy=cyHomePageSearchInput]').type('Solar');
     cy.get('[data-cy=cySearchGrantsBtn]').click();
     cy.get('[data-cy=cyBrowseBackText]').click();
-    cy.url().should('eq', Cypress.config().baseUrl + '/?searchTerm=Solar');
+    cy.url().should('eq', Cypress.config().baseUrl + '?searchTerm=Solar');
     cy.get('[data-cy=cyHomePageSearchInput]').click();
     cy.get('[data-cy=cyHomePageSearchInput]').should('have.value', 'Solar');
   });
