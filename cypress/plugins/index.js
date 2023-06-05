@@ -9,8 +9,8 @@ const makeEmailAccount = require('./email-account');
 module.exports = async (on, config) => {
   config.env.BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME;
   config.env.BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD;
-  config.env.ENABLE_AWARDS_TAB = process.env.ENABLE_AWARDS_TAB;
-  config.env.ENABLE_FAQ_TAB = process.env.ENABLE_FAQ_TAB;
+  config.env.ENABLE_AWARDS_TAB = process.env.ENABLE_AWARDS_TAB ? process.env.ENABLE_AWARDS_TAB: 'false';
+  config.env.ENABLE_FAQ_TAB = process.env.ENABLE_FAQ_TAB ? process.env.ENABLE_FAQ_TAB: 'false';
   config.env.DATABASE_URL = process.env.DATABASE_URL;
   config.env.APPLY_FOR_A_GRANT_APPLICANT_URL =
     process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;

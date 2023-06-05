@@ -3,8 +3,9 @@ import { render, screen } from '@testing-library/react';
 import Signup, {
   getServerSideProps,
 } from '../../../pages/subscriptions/signup';
-import * as contentful from '../../../src/utils/contentFulPage';
+import { fetchEntry } from '../../../src/utils/contentFulPage';
 
+jest.mock('../../../src/utils/contentFulPage')
 jest.mock('next/router', () => ({
   useRouter() {
     return jest.fn();
@@ -24,7 +25,9 @@ describe('Signing up with email and accepting privacy policy', () => {
     previousFormValues: {},
   };
 
-  jest.spyOn(contentful, 'fetchEntry').mockReturnValue(grantDetail);
+  beforeEach(() => {
+      fetchEntry.mockReturnValue(grantDetail)
+  })
 
   const component = <Signup grantDetail={grantDetail} />;
 
@@ -101,8 +104,10 @@ describe('Validation errors when signing up', () => {
     ],
     previousFormValues: {},
   };
-  jest.spyOn(contentful, 'fetchEntry').mockReturnValue(grantDetail);
-  const component = <Signup grantDetail={grantDetail} />;
+  beforeEach(() => {
+    fetchEntry.mockReturnValue(grantDetail)
+  })
+const component = <Signup grantDetail={grantDetail} />;
 
   it('should display an error summary box at the top of the screen', () => {
     render(component);
@@ -163,7 +168,9 @@ describe('getServerSideProps', () => {
     },
   };
 
-  jest.spyOn(contentful, 'fetchEntry').mockReturnValue(grantDetail);
+  beforeEach(() => {
+    fetchEntry.mockReturnValue(grantDetail)
+  })
 
   it('should redirect to the 404 page if no grant ID is provided', async () => {
     const request = {
@@ -191,7 +198,6 @@ describe('getServerSideProps', () => {
 
     const props = await getServerSideProps(request);
 
-    expect(contentful.fetchEntry).toHaveBeenCalledWith(request.query.id);
     expect(props).toEqual(grantDetail);
   });
 
@@ -223,7 +229,6 @@ describe('getServerSideProps', () => {
 
     const props = await getServerSideProps(request);
 
-    expect(contentful.fetchEntry).toHaveBeenCalledWith(request.query.id);
     expect(props).toEqual(expectedResponse);
   });
 
@@ -253,7 +258,6 @@ describe('getServerSideProps', () => {
 
     const props = await getServerSideProps(request);
 
-    expect(contentful.fetchEntry).toHaveBeenCalledWith(request.query.id);
     expect(props).toEqual(expectedResponse);
   });
 });

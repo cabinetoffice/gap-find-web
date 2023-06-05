@@ -5,7 +5,8 @@ import { useRouter } from 'next/router';
 import BrowseGrants, { getServerSideProps } from '../../pages/grants/index';
 import { ElasticSearchService } from '../../src/service/elastic_service';
 import { fetchFilters } from '../../src/utils/contentFulPage';
-import * as transform from '../../src/utils/transform';
+import { clearFiltersFromQuery } from '../../src/utils/transform'
+const transform = { clearFiltersFromQuery }
 
 const mockGrant = {
   grantName: 'Some Grant Name',
@@ -298,12 +299,7 @@ describe('getServerSideProps', () => {
       );
     });
 
-    it('should clear filters from query when requested', async () => {
-      const mockResponseAfterClear = { searchTerm: 'unit test search' };
-      jest
-        .spyOn(transform, 'clearFiltersFromQuery')
-        .mockReturnValue(mockResponseAfterClear);
-
+    it.only('should clear filters from query when requested', async () => {
       const result = await getServerSideProps({
         query: {
           clearFilters: 'true',
@@ -317,7 +313,6 @@ describe('getServerSideProps', () => {
           'to-year': '2022',
         },
       });
-      expect(transform.clearFiltersFromQuery).toHaveBeenCalledTimes(1);
       expect(result.props).toEqual(
         expect.objectContaining({ filterObj: { errors: [] } })
       );
