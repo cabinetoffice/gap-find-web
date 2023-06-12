@@ -1,0 +1,12 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-XML2JS-5414874:
+    - '*':
+        reason: >-
+          vulnerability in internal AWS communication so attacker would have to
+          compromise AWS, no upgrade to affected dependency currently available
+        expires: 2023-07-12T08:16:08.431Z
+        created: 2023-06-12T08:16:08.432Z
+patch: {}
