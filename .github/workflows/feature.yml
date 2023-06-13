@@ -19,8 +19,9 @@ env:
   DATABASE_URL: postgres://postgres:mysecretpassword@localhost:5432/notifications
 
 jobs:
-  Build:
+  build:
     name: Build Feature
+
     runs-on: ubuntu-latest
 
     env:
