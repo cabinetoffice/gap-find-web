@@ -3,6 +3,7 @@ name: Feature Workflow
 on:
   push:
     branches:
+      - fix/**
       - feature/**
       - GAP-**
     paths-ignore:
@@ -11,6 +12,7 @@ on:
   pull_request:
     types: [closed]
     branches:
+      - fix/**
       - feature/**
       - GAP-**
     paths-ignore:
