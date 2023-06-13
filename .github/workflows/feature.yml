@@ -112,7 +112,7 @@ jobs:
         run: |
           yarn install --frozen-lockfile
 
-    - name: Snyk setup
+      - name: Snyk setup
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
