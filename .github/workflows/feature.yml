@@ -5,12 +5,14 @@ on:
     branches:
       - feature/**
       - GAP-**
+      - fix/**
     paths-ignore:
       - '*.md'
 
   pull_request:
     types: [closed]
     branches:
+      - fix/**
       - feature/**
       - GAP-**
     paths-ignore:
