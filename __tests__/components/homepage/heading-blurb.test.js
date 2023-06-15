@@ -3,7 +3,7 @@ import { HomePageHeadingBlurb } from '../../../src/components/homepage/heading-b
 const component = <HomePageHeadingBlurb />;
 
 const blurb =
-  'Find a grant is a service that allows you to search government grants. This is a pilot service and it is being co-created with our users.';
+  'Find a grant is a service that allows you to search government grants.';
 const blurbBody = 'You can use this service to:';
 const blurbBulletPoint = 'access government grant funding';
 
