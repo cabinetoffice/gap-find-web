@@ -23,6 +23,11 @@ export const elasticSearchResultMinimumAmount = {
         must: [
           { match: { 'sys.type': 'Entry' } },
           { match: { 'sys.contentType.sys.id': 'grantDetails' } },
+          {
+            range: {
+              'fields.grantApplicationCloseDate.en-US': { gte: 'now/d' },
+            },
+          },
         ],
         must_not: [{ match: { 'sys.publishedCounter': 0 } }],
       },
@@ -57,6 +62,11 @@ export const elasticSearchResultMaximumAmount = {
         must: [
           { match: { 'sys.type': 'Entry' } },
           { match: { 'sys.contentType.sys.id': 'grantDetails' } },
+          {
+            range: {
+              'fields.grantApplicationCloseDate.en-US': { gte: 'now/d' },
+            },
+          },
         ],
         must_not: [{ match: { 'sys.publishedCounter': 0 } }],
       },
@@ -91,6 +101,11 @@ export const elasticSearchResultClosingDate = {
         must: [
           { match: { 'sys.type': 'Entry' } },
           { match: { 'sys.contentType.sys.id': 'grantDetails' } },
+          {
+            range: {
+              'fields.grantApplicationCloseDate.en-US': { gte: 'now/d' },
+            },
+          },
         ],
         must_not: [{ match: { 'sys.publishedCounter': 0 } }],
       },
@@ -125,6 +140,11 @@ export const elasticSearchResultWithoutSort = {
         must: [
           { match: { 'sys.type': 'Entry' } },
           { match: { 'sys.contentType.sys.id': 'grantDetails' } },
+          {
+            range: {
+              'fields.grantApplicationCloseDate.en-US': { gte: 'now/d' },
+            },
+          },
         ],
         must_not: [{ match: { 'sys.publishedCounter': 0 } }],
       },
