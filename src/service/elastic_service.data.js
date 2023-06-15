@@ -1,4 +1,7 @@
-import { ELASTIC_GRANT_PAGE_FIELDS } from '../utils/constants';
+import {
+  ELASTIC_GRANT_PAGE_FIELDS,
+  ELASTIC_INDEX_FIELDS,
+} from '../utils/constants';
 
 export const elasticSearchResultMinimumAmount = {
   body: {
@@ -9,10 +12,10 @@ export const elasticSearchResultMinimumAmount = {
           {
             multi_match: {
               fields: [
-                'fields.grantName.en-US',
-                'fields.grantSummaryTab.en-US.content.content.*',
-                'fields.grantEligibilityTab.en-US.content.content.*',
-                'fields.grantShortDescription.en-US',
+                ELASTIC_INDEX_FIELDS.grantName,
+                ELASTIC_INDEX_FIELDS.summary,
+                ELASTIC_INDEX_FIELDS.eligibility,
+                ELASTIC_INDEX_FIELDS.shortDescription,
               ],
               fuzziness: 'AUTO',
               operator: 'AND',
@@ -21,14 +24,21 @@ export const elasticSearchResultMinimumAmount = {
           },
         ],
         must: [
-          { match: { 'sys.type': 'Entry' } },
-          { match: { 'sys.contentType.sys.id': 'grantDetails' } },
+          { match: { [ELASTIC_INDEX_FIELDS.type]: 'Entry' } },
+          { match: { [ELASTIC_INDEX_FIELDS.contentType]: 'grantDetails' } },
+          {
+            range: {
+              [ELASTIC_INDEX_FIELDS.applicationClosingDate]: {
+                gte: 'now/d',
+              },
+            },
+          },
         ],
-        must_not: [{ match: { 'sys.publishedCounter': 0 } }],
+        must_not: [{ match: { [ELASTIC_INDEX_FIELDS.publishedCounter]: 0 } }],
       },
     },
     size: 10,
-    sort: [{ 'fields.grantMinimumAward.en-US': { order: 'asc' } }],
+    sort: [{ [ELASTIC_INDEX_FIELDS.grantMinimumAward]: { order: 'asc' } }],
   },
   index: process.env.ELASTIC_INDEX,
   _source: ELASTIC_GRANT_PAGE_FIELDS,
@@ -43,10 +53,10 @@ export const elasticSearchResultMaximumAmount = {
           {
             multi_match: {
               fields: [
-                'fields.grantName.en-US',
-                'fields.grantSummaryTab.en-US.content.content.*',
-                'fields.grantEligibilityTab.en-US.content.content.*',
-                'fields.grantShortDescription.en-US',
+                ELASTIC_INDEX_FIELDS.grantName,
+                ELASTIC_INDEX_FIELDS.summary,
+                ELASTIC_INDEX_FIELDS.eligibility,
+                ELASTIC_INDEX_FIELDS.shortDescription,
               ],
               fuzziness: 'AUTO',
               operator: 'AND',
@@ -55,14 +65,21 @@ export const elasticSearchResultMaximumAmount = {
           },
         ],
         must: [
-          { match: { 'sys.type': 'Entry' } },
-          { match: { 'sys.contentType.sys.id': 'grantDetails' } },
+          { match: { [ELASTIC_INDEX_FIELDS.type]: 'Entry' } },
+          { match: { [ELASTIC_INDEX_FIELDS.contentType]: 'grantDetails' } },
+          {
+            range: {
+              [ELASTIC_INDEX_FIELDS.applicationClosingDate]: {
+                gte: 'now/d',
+              },
+            },
+          },
         ],
-        must_not: [{ match: { 'sys.publishedCounter': 0 } }],
+        must_not: [{ match: { [ELASTIC_INDEX_FIELDS.publishedCounter]: 0 } }],
       },
     },
     size: 10,
-    sort: [{ 'fields.grantMaximumAward.en-US': { order: 'desc' } }],
+    sort: [{ [ELASTIC_INDEX_FIELDS.grantMaximumAward]: { order: 'desc' } }],
   },
   index: process.env.ELASTIC_INDEX,
   _source: ELASTIC_GRANT_PAGE_FIELDS,
@@ -77,10 +94,10 @@ export const elasticSearchResultClosingDate = {
           {
             multi_match: {
               fields: [
-                'fields.grantName.en-US',
-                'fields.grantSummaryTab.en-US.content.content.*',
-                'fields.grantEligibilityTab.en-US.content.content.*',
-                'fields.grantShortDescription.en-US',
+                ELASTIC_INDEX_FIELDS.grantName,
+                ELASTIC_INDEX_FIELDS.summary,
+                ELASTIC_INDEX_FIELDS.eligibility,
+                ELASTIC_INDEX_FIELDS.shortDescription,
               ],
               fuzziness: 'AUTO',
               operator: 'AND',
@@ -89,14 +106,21 @@ export const elasticSearchResultClosingDate = {
           },
         ],
         must: [
-          { match: { 'sys.type': 'Entry' } },
-          { match: { 'sys.contentType.sys.id': 'grantDetails' } },
+          { match: { [ELASTIC_INDEX_FIELDS.type]: 'Entry' } },
+          { match: { [ELASTIC_INDEX_FIELDS.contentType]: 'grantDetails' } },
+          {
+            range: {
+              [ELASTIC_INDEX_FIELDS.applicationClosingDate]: {
+                gte: 'now/d',
+              },
+            },
+          },
         ],
-        must_not: [{ match: { 'sys.publishedCounter': 0 } }],
+        must_not: [{ match: { [ELASTIC_INDEX_FIELDS.publishedCounter]: 0 } }],
       },
     },
     size: 10,
-    sort: [{ 'fields.grantApplicationCloseDate.en-US': { order: 'asc' } }],
+    sort: [{ [ELASTIC_INDEX_FIELDS.applicationClosingDate]: { order: 'asc' } }],
   },
   index: process.env.ELASTIC_INDEX,
   _source: ELASTIC_GRANT_PAGE_FIELDS,
@@ -111,10 +135,10 @@ export const elasticSearchResultWithoutSort = {
           {
             multi_match: {
               fields: [
-                'fields.grantName.en-US',
-                'fields.grantSummaryTab.en-US.content.content.*',
-                'fields.grantEligibilityTab.en-US.content.content.*',
-                'fields.grantShortDescription.en-US',
+                ELASTIC_INDEX_FIELDS.grantName,
+                ELASTIC_INDEX_FIELDS.summary,
+                ELASTIC_INDEX_FIELDS.eligibility,
+                ELASTIC_INDEX_FIELDS.shortDescription,
               ],
               fuzziness: 'AUTO',
               operator: 'AND',
@@ -123,14 +147,23 @@ export const elasticSearchResultWithoutSort = {
           },
         ],
         must: [
-          { match: { 'sys.type': 'Entry' } },
-          { match: { 'sys.contentType.sys.id': 'grantDetails' } },
+          { match: { [ELASTIC_INDEX_FIELDS.type]: 'Entry' } },
+          { match: { [ELASTIC_INDEX_FIELDS.contentType]: 'grantDetails' } },
+          {
+            range: {
+              [ELASTIC_INDEX_FIELDS.applicationClosingDate]: {
+                gte: 'now/d',
+              },
+            },
+          },
         ],
-        must_not: [{ match: { 'sys.publishedCounter': 0 } }],
+        must_not: [{ match: { [ELASTIC_INDEX_FIELDS.publishedCounter]: 0 } }],
       },
     },
     size: 10,
-    sort: [{ 'fields.grantApplicationOpenDate.en-US': { order: 'asc' } }],
+    sort: [
+      { [ELASTIC_INDEX_FIELDS.grantApplicationOpenDate]: { order: 'asc' } },
+    ],
   },
   index: process.env.ELASTIC_INDEX,
   _source: ELASTIC_GRANT_PAGE_FIELDS,
