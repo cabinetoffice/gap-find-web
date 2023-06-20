@@ -8,8 +8,10 @@ jest.mock('next/router', () => ({
   },
 }));
 
-const applicantUrl = 'http://localhost:3002'
-const component = <Home searchTerm="specific search term" applicantUrl={applicantUrl} />;
+const applicantUrl = 'http://localhost:3002';
+const component = (
+  <Home searchTerm="specific search term" applicantUrl={applicantUrl} />
+);
 
 describe('Rendering the home page', () => {
   const originalEnv = process.env;
@@ -35,7 +37,7 @@ describe('Rendering the home page', () => {
 
     expect(
       screen.getByText(
-        'Find a grant is a service that allows you to search government grants. This is a pilot service and it is being co-created with our users.'
+        'Find a grant is a service that allows you to search government grants.'
       )
     ).toBeDefined();
     expect(screen.getByText('You can use this service to:')).toBeDefined();
@@ -76,26 +78,6 @@ describe('Rendering the home page', () => {
     expect(
       screen.getAllByRole('link', { name: 'Browse grants' })[1].closest('a')
     ).toHaveAttribute('href', '/grants');
-  });
-
-  it('Should render Government Grants Community section', () => {
-    render(component);
-    expect(
-      screen.getByRole('heading', { name: 'Government Grants Community' })
-    ).toBeDefined();
-    expect(screen.getByText('sign-up form').closest('a')).toHaveAttribute(
-      'href',
-      'https://forms.gle/7EEewJCk9iQKsUaVA'
-    );
-    expect(
-      screen.getByText('govtgrantscommunity@cabinetoffice.gov.uk').closest('a')
-    ).toHaveAttribute(
-      'href',
-      'mailto:govtgrantscommunity@cabinetoffice.gov.uk'
-    );
-    expect(
-      screen.getByText('our Grants Community blog').closest('a')
-    ).toHaveAttribute('href', 'https://grantscommunity.blog.gov.uk/');
   });
 
   it('Should render The future of Find a grant section', () => {
@@ -177,7 +159,9 @@ describe('getServerSideProps', () => {
 
   it('should return a search term if a search term exists as a query param', () => {
     const result = getServerSideProps({ query: { searchTerm: 'search' } });
-    expect(result).toStrictEqual({ props: { searchTerm: 'search', applicantUrl  } });
+    expect(result).toStrictEqual({
+      props: { searchTerm: 'search', applicantUrl },
+    });
   });
 });
 
