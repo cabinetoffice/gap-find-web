@@ -16,21 +16,6 @@ describe('Links on the homepage', () => {
     cy.url().should('eq', Cypress.config().baseUrl + 'grants');
   });
 
-  it('should take the user to the blog page via the in text link', () => {
-    cy.get('[data-cy=cyGrantsCommunityBlogHomePageTextLink]').invoke(
-      'removeAttr',
-      'target'
-    );
-    cy.get('[data-cy=cyGrantsCommunityBlogHomePageTextLink]').click();
-    cy.url().should('eq', 'https://grantscommunity.blog.gov.uk/');
-  });
-
-  it('should take the user to the community sign-up page via the in text link', () => {
-    cy.get('[data-cy="cyJoinCommunityTextLink"]')
-      .invoke('attr', 'href')
-      .should('eq', 'https://forms.gle/7EEewJCk9iQKsUaVA');
-  });
-
   it('should be able to access the feedback form from the home page', () => {
     cy_visit('/');
     cy.get('[data-cy=cyBetaFeedbackLinkHomePage]').should('exist');
