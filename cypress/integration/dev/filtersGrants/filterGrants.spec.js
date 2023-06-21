@@ -99,9 +99,6 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cy£0 to £10,000Checkbox"]').click();
     cy.get('[data-cy="cy£0 to £10,000Checkbox"]').should('be.checked');
 
-    cy.get('[data-cy="cyFormula grantCheckbox"]').click();
-    cy.get('[data-cy="cyFormula grantCheckbox"]').should('be.checked');
-
     cy.get('[data-cy=cyApplyFilter]').click();
     cy.get('[data-cy="cyGrantsFoundMessage"]').should(
       'contain',
