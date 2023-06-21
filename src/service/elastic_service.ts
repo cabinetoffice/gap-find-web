@@ -155,6 +155,13 @@ export class ElasticSearchService {
             must: [
               { match: { [ELASTIC_INDEX_FIELDS.type]: 'Entry' } },
               { match: { [ELASTIC_INDEX_FIELDS.contentType]: 'grantDetails' } },
+              {
+                range: {
+                  [ELASTIC_INDEX_FIELDS.applicationClosingDate]: {
+                    gte: 'now/d',
+                  },
+                },
+              },
             ],
             must_not: [
               {

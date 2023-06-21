@@ -3,7 +3,6 @@ export function HomePageHeadingBlurb() {
     <>
       <p className="govuk-body">
         Find a grant is a service that allows you to search government grants.
-        This is a pilot service and it is being co-created with our users.
       </p>
       <p className="govuk-body">You can use this service to:</p>
       <ul className="govuk-list govuk-list--bullet">

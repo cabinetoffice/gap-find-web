@@ -18,7 +18,7 @@ export function getServerSideProps({ query }) {
   return {
     props: {
       searchTerm,
-      applicantUrl
+      applicantUrl,
     },
   };
 }
@@ -70,44 +70,6 @@ const Home = ({ searchTerm, applicantUrl }) => {
                 </Link>
               </HomepageBodyText>
 
-              <HomepageBodyText heading={'Government Grants Community'}>
-                <p className="govuk-body">
-                  The Government Grants Community is a space to share ideas,
-                  what we are learning, updates on forthcoming grants and
-                  information on how to get involved with our user research
-                  programme. To get involved, please email{' '}
-                  <Link href="mailto:govtgrantscommunity@cabinetoffice.gov.uk">
-                    <a className="govuk-link" data-cy="">
-                      govtgrantscommunity@cabinetoffice.gov.uk
-                    </a>
-                  </Link>{' '}
-                  or use this{' '}
-                  <Link href="https://forms.gle/7EEewJCk9iQKsUaVA">
-                    <a
-                      className="govuk-link"
-                      target="_blank"
-                      data-cy="cyJoinCommunityTextLink"
-                    >
-                      sign-up form
-                    </a>
-                  </Link>
-                  .
-                </p>
-                <p className="govuk-body govuk-!-margin-bottom-0">
-                  Or you can visit{' '}
-                  <Link href="https://grantscommunity.blog.gov.uk/">
-                    <a
-                      className="govuk-link"
-                      target="_blank"
-                      data-cy="cyGrantsCommunityBlogHomePageTextLink"
-                    >
-                      our Grants Community blog
-                    </a>
-                  </Link>
-                  .
-                </p>
-              </HomepageBodyText>
-
               <HomepageBodyText heading={'The future of Find a grant'}>
                 <p className="govuk-body">
                   More grants will be added as we develop our service. We will
@@ -115,7 +77,10 @@ const Home = ({ searchTerm, applicantUrl }) => {
                 </p>
               </HomepageBodyText>
             </div>
-            <HomepageSidebar header={'Manage notifications'} applicantUrl={applicantUrl} />
+            <HomepageSidebar
+              header={'Manage notifications'}
+              applicantUrl={applicantUrl}
+            />
           </div>
 
           <div className="govuk-!-margin-top-9">
