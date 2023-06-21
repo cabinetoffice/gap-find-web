@@ -112,7 +112,6 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cyAccordionButton-Who can apply"]').click();
     cy.get('[data-cy="cyAccordionButton-Location"]').click();
     cy.get('[data-cy="cyAccordionButton-How much can you get"]').click();
-    cy.get('[data-cy="cyAccordionButton-Type of grant"]').click();
 
     cy.get('[data-cy="cyCancelFilterBottom"').click();
     cy.wait(1500);

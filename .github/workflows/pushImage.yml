@@ -261,9 +261,6 @@ jobs:
             echo "ENVIRONMENT=TEST" >> "$GITHUB_ENV"
           fi
 
-      - name: Log cypress url
-        run: echo "${{env.ENV_HOST}}"
-
       - name: Run cypress tests
         uses: cypress-io/github-action@v5
         with:

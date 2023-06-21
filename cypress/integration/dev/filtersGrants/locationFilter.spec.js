@@ -48,7 +48,7 @@ describe('Location Filter', () => {
     cy.get('[data-cy=cySearchGrantsBtn]').click();
     cy.get('[data-cy=cyGrantNameAndLink]').should(
       'have.length.greaterThan',
-      '0'
+      0
     );
 
     cy.get('[data-cy="cyNorthern IrelandCheckbox"]').click();
