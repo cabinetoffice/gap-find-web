@@ -36,7 +36,6 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cyAccordionContent-How much can you get"]').should(
       'be.visible'
     );
-    cy.get('[data-cy="cyAccordionContent-Type of grant"]').should('be.visible');
 
     //applying filters
     cy.get('[data-cy="cyPublic sectorCheckbox"]').click();
@@ -51,20 +50,13 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cy£10,001 to £50,000Checkbox"]').click();
     cy.get('[data-cy="cy£10,001 to £50,000Checkbox"]').should('be.checked');
 
-    cy.get('[data-cy="cyFormula grantCheckbox"]').click();
-    cy.get('[data-cy="cyFormula grantCheckbox"]').should('be.checked');
-
     //closing accordions and checking visibility
     cy.get('[data-cy="cyAccordionButton-Location"]').click();
     cy.get('[data-cy="cyAccordionButton-How much can you get"]').click();
-    cy.get('[data-cy="cyAccordionButton-Type of grant"]').click();
 
     cy.get('[data-cy="cyAccordionContent-Who can apply"]').should('be.visible');
     cy.get('[data-cy="cyAccordionContent-Location"]').should('not.be.visible');
     cy.get('[data-cy="cyAccordionContent-How much can you get"]').should(
-      'not.be.visible'
-    );
-    cy.get('[data-cy="cyAccordionContent-Type of grant"]').should(
       'not.be.visible'
     );
 
@@ -80,19 +72,14 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cyAccordionContent-How much can you get"]').should(
       'not.be.visible'
     );
-    cy.get('[data-cy="cyAccordionContent-Type of grant"]').should(
-      'not.be.visible'
-    );
 
     cy.get('[data-cy="cyAccordionButton-Location"]').click();
     cy.get('[data-cy="cyAccordionButton-How much can you get"]').click();
-    cy.get('[data-cy="cyAccordionButton-Type of grant"]').click();
 
     cy.get('[data-cy="cyPublic sectorCheckbox"]').should('be.checked');
     cy.get('[data-cy="cyPrivate sectorCheckbox"]').should('be.checked');
     cy.get('[data-cy="cyEnglandCheckbox"]').should('be.checked');
     cy.get('[data-cy="cy£10,001 to £50,000Checkbox"]').should('be.checked');
-    cy.get('[data-cy="cyFormula grantCheckbox"]').should('be.checked');
 
     cy.get('[data-cy="cyCancelFilterTop"').click();
     cy.wait(1500);

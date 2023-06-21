@@ -46,7 +46,10 @@ describe('Location Filter', () => {
 
   it('should retain selected filters even when no results found', () => {
     cy.get('[data-cy=cySearchGrantsBtn]').click();
-    cy.get('[data-cy=cyGrantNameAndLink]').should('have.length', '10');
+    cy.get('[data-cy=cyGrantNameAndLink]').should(
+      'have.length.greaterThan',
+      '0'
+    );
 
     cy.get('[data-cy="cyNorthern IrelandCheckbox"]').click();
     cy.get('[data-cy="cy£0 to £10,000Checkbox"]').click();

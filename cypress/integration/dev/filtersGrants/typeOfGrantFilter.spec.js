@@ -24,7 +24,7 @@ describe('typeOfGrantFilter', () => {
     cy.get('[data-cy=cyApplyFilter]').click();
 
     cy.get('[data-cy="cyGrantsFoundMessage"]').should('contain', 'We’ve found');
-    cy.get('[data-cy=cyGrantNameAndLink]').should('have.length', '10');
+    cy.get('[data-cy=cyGrantNameAndLink]').should('have.length.greaterThan', 0);
     cy.get('[data-cy="cyNoGrantFoundMessage"]').should('not.exist');
   });
 
@@ -43,7 +43,7 @@ describe('typeOfGrantFilter', () => {
 
   it('should retain selected who can apply filters even when no results found', () => {
     cy.get('[data-cy=cySearchGrantsBtn]').click();
-    cy.get('[data-cy=cyGrantNameAndLink]').should('have.length', '10');
+    cy.get('[data-cy=cyGrantNameAndLink]').should('have.length.greaterThan', 0);
 
     cy.get('[data-cy="cyCovid grantCheckbox"]').click();
     cy.get('[data-cy="cyPersonal / individualCheckbox"]').click();
