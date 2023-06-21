@@ -4,7 +4,6 @@ export default function resetAccordionState() {
     `Who can apply`,
     `Location`,
     `How much can you get`,
-    `Type of grant`,
   ];
 
   accordionHeadings.forEach((heading) => {
