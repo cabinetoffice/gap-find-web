@@ -245,10 +245,12 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
       - name: Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
           yarn install
+
       - name: Determine cypress url
         run: |
           if [[  github.ref == 'refs/heads/develop' ]]; then
@@ -258,6 +260,10 @@ jobs:
             echo "ENV_HOST=${{secrets.AWS_TEST_URL}}" >> "$GITHUB_ENV"
             echo "ENVIRONMENT=TEST" >> "$GITHUB_ENV"
           fi
+
+      - name: Log cypress url
+        run: echo "${{env.ENV_HOST}}"
+
       - name: Run cypress tests
         uses: cypress-io/github-action@v5
         with:
