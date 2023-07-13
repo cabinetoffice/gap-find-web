@@ -6,6 +6,7 @@ on:
       - feature/**
       - GAP-**
       - fix/**
+      - bug/**
     paths-ignore:
       - '*.md'
 
