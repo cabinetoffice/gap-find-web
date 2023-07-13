@@ -13,11 +13,7 @@ async function sendEmail(emailAddress, personalisation, template) {
       reference: 'test-find-grant-reference',
     });
   } catch (error) {
-    if(error.response.data) {
-      console.error(error.response.data, { depth: null });
-    } else {
-      console.error(error);
-    }
+    console.error(error?.response?.data || error, { depth: null })
     throw new Error('Error sending email');
   }
 }
