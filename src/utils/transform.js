@@ -12,6 +12,7 @@ export const extractFiltersFields = (query, filters) => {
             return true;
           }
         });
+        if (!filter) continue;
         const sublevel = filter.sublevel.filter((sublevel_value) => {
           if (Array.isArray(query[property])) {
             for (const value of query[property]) {

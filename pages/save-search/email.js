@@ -98,12 +98,12 @@ const generateConfirmationUrl = (apiKey) => {
   ).toString();
 };
 
-const sendConfirmationEmail = async (savedSearch) => {
+const sendConfirmationEmail = async (savedSearch, email) => {
   const encryptedSearchId = generateSignedApiKey({ id: savedSearch.id });
   const confirmationUrl = generateConfirmationUrl(encryptedSearchId);
 
   await sendEmail(
-    savedSearch.user.emailAddress,
+    email,
     {
       'Confirmation link for saved search': confirmationUrl,
       'name of saved search': savedSearch.name,
@@ -138,13 +138,12 @@ export async function getServerSideProps({ query, req }) {
       notifications: query.notifications_consent === 'true' ? true : false,
       email: body.user_email,
     };
-    console.log(searchToSave);
     const savedSearch = await save(searchToSave);
 
     //TODO depending on how the confirmation journey is supposed to work, I suspect we may need to add more data to the token
-    await sendConfirmationEmail(savedSearch);
+    await sendConfirmationEmail(savedSearch, body.user_email);
 
-    return redirect(`check-email?email=${savedSearch.user.emailAddress}`);
+    return redirect(`check-email?email=${body.user_email}`);
   }
 
   return {
