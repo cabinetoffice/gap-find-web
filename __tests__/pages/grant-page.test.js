@@ -274,24 +274,24 @@ describe('getServerSideProps', () => {
       sortBy: 'default',
       filters: [
         {
-          display: "Who can apply",
-          index_name: "fields.grantApplicationType.en-US",
-          sublevel:  [
+          display: 'Who can apply',
+          index_name: 'fields.grantApplicationType.en-US',
+          sublevel: [
             {
-              "display": "Personal / individual",
-              "id": "1",
+              display: 'Personal / individual',
+              id: '1',
             },
             {
-              "display": "Public sector",
-              "id": "2",
+              display: 'Public sector',
+              id: '2',
             },
             {
-              "display": "Private sector",
-              "id": "3",
+              display: 'Private sector',
+              id: '3',
             },
             {
-              "display": "Non profit",
-              "id": "4",
+              display: 'Non profit',
+              id: '4',
             },
           ],
         },
