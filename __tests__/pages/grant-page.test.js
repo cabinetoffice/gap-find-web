@@ -6,7 +6,17 @@ import BrowseGrants, { getServerSideProps } from '../../pages/grants/index';
 import { ElasticSearchService } from '../../src/service/elastic_service';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 import { clearFiltersFromQuery } from '../../src/utils/transform'
-const transform = { clearFiltersFromQuery }
+
+jest.mock('next/router', () => {
+  return {
+    useRouter: jest.fn(),
+  };
+});
+jest.mock('../../src/utils/transform', () => ({
+  ...jest.requireActual('../../src/utils/transform'),
+  clearFiltersFromQuery: jest.fn()
+}));
+jest.mock('../../src/utils/contentFulPage');
 
 const mockGrant = {
   grantName: 'Some Grant Name',
@@ -47,19 +57,13 @@ const mockFilters = [
   },
 ];
 
-jest.mock('next/router', () => {
-  return {
-    useRouter: jest.fn(),
-  };
-});
-jest.mock('../../src/utils/contentFulPage');
-
 const component = (
   <BrowseGrants
     searchResult={[mockGrant]}
     searchTerm="search"
     searchHeading="Search grants"
     filters={mockFilters}
+    errors={[]}
     filterObj={{ fieldsgrantApplicationTypeenUS: '', errors: [] }}
     totalGrants={1}
     query={{}}
@@ -72,6 +76,7 @@ const invalidFilterComponent = (
     searchTerm="search"
     searchHeading="Search grants"
     filters={mockFilters}
+    errors={[{ field: 'datepicker', error: 'Test' }]}
     filterObj={{ errors: [{ field: 'datepicker', error: 'Test' }] }}
     totalGrants={1}
     query={{}}
@@ -96,7 +101,7 @@ describe('Rendering the browse grants page', () => {
     expect(screen.getByText('Back')).toBeDefined();
   });
 
-  it('Should render an error message', () => {
+  it('renders error message when error array in props is populated', () => {
     render(invalidFilterComponent);
     expect(
       screen.getByRole('heading', { name: 'There is a problem' })
@@ -239,6 +244,8 @@ describe('getServerSideProps', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    fetchFilters.mockReturnValue(mockFilters);
+
     elasticSearchServiceMock = jest
       .spyOn(ElasticSearchService.prototype, 'search')
       .mockImplementationOnce(() => {
@@ -257,39 +264,100 @@ describe('getServerSideProps', () => {
     expect(elasticSearchServiceMock).toHaveBeenCalledTimes(1);
   });
 
-  it('should search elastic service if search term is present', async () => {
+  const getExpectedResult = ({ searchTerm = '', errors = [], searchTermInvalid = false } = {}) => ({
+    props: {
+      searchResult: [
+        {
+          grantName: 'test grant',
+        },
+      ],
+      sortBy: 'default',
+      filters: [
+        {
+          display: 'Who can apply',
+          index_name: 'fields.grantApplicationType.en-US',
+          sublevel: [
+            {
+              display: 'Personal / individual',
+              id: '1',
+            },
+            {
+              display: 'Public sector',
+              id: '2',
+            },
+            {
+              display: 'Private sector',
+              id: '3',
+            },
+            {
+              display: 'Non profit',
+              id: '4',
+            },
+          ],
+        },
+      ],
+      searchTerm: !searchTermInvalid ? searchTerm : '',
+      searchHeading: 'Search grants',
+      filterObj: {
+        errors: [],
+      },
+      errors,
+      totalGrants: 1,
+      query: searchTerm ? { searchTerm, href: '/grants' } : { href: '/grants' },
+      currentPage: '1',
+      titleContent:
+        ` Searching for \n  ${searchTerm && !searchTermInvalid ? searchTerm : 'all grants'}, \n  1 \n   \n  result  \n- Find a grant`,
+    },
+  });
+
+  it('searches elastic service with blank searchTerm if none passed', async () => {
+    const result = await getServerSideProps({ query: {} });
+
+    expect(result).toStrictEqual(getExpectedResult());
+  });
+
+  it('searches elastic service with blank search term and returns error if searchTerm > 100 chars', async () => {
+    const longSearchTerm = '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
+
+    const result = await getServerSideProps({ query: { searchTerm: longSearchTerm } });
+
+    expect(result).toStrictEqual(getExpectedResult({ 
+      searchTerm: longSearchTerm, 
+      errors: [{ 
+        error: 'Search term must be 100 characters or less', 
+        field: 'searchAgainTermInput' 
+      }],
+      searchTermInvalid: true
+    }));
+  })
+
+  it('searches elastic service using passed search term', async () => {
     const result = await getServerSideProps({
       query: { searchTerm: 'unit test search' },
     });
-    expect(result).toStrictEqual({
-      props: {
-        searchResult: [
-          {
-            grantName: 'test grant',
-          },
-        ],
-        sortBy: 'default',
-        filters: undefined,
-        searchTerm: 'unit test search',
-        searchHeading: 'Search grants',
-        filterObj: {
-          errors: [],
-        },
-        totalGrants: 1,
-        query: {
-          searchTerm: 'unit test search',
-          href: '/grants',
-        },
-        currentPage: '1',
-        titleContent:
-          ' Searching for \n  unit test search, \n  1 \n   \n  result  \n- Find a grant',
-      },
-    });
+
+    expect(result).toStrictEqual(getExpectedResult({ searchTerm: 'unit test search' }));
   });
 
   describe('filters', () => {
+    const query = {
+      clearFilters: 'true',
+      searchTerm: 'unit test search',
+      'fields.grantApplicantType.en-US': 4,
+      'from-day': '9',
+      'from-month': '5',
+      'from-year': '2022',
+      'to-day': '16',
+      'to-month': '5',
+      'to-year': '2022'
+    };
+    const mockResponseAfterClear = { searchTerm: 'unit test search' };
+    beforeEach(() => 
+      clearFiltersFromQuery.mockReturnValue(mockResponseAfterClear)
+    );
+    
+
     it('should retrieve available filters from contentful', async () => {
-      fetchFilters.mockReturnValue(mockFilters);
       const result = await getServerSideProps({
         query: { searchTerm: 'unit test search' },
       });
@@ -299,20 +367,10 @@ describe('getServerSideProps', () => {
       );
     });
 
-    it.only('should clear filters from query when requested', async () => {
-      const result = await getServerSideProps({
-        query: {
-          clearFilters: 'true',
-          searchTerm: 'unit test search',
-          'fields.grantApplicantType.en-US': 4,
-          'from-day': '9',
-          'from-month': '5',
-          'from-year': '2022',
-          'to-day': '16',
-          'to-month': '5',
-          'to-year': '2022',
-        },
-      });
+    it('should clear filters from query when requested', async () => {
+      const result = await getServerSideProps({ query });
+
+
       expect(result.props).toEqual(
         expect.objectContaining({ filterObj: { errors: [] } })
       );
@@ -331,15 +389,14 @@ describe('getServerSideProps', () => {
         'to-year': '2022',
       };
       const mockResponseAfterClear = { searchTerm: 'unit test search' };
-      jest
-        .spyOn(transform, 'clearFiltersFromQuery')
+      clearFiltersFromQuery
         .mockReturnValue(mockResponseAfterClear);
 
       await getServerSideProps({
         query,
       });
-      expect(transform.clearFiltersFromQuery).toHaveBeenCalledTimes(1);
-      expect(transform.clearFiltersFromQuery).toHaveBeenCalledWith(query, [
+      expect(clearFiltersFromQuery).toHaveBeenCalledTimes(1);
+      expect(clearFiltersFromQuery).toHaveBeenCalledWith(query, [
         'from',
         'to',
       ]);
@@ -353,6 +410,7 @@ describe('getServerSideProps', () => {
       });
       expect(result.props.sortBy).toBe('default');
     });
+
     it('should use sort provided in query', async () => {
       const result = await getServerSideProps({
         query: { searchTerm: 'unit test search', sortBy: 'openingDate' },

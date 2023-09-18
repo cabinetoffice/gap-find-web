@@ -23,70 +23,16 @@ import {
   generateSearchHeadingFromDateRange
 } from '../../src/utils/transform';
 
-export async function getServerSideProps({ query }) {
-  let searchTerm = '';
-  let searchResult;
-  let searchHeading = 'Search grants';
-  const sortBy = query?.sortBy ? query.sortBy : 'default';
-  const clearFilters = !!query?.clearFilters;
-  const clearDateFilters = !!query?.clearDateFilters;
-  const filters = await fetchFilters();
+const conditionallyClearFiltersFromQuery = (clearFilters, clearDateFilters, query) => {
+  if (clearFilters) return clearFiltersFromQuery(query);
+  else if (clearDateFilters) return clearFiltersFromQuery(query, ['from', 'to']);
+  return query;
+}
 
-  let filterArray = [];
-  let filterObjFromQuery = {};
-
-  if (clearFilters) {
-    query = clearFiltersFromQuery(query);
-  } else if (clearDateFilters) {
-    query = clearFiltersFromQuery(query, ['from', 'to']);
-  }
-
-  filterObjFromQuery = extractFiltersFields(query, filters);
-  addPublishedDateFilter(query, filterObjFromQuery);
-  filterArray = buildDslQuery(filterObjFromQuery);
-
-  searchTerm = query.searchTerm ? query.searchTerm : searchTerm;
-  if (query.searchTerm || filterArray?.length > 0) {
-    searchTerm = query.searchTerm ? query.searchTerm : searchTerm;
-    searchHeading = filterObjFromQuery.dateRange
-      ? `Showing grants added between ${filterObjFromQuery.dateRange.values[0].from.dateStr} to ${filterObjFromQuery.dateRange.values[0].to.dateStr}`
-      : searchHeading;
-  }
-
-  let limit = GRANTS_PER_PAGE;
-  let currentPage = '1';
-
-  if (query?.limit) {
-    limit = query?.limit;
-  }
-
-  if (query?.page) {
-    currentPage = query?.page;
-  }
-
-  if (filterObjFromQuery.dateRange) {
-    searchHeading = generateSearchHeadingFromDateRange(
-      filterObjFromQuery.dateRange.values[0]
-    );
-  }
-
-  const elasticSearchServiceInstance = ElasticSearchService.getInstance();
-
-  searchResult = await elasticSearchServiceInstance.search(
-    searchTerm,
-    filterArray,
-    limit,
-    currentPage,
-    sortBy
-  );
-
-  const total = searchResult.totalGrants;
-  searchResult = searchResult.parsedElasticResults;
-
-  const titleContent = `${
-    filterObjFromQuery.errors.length > 0 ? 'Error: ' : ''
+const buildTitleContent = (filterObjFromQuery, searchTerm, total) => `${
+  filterObjFromQuery.errors.length > 0 ? 'Error: ' : ''
   } Searching for 
-  ${searchTerm ? searchTerm : 'all grants'}, 
+  ${searchTerm || 'all grants'}, 
   ${total} 
   ${
     filterObjFromQuery && Object.keys(filterObjFromQuery).length >= 2
@@ -96,13 +42,52 @@ export async function getServerSideProps({ query }) {
   ${total !== 1 ? 'results ' : 'result '} 
 - Find a grant`;
 
+const validateSearchTerm = (searchTerm = '') => searchTerm.trim().length < 100;
+
+export async function getServerSideProps({ query }) {
+  const filteredQuery = conditionallyClearFiltersFromQuery(Boolean(query.clearFilters), Boolean(query.clearDateFilters), query);
+  const searchTermValid = validateSearchTerm(filteredQuery.searchTerm);
+  const searchTerm = searchTermValid && filteredQuery.searchTerm ? filteredQuery.searchTerm : '';
+  const sortBy = filteredQuery.sortBy || 'default';
+  const filters = await fetchFilters();
+
+  const filterObjFromQuery = extractFiltersFields(filteredQuery, filters);
+  addPublishedDateFilter(filteredQuery, filterObjFromQuery);
+  const filterArray = buildDslQuery(filterObjFromQuery);
+  const searchHeading = filterObjFromQuery.dateRange
+    ? generateSearchHeadingFromDateRange(filterObjFromQuery.dateRange.values[0])
+    : 'Search grants';
+
+  const limit = filteredQuery.limit || GRANTS_PER_PAGE;
+  const currentPage = filteredQuery.page || '1';
+
+  const elasticSearchServiceInstance = ElasticSearchService.getInstance();
+
+  const searchResult = await elasticSearchServiceInstance.search(
+    searchTerm,
+    filterArray,
+    limit,
+    currentPage,
+    sortBy
+  );
+
+  const total = searchResult.totalGrants;
+
+  const titleContent = buildTitleContent(filterObjFromQuery, searchTerm, searchResult.totalGrants);
+
+  const errors = [...filterObjFromQuery.errors || []];
+
+  if (!searchTermValid) 
+    errors.push({ error: 'Search term must be 100 characters or less', field: 'searchAgainTermInput'});
+
   return {
     props: {
-      searchResult,
+      searchResult: searchResult.parsedElasticResults,
       sortBy,
       filters,
       searchTerm,
       searchHeading,
+      errors,
       filterObj: filterObjFromQuery,
       totalGrants: total,
       query: { ...query, href: '/grants' },
@@ -118,6 +103,7 @@ const BrowseByCategory = ({
   filters = [],
   searchTerm,
   searchHeading,
+  errors,
   filterObj,
   totalGrants,
   query,
@@ -151,7 +137,7 @@ const BrowseByCategory = ({
             </a>
           </Link>
         </div>
-        <ErrorBanner errors={filterObj.errors} />
+        <ErrorBanner errors={errors} />
         <form action="/grants" method="GET">
           <div className="govuk-grid-row govuk-body govuk-!-margin-bottom-0">
             <SearchResultCounter
