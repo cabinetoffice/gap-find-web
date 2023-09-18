@@ -324,7 +324,7 @@ describe('getServerSideProps', () => {
     expect(result).toStrictEqual(getExpectedResult({ 
       searchTerm: longSearchTerm, 
       errors: [{ 
-        error: 'Search must be less than 100 characters', 
+        error: 'Search term must be 100 characters or less', 
         field: 'searchAgainTermInput' 
       }],
       searchTermInvalid: true

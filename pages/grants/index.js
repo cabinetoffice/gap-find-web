@@ -78,7 +78,7 @@ export async function getServerSideProps({ query }) {
   const errors = [...filterObjFromQuery.errors || []];
 
   if (!searchTermValid) 
-    errors.push({ error: 'Search must be less than 100 characters', field: 'searchAgainTermInput'});
+    errors.push({ error: 'Search term must be 100 characters or less', field: 'searchAgainTermInput'});
 
   return {
     props: {
