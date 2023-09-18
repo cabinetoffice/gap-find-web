@@ -368,7 +368,7 @@ describe('getServerSideProps', () => {
     });
 
     it('should clear filters from query when requested', async () => {
-      const result = await getServerSideProps({ query});
+      const result = await getServerSideProps({ query });
 
 
       expect(result.props).toEqual(
