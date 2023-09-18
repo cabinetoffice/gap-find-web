@@ -21,11 +21,11 @@ describe('<ManageNewsletter />', () => {
       <ManageNewsletter
         signupDate={signupDate}
         newGrantsDateParams={mockDateParams}
-      />
+      />,
     );
 
     expect(
-      screen.getByText('You signed up for updates on 4 May 2022 at 1.01pm.')
+      screen.getByText('You signed up for updates on 4 May 2022 at 1.01pm.'),
     ).toBeDefined();
   });
 
@@ -36,12 +36,12 @@ describe('<ManageNewsletter />', () => {
         signupDate={signupDate}
         subscriptionId={1}
         newGrantsDateParams={mockDateParams}
-      />
+      />,
     );
 
     expect(screen.getByText(unsubscribeLinkText)).toHaveAttribute(
       'href',
-      `${newsletterRoutes.unsubscribe}/1`
+      `${newsletterRoutes.unsubscribe}/1`,
     );
   });
 
@@ -50,7 +50,7 @@ describe('<ManageNewsletter />', () => {
       <ManageNewsletter
         signupDate={signupDate}
         newGrantsDateParams={mockDateParams}
-      />
+      />,
     );
     const newGrantsButton = screen.getByRole('button', {
       name: 'View Updates',
@@ -58,7 +58,7 @@ describe('<ManageNewsletter />', () => {
     expect(newGrantsButton).toBeDefined();
     expect(newGrantsButton.closest('form')).toHaveAttribute(
       'action',
-      '/grants'
+      '/grants',
     );
 
     expect(screen.getByTestId('from-day')).toHaveValue('9');

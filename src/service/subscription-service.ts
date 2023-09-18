@@ -25,11 +25,11 @@ export class SubscriptionService {
 
   async addSubscription(
     emailAddress: string,
-    contentfulGrantSubscriptionId: string
+    contentfulGrantSubscriptionId: string,
   ): Promise<boolean> {
     const result = await SubscriptionService.client.post(
       SubscriptionService.endpoint.addSubscription,
-      { emailAddress, contentfulGrantSubscriptionId }
+      { emailAddress, contentfulGrantSubscriptionId },
     );
     return result.data;
   }
@@ -44,7 +44,7 @@ export class SubscriptionService {
 
   async getSubscriptionByEmailAndGrantId(
     emailAddress: string,
-    grantId: string
+    grantId: string,
   ): Promise<Response> {
     const endpoint: string = `${
       SubscriptionService.endpoint.emailParam + encodeURIComponent(emailAddress)
@@ -55,7 +55,7 @@ export class SubscriptionService {
 
   async deleteSubscriptionByEmailAndGrantId(
     emailAddress: string,
-    grantId: string
+    grantId: string,
   ): Promise<Response> {
     const endpoint: string = `${
       SubscriptionService.endpoint.emailParam + encodeURIComponent(emailAddress)

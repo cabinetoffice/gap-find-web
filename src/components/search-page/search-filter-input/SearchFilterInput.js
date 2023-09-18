@@ -7,7 +7,7 @@ export function SearchFilterInput({ filter, index, filterObj, sublevel }) {
       type="checkbox"
       data-cy={`cy${sublevel.display}Checkbox`}
       defaultChecked={filterObj[filter.index_name]?.values?.some(
-        (value) => value.id === sublevel.id
+        (value) => value.id === sublevel.id,
       )}
       value={sublevel.id}
     />

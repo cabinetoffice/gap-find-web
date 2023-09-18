@@ -72,7 +72,7 @@ export function addPublishedDateFilter(query, filterObj) {
 
       if (toDate.isBefore(fromDate)) {
         const error = new DateValidationError(
-          'To date must be the same as or after From date'
+          'To date must be the same as or after From date',
         );
         error.fieldName = 'Both';
         error.fields.day = true;
@@ -115,7 +115,7 @@ export function addPublishedDateFilter(query, filterObj) {
             break;
           case 'from':
             fromBuilder = {
-              error: error.fields
+              error: error.fields,
             };
             break;
         }

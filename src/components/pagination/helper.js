@@ -80,7 +80,7 @@ export const buildPaginationListItems = (
   itemsPerPage,
   paginationElementType,
   ellipsisEndAt,
-  ellipsisStartAt
+  ellipsisStartAt,
 ) => {
   const { route, query = {} } = router;
 

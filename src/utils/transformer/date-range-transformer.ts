@@ -8,7 +8,7 @@ interface QueryDate {
 }
 export function transformQueryDateToMoment(
   queryDate: QueryDate,
-  fieldName: string
+  fieldName: string,
 ): moment.Moment {
   const error = new DateValidationError(``);
   error.fieldName = fieldName;
@@ -22,7 +22,7 @@ export function transformQueryDateToMoment(
   }
   if (!queryDate.month) {
     if (error.message) {
-      error.message = error.message + ' and the month'
+      error.message = error.message + ' and the month';
     } else {
       error.message = `${fieldName} date must include the month`;
     }
@@ -31,7 +31,7 @@ export function transformQueryDateToMoment(
   }
   if (!queryDate.year) {
     if (error.message) {
-      error.message = error.message + ' and the year'
+      error.message = error.message + ' and the year';
     } else {
       error.message = `${fieldName} date must include the year`;
     }
@@ -40,7 +40,7 @@ export function transformQueryDateToMoment(
   }
 
   if (missingComponents) {
-    throw error
+    throw error;
   }
 
   //Check date components format
@@ -70,23 +70,23 @@ export function transformQueryDateToMoment(
   if (!momentDate.isValid()) {
     switch (momentDate.invalidAt()) {
       case 0:
-        error.message = `${fieldName} date must include a real year`
+        error.message = `${fieldName} date must include a real year`;
         error.fields.year = true;
         throw error;
 
       case 1:
-        error.message = `${fieldName} date must include a real month`
+        error.message = `${fieldName} date must include a real month`;
         error.fields.month = true;
         throw error;
 
       case 2:
-        error.message = `${fieldName} date must include a real day`
+        error.message = `${fieldName} date must include a real day`;
         error.fields.day = true;
         throw error;
 
       case -1:
       default:
-        error.message = `${fieldName} date must be a real date`
+        error.message = `${fieldName} date must be a real date`;
         error.fields.day = true;
         error.fields.month = true;
         error.fields.year = true;

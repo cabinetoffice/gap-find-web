@@ -22,7 +22,7 @@ describe('Specific Error Message Component', () => {
     expect(message).toBeDefined();
     expect(message.getAttribute('class')).toBe('govuk-error-message');
     expect(message.getAttribute('data-cy')).toBe(
-      'cyManageNotificationsInputValidationErrorDetails'
+      'cyManageNotificationsInputValidationErrorDetails',
     );
   });
 

@@ -19,10 +19,10 @@ const ManageNewsletter = ({
       <div className="govuk-grid-column-full">
         <h3 className="govuk-heading-m">Updates about new grants</h3>
         <p>{`You signed up for updates on ${formatDateTimeForSentence(
-          signupDate
+          signupDate,
         )}.`}</p>
 
-        <NewGrantsButton dateParams={newGrantsDateParams}/>
+        <NewGrantsButton dateParams={newGrantsDateParams} />
 
         <Link href={`${newsletterRoutes.unsubscribe}/${subscriptionId}`}>
           <a

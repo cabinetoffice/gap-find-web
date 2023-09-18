@@ -20,7 +20,7 @@ import { getBody, getPreviousFormValues } from '../../src/utils/request';
 const generateConfirmationUrl = (apiKey: string) => {
   return new URL(
     `api/newsletter-signup/${apiKey}`,
-    process.env.HOST
+    process.env.HOST,
   ).toString();
 };
 
@@ -60,7 +60,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       {
         'Confirmation link for updates': confirmationUrl,
       },
-      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_NEWSLETTER_TEMPLATE
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_NEWSLETTER_TEMPLATE,
     );
   } catch (e) {
     console.error(e);

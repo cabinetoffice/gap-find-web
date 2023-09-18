@@ -57,7 +57,7 @@ describe('Elastic Search Service', () => {
     });
     expect(client.search).toHaveBeenNthCalledWith(
       1,
-      elasticSearchResultWithoutSort
+      elasticSearchResultWithoutSort,
     );
   });
 
@@ -81,7 +81,7 @@ describe('Elastic Search Service', () => {
     });
     expect(client.search).toHaveBeenNthCalledWith(
       1,
-      elasticSearchResultWithoutSort
+      elasticSearchResultWithoutSort,
     );
   });
 
@@ -92,7 +92,7 @@ describe('Elastic Search Service', () => {
         [],
         10,
         1,
-        'closingDate'
+        'closingDate',
       );
       expect(result).toStrictEqual({
         parsedElasticResults: [
@@ -105,7 +105,7 @@ describe('Elastic Search Service', () => {
       });
       expect(client.search).toHaveBeenNthCalledWith(
         1,
-        elasticSearchResultClosingDate
+        elasticSearchResultClosingDate,
       );
     });
 
@@ -115,7 +115,7 @@ describe('Elastic Search Service', () => {
         [],
         10,
         1,
-        'maxValue'
+        'maxValue',
       );
       expect(result).toStrictEqual({
         parsedElasticResults: [
@@ -128,7 +128,7 @@ describe('Elastic Search Service', () => {
       });
       expect(client.search).toHaveBeenNthCalledWith(
         1,
-        elasticSearchResultMaximumAmount
+        elasticSearchResultMaximumAmount,
       );
     });
 
@@ -138,7 +138,7 @@ describe('Elastic Search Service', () => {
         [],
         10,
         1,
-        'minValue'
+        'minValue',
       );
       expect(result).toStrictEqual({
         parsedElasticResults: [
@@ -151,7 +151,7 @@ describe('Elastic Search Service', () => {
       });
       expect(client.search).toHaveBeenNthCalledWith(
         1,
-        elasticSearchResultMinimumAmount
+        elasticSearchResultMinimumAmount,
       );
     });
   });

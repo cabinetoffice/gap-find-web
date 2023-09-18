@@ -31,7 +31,7 @@ export class ContentfulPageService {
 
   async getContentfulPageEntry(page: ContentfulPage) {
     return await client.getEntry<IPageFields>(
-      ContentfulPageService.contentfulPageIds.get(page)
+      ContentfulPageService.contentfulPageIds.get(page),
     );
   }
 }

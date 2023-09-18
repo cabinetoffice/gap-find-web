@@ -69,7 +69,7 @@ export async function getAllSavedSearches(email: string) {
 
 export async function updateStatus(
   savedSearchId: number,
-  status: SavedSearchStatusType
+  status: SavedSearchStatusType,
 ) {
   const response = await axios({
     method: 'patch',

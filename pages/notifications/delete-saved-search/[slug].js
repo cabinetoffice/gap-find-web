@@ -61,7 +61,7 @@ export async function getServerSideProps(ctx) {
       const savedSearch = await getBySavedSearchId(slug);
       await deleteSaveSearch(slug, decryptedEmailAddress);
       return redirect(
-        `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.DELETE_SAVED_SEARCH}&savedSearchName=${savedSearch.name}`
+        `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.DELETE_SAVED_SEARCH}&savedSearchName=${savedSearch.name}`,
       );
     } catch (error) {
       if (axios.isAxiosError(error)) {

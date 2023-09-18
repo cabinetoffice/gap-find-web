@@ -94,7 +94,7 @@ const getDateFromFilters = (filters, dateToFetch) => {
 const generateConfirmationUrl = (apiKey) => {
   return new URL(
     `api/save-search/confirm/${apiKey}`,
-    process.env.HOST
+    process.env.HOST,
   ).toString();
 };
 
@@ -108,7 +108,7 @@ const sendConfirmationEmail = async (savedSearch, email) => {
       'Confirmation link for saved search': confirmationUrl,
       'name of saved search': savedSearch.name,
     },
-    process.env.GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE
+    process.env.GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE,
   );
 };
 

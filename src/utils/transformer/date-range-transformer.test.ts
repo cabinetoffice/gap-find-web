@@ -8,7 +8,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date must include the day'
+      'From date must include the day',
     );
     expectedError.fields = {
       day: true,
@@ -31,7 +31,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date must include the month'
+      'From date must include the month',
     );
     expectedError.fields = {
       day: false,
@@ -54,7 +54,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date must include the year'
+      'From date must include the year',
     );
     expectedError.fields = {
       day: false,
@@ -77,7 +77,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date must include the day and the month and the year'
+      'From date must include the day and the month and the year',
     );
     expectedError.fields = {
       day: true,
@@ -100,7 +100,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date day must be in D or DD format'
+      'From date day must be in D or DD format',
     );
     expectedError.fields = {
       day: true,
@@ -123,7 +123,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date month must be in M or MM format'
+      'From date month must be in M or MM format',
     );
     expectedError.fields = {
       day: false,
@@ -146,7 +146,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date year must be in YYYY format'
+      'From date year must be in YYYY format',
     );
     expectedError.fields = {
       day: false,
@@ -169,7 +169,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date year must be in YYYY format'
+      'From date year must be in YYYY format',
     );
     expectedError.fields = {
       day: false,
@@ -192,7 +192,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date must include a real day'
+      'From date must include a real day',
     );
     expectedError.fields = {
       day: true,
@@ -215,7 +215,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date must include a real month'
+      'From date must include a real month',
     );
     expectedError.fields = {
       day: false,
@@ -238,7 +238,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date must be a real date'
+      'From date must be a real date',
     );
     expectedError.fields = {
       day: true,
@@ -261,7 +261,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date must be a real date'
+      'From date must be a real date',
     );
     expectedError.fields = {
       day: true,
@@ -284,7 +284,7 @@ describe('transformQueryDateToMoment', () => {
     const fieldName = 'From';
 
     const expectedError = new DateValidationError(
-      'From date must be a real date'
+      'From date must be a real date',
     );
     expectedError.fields = {
       day: true,

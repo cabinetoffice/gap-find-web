@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     };
   }
   let decodedEmailCookie = decryptSignedApiKey(
-    req.cookies[cookieName['currentEmailAddress']]
+    req.cookies[cookieName['currentEmailAddress']],
   );
 
   const subscriptionService = SubscriptionService.getInstance();
@@ -25,13 +25,13 @@ export default async function handler(req, res) {
   const decryptedEmailAddress = await decrypt(decodedEmailCookie.email);
   await subscriptionService.deleteSubscriptionByEmailAndGrantId(
     decryptedEmailAddress,
-    req.body.grantId
+    req.body.grantId,
   );
 
   res.redirect(
     new URL(
       `${notificationRoutes['manageNotifications']}?grantId=${req.body.grantId}&action=${URL_ACTIONS.UNSUBSCRIBE}`,
-      process.env.HOST
-    ).toString()
+      process.env.HOST,
+    ).toString(),
   );
 }
