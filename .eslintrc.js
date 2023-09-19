@@ -33,9 +33,4 @@ module.exports = {
     'no-prototype-builtins': 'off',
     'prettier/prettier': 'error',
   },
-  settings: {
-    next: {
-      rootDir: ['packages/applicant/', 'packages/admin/'],
-    },
-  },
 };
