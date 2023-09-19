@@ -17,14 +17,14 @@ export default async function handler(req, res) {
 
   const tokenValues = decryptSignedApiKey(token);
   const decryptedEmailAddress = await decrypt(
-    tokenValues.encrypted_email_address
+    tokenValues.encrypted_email_address,
   );
 
   const subscriptionService = SubscriptionService.getInstance();
 
   await subscriptionService.addSubscription(
     decryptedEmailAddress,
-    tokenValues.contentful_grant_subscription_id
+    tokenValues.contentful_grant_subscription_id,
   );
 
   nookies.destroy({ res }, cookieName['currentEmailAddress']);
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
   res.redirect(
     new URL(
       `${notificationRoutes['manageNotifications']}?grantId=${tokenValues.contentful_grant_subscription_id}&action=${URL_ACTIONS.SUBSCRIBE}`,
-      process.env.HOST
-    ).toString()
+      process.env.HOST,
+    ).toString(),
   );
 }

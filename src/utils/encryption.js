@@ -12,7 +12,7 @@ const keyName = process.env.ENCRYPTION_KEY_NAME;
 const keyNamespace = process.env.ENCRYPTION_KEY_NAMESPACE;
 
 const unencryptedMasterKey = encoder.encode(
-  process.env.ENCRYPTION_WRAPPING_KEY
+  process.env.ENCRYPTION_WRAPPING_KEY,
 );
 const wrappingSuite =
   RawAesWrappingSuiteIdentifier.AES256_GCM_IV12_TAG16_NO_PADDING;
@@ -25,7 +25,7 @@ const keyRing = new RawAesKeyringNode({
 });
 
 const encryptionClient = buildClient(
-  CommitmentPolicy.REQUIRE_ENCRYPT_REQUIRE_DECRYPT
+  CommitmentPolicy.REQUIRE_ENCRYPT_REQUIRE_DECRYPT,
 );
 
 const context = {
@@ -45,7 +45,7 @@ export async function encrypt(cleartext) {
 export async function decrypt(cipherText) {
   const { plaintext, messageHeader } = await encryptionClient.decrypt(
     keyRing,
-    b64Decode(cipherText)
+    b64Decode(cipherText),
   );
   const { encryptionContext } = messageHeader;
   Object.entries(context).forEach(([key, value]) => {

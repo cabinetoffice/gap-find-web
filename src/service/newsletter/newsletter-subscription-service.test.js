@@ -52,12 +52,12 @@ describe('newsletter-subscription-service', () => {
       const result =
         await newsletterSubscriptionService.getByEmailAndNewsletterType(
           email,
-          newsletterType
+          newsletterType,
         );
 
       expect(spy).toHaveBeenCalledWith(email);
       expect(axiosInstance.get).toHaveBeenCalledWith(
-        `/users/${encodedEmail}/types/${newsletterType}`
+        `/users/${encodedEmail}/types/${newsletterType}`,
       );
       expect(result).toEqual(expectedResult);
     });
@@ -66,9 +66,14 @@ describe('newsletter-subscription-service', () => {
   describe('unsubscribeFromNewsletter', () => {
     it('should unsubscrube from the new grants newsletter', async () => {
       const email = 'email@email.com';
-      await newsletterSubscriptionService.unsubscribeFromNewsletter(email, NewsletterType.NEW_GRANTS);
+      await newsletterSubscriptionService.unsubscribeFromNewsletter(
+        email,
+        NewsletterType.NEW_GRANTS,
+      );
 
-      expect(axiosInstance.delete).toHaveBeenCalledWith(`/users/${email}/types/${NewsletterType.NEW_GRANTS}`)
+      expect(axiosInstance.delete).toHaveBeenCalledWith(
+        `/users/${email}/types/${NewsletterType.NEW_GRANTS}`,
+      );
     });
   });
 });

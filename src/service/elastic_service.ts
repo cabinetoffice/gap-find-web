@@ -47,21 +47,21 @@ export class ElasticSearchService {
     filterArray: Array<object>,
     grantsPerPage: number,
     page: number,
-    sortBy: string
+    sortBy: string,
   ) {
     const sortObj = ElasticSearchService.instance.getSortParams(sortBy);
 
     if (searchTerm) {
       filterArray = ElasticSearchService.instance.buildFilterArray(
         searchTerm,
-        filterArray
+        filterArray,
       );
     }
     const query = ElasticSearchService.instance.buildElasticSearchQueryObject(
       grantsPerPage,
       page,
       sortObj,
-      filterArray
+      filterArray,
     );
 
     const result = await ElasticSearchService.client.search(query);
@@ -98,10 +98,10 @@ export class ElasticSearchService {
   }
 
   parseElasticResults(
-    result: ApiResponse<Record<string, any>, Record<string, unknown>>
+    result: ApiResponse<Record<string, any>, Record<string, unknown>>,
   ) {
     return result.body.hits.hits.map((hit) => {
-      let fields = hit._source.fields;
+      const fields = hit._source.fields;
       for (const field in fields) {
         fields[field] = fields[field]['en-US'];
       }
@@ -112,7 +112,7 @@ export class ElasticSearchService {
 
   buildFilterArray(
     searchTerm: string,
-    filterArray: Array<object>
+    filterArray: Array<object>,
   ): Array<object> {
     filterArray.push({
       multi_match: {
@@ -135,7 +135,7 @@ export class ElasticSearchService {
     grantsPerPage: number,
     page: number,
     sortObj: any,
-    filterArray: Array<object>
+    filterArray: Array<object>,
   ) {
     return {
       index: process.env.ELASTIC_INDEX,

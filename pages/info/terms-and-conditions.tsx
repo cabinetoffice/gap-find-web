@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps<
 > = async () => {
   const contentfulPageService = ContentfulPageService.getInstance();
   const entry = await contentfulPageService.getContentfulPageEntry(
-    ContentfulPage.TERMS_AND_CONDITIONS
+    ContentfulPage.TERMS_AND_CONDITIONS,
   );
 
   return {

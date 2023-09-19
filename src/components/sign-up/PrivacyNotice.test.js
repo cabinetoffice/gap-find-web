@@ -23,7 +23,7 @@ describe('Rendering Privacy Notice', () => {
           { field: 'notification_privacy', error: 'This is a test error.' },
         ]}
         checked={true}
-      />
+      />,
     );
     const error = screen.getByTestId('specific-error-message');
     expect(error).toBeDefined();

@@ -8,7 +8,7 @@ import { SearchFilterSelector } from '../search-filter-selector/SearchFilterSele
 export function SearchFilterContainer({ filters, filterObj, query }) {
   useEffect(() => {
     const $filterAccordion = document.querySelector(
-      '[data-module="gap-accordion"]'
+      '[data-module="gap-accordion"]',
     );
     if ($filterAccordion && window.GOVUKFrontend !== undefined) {
       new window.GOVUKFrontend.Accordion($filterAccordion).init();

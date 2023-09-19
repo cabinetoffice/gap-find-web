@@ -20,18 +20,23 @@ import {
   buildDslQuery,
   clearFiltersFromQuery,
   extractFiltersFields,
-  generateSearchHeadingFromDateRange
+  generateSearchHeadingFromDateRange,
 } from '../../src/utils/transform';
 
-const conditionallyClearFiltersFromQuery = (clearFilters, clearDateFilters, query) => {
+const conditionallyClearFiltersFromQuery = (
+  clearFilters,
+  clearDateFilters,
+  query,
+) => {
   if (clearFilters) return clearFiltersFromQuery(query);
-  else if (clearDateFilters) return clearFiltersFromQuery(query, ['from', 'to']);
+  else if (clearDateFilters)
+    return clearFiltersFromQuery(query, ['from', 'to']);
   return query;
-}
+};
 
 const buildTitleContent = (filterObjFromQuery, searchTerm, total) => `${
   filterObjFromQuery.errors.length > 0 ? 'Error: ' : ''
-  } Searching for 
+} Searching for 
   ${searchTerm || 'all grants'}, 
   ${total} 
   ${
@@ -45,9 +50,14 @@ const buildTitleContent = (filterObjFromQuery, searchTerm, total) => `${
 const validateSearchTerm = (searchTerm = '') => searchTerm.trim().length < 100;
 
 export async function getServerSideProps({ query }) {
-  const filteredQuery = conditionallyClearFiltersFromQuery(Boolean(query.clearFilters), Boolean(query.clearDateFilters), query);
+  const filteredQuery = conditionallyClearFiltersFromQuery(
+    Boolean(query.clearFilters),
+    Boolean(query.clearDateFilters),
+    query,
+  );
   const searchTermValid = validateSearchTerm(filteredQuery.searchTerm);
-  const searchTerm = searchTermValid && filteredQuery.searchTerm ? filteredQuery.searchTerm : '';
+  const searchTerm =
+    searchTermValid && filteredQuery.searchTerm ? filteredQuery.searchTerm : '';
   const sortBy = filteredQuery.sortBy || 'default';
   const filters = await fetchFilters();
 
@@ -68,17 +78,24 @@ export async function getServerSideProps({ query }) {
     filterArray,
     limit,
     currentPage,
-    sortBy
+    sortBy,
   );
 
   const total = searchResult.totalGrants;
 
-  const titleContent = buildTitleContent(filterObjFromQuery, searchTerm, searchResult.totalGrants);
+  const titleContent = buildTitleContent(
+    filterObjFromQuery,
+    searchTerm,
+    searchResult.totalGrants,
+  );
 
-  const errors = [...filterObjFromQuery.errors || []];
+  const errors = [...(filterObjFromQuery.errors || [])];
 
-  if (!searchTermValid) 
-    errors.push({ error: 'Search term must be 100 characters or less', field: 'searchAgainTermInput'});
+  if (!searchTermValid)
+    errors.push({
+      error: 'Search term must be 100 characters or less',
+      field: 'searchAgainTermInput',
+    });
 
   return {
     props: {

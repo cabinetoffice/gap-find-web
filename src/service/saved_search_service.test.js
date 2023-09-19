@@ -109,7 +109,7 @@ describe('updateStatus', () => {
 
     const methodResponse = await updateStatus(
       savedSearch,
-      SavedSearchStatusType.CONFIRMED
+      SavedSearchStatusType.CONFIRMED,
     );
 
     expect(axios).toHaveBeenCalledWith({

@@ -58,7 +58,7 @@
 
     this.okButtonNode = this.dialogNode.querySelector('button[value="ok"]');
     this.cancelButtonNode = this.dialogNode.querySelector(
-      'button[value="cancel"]'
+      'button[value="cancel"]',
     );
 
     this.tbodyNode = this.dialogNode.querySelector('table.dates tbody');
@@ -77,71 +77,71 @@
 
   DatePickerDialog.prototype.init = function () {
     this.textboxNode.forEach((el) =>
-      el.addEventListener('blur', this.setDateForButtonLabel.bind(this))
+      el.addEventListener('blur', this.setDateForButtonLabel.bind(this)),
     );
 
     this.buttonNode.addEventListener(
       'keydown',
-      this.handleButtonKeydown.bind(this)
+      this.handleButtonKeydown.bind(this),
     );
     this.buttonNode.addEventListener(
       'click',
-      this.handleButtonClick.bind(this)
+      this.handleButtonClick.bind(this),
     );
 
     this.okButtonNode.addEventListener('click', this.handleOkButton.bind(this));
     this.okButtonNode.addEventListener(
       'keydown',
-      this.handleOkButton.bind(this)
+      this.handleOkButton.bind(this),
     );
 
     this.cancelButtonNode.addEventListener(
       'click',
-      this.handleCancelButton.bind(this)
+      this.handleCancelButton.bind(this),
     );
     this.cancelButtonNode.addEventListener(
       'keydown',
-      this.handleCancelButton.bind(this)
+      this.handleCancelButton.bind(this),
     );
 
     this.prevMonthNode.addEventListener(
       'click',
-      this.handlePreviousMonthButton.bind(this)
+      this.handlePreviousMonthButton.bind(this),
     );
     this.nextMonthNode.addEventListener(
       'click',
-      this.handleNextMonthButton.bind(this)
+      this.handleNextMonthButton.bind(this),
     );
     this.prevYearNode.addEventListener(
       'click',
-      this.handlePreviousYearButton.bind(this)
+      this.handlePreviousYearButton.bind(this),
     );
     this.nextYearNode.addEventListener(
       'click',
-      this.handleNextYearButton.bind(this)
+      this.handleNextYearButton.bind(this),
     );
 
     this.prevMonthNode.addEventListener(
       'keydown',
-      this.handlePreviousMonthButton.bind(this)
+      this.handlePreviousMonthButton.bind(this),
     );
     this.nextMonthNode.addEventListener(
       'keydown',
-      this.handleNextMonthButton.bind(this)
+      this.handleNextMonthButton.bind(this),
     );
     this.prevYearNode.addEventListener(
       'keydown',
-      this.handlePreviousYearButton.bind(this)
+      this.handlePreviousYearButton.bind(this),
     );
     this.nextYearNode.addEventListener(
       'keydown',
-      this.handleNextYearButton.bind(this)
+      this.handleNextYearButton.bind(this),
     );
 
     document.body.addEventListener(
       'mouseup',
       this.handleBackgroundMouseUp.bind(this),
-      true
+      true,
     );
 
     // Create Grid of Dates
@@ -205,7 +205,7 @@
         this.days[i],
         flag,
         d,
-        this.isSameDay(d, this.selectedDay)
+        this.isSameDay(d, this.selectedDay),
       );
       d.setDate(d.getDate() + 1);
 
@@ -224,7 +224,7 @@
     domNode,
     disable,
     day,
-    selected
+    selected,
   ) {
     var d = day.getDate().toString();
     if (day.getDate() <= 9) {
@@ -431,7 +431,7 @@
       var day = new Date(
         this.textboxNode[2].value,
         this.textboxNode[1].value - 1,
-        this.textboxNode[0].value
+        this.textboxNode[0].value,
       );
 
       var label = this.buttonLabelChange;

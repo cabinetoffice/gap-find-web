@@ -90,8 +90,7 @@ const SignupConfirmation = ({
                 folder.
               </p>
               <p>
-                If you do not get an email, contact
-                {' '}
+                If you do not get an email, contact{' '}
                 <a
                   href="mailto:findagrant@cabinetoffice.gov.uk"
                   className="govuk-link"

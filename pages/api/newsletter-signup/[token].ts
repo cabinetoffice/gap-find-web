@@ -16,7 +16,7 @@ import { encrypt } from '../../../src/utils/encryption';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const tokenValues = decryptSignedApiKey(req.query.token.toString());
   const newsletterSubscription: NewsletterSubscription = {
@@ -28,7 +28,7 @@ export default async function handler(
   try {
     await axios.post(
       new URL('/newsletters', process.env.BACKEND_HOST).toString(),
-      newsletterSubscription
+      newsletterSubscription,
     );
   } catch (e) {
     console.error(e);
@@ -39,11 +39,14 @@ export default async function handler(
   res.redirect(
     new URL(
       `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.NEWSLETTER_SUBSCRIBE}`,
-      process.env.HOST
-    ).toString()
+      process.env.HOST,
+    ).toString(),
   );
 }
-async function addEmailAddressCookieToResponse(tokenValues: any, res: NextApiResponse<any>) {
+async function addEmailAddressCookieToResponse(
+  tokenValues: any,
+  res: NextApiResponse<any>,
+) {
   const encryptedEmailAddress = await encrypt(tokenValues.email);
   const emailAddressJwt = generateSignedApiKey({
     email: encryptedEmailAddress,
@@ -55,4 +58,3 @@ async function addEmailAddressCookieToResponse(tokenValues: any, res: NextApiRes
     httpOnly: true,
   });
 }
-

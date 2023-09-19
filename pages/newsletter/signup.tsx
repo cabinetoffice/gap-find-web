@@ -8,7 +8,7 @@ import gloss from '../../src/utils/glossary.json';
 import { getValidationErrorsFromQuery } from '../../src/utils/request';
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const errors: Array<Object> = query['errors[]']
+  const errors: Array<object> = query['errors[]']
     ? getValidationErrorsFromQuery(query['errors[]'])
     : [];
 
@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 };
 
 type newsletterSignupFormProps = {
-  errors: Array<Object>;
+  errors: Array<object>;
   previousFormValues: ParsedUrlQuery;
   titleContent: string;
 };

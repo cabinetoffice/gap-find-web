@@ -1,7 +1,6 @@
 import { generateWeeklyNewsletterParams } from './newsletter_manager';
 
 describe('generateWeeklyNewsletterParams', () => {
-
   //Javascript date objects are zero-indexed on the month, so for proper display we +1 the month and -1 when parsing the query params
   const mockParams = {
     from: { day: 9, month: 5, year: 2022 },

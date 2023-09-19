@@ -77,7 +77,7 @@ export function GrantDetailsTabs({ grant, filteredOutTabs }) {
                       Object.prototype.hasOwnProperty.call(grant, grantTab)
                         ? grant[grantTab].content.filter(
                             ({ nodeType }) =>
-                              nodeType === 'embedded-entry-block'
+                              nodeType === 'embedded-entry-block',
                           )
                         : []
                     }
