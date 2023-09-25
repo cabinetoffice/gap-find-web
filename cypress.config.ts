@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress';
 import makeEmailAccount from './cypress/plugins/email-account';
+import 'dotenv/config';
 
 export default defineConfig({
   e2e: {
