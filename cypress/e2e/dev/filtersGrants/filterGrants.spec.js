@@ -34,7 +34,7 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cyAccordionContent-Who can apply"]').should('be.visible');
     cy.get('[data-cy="cyAccordionContent-Location"]').should('be.visible');
     cy.get('[data-cy="cyAccordionContent-How much can you get"]').should(
-      'be.visible'
+      'be.visible',
     );
 
     //applying filters
@@ -57,7 +57,7 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cyAccordionContent-Who can apply"]').should('be.visible');
     cy.get('[data-cy="cyAccordionContent-Location"]').should('not.be.visible');
     cy.get('[data-cy="cyAccordionContent-How much can you get"]').should(
-      'not.be.visible'
+      'not.be.visible',
     );
 
     //applying filters and rechecking retention of filters
@@ -70,7 +70,7 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy="cyAccordionContent-Who can apply"]').should('be.visible');
     cy.get('[data-cy="cyAccordionContent-Location"]').should('not.be.visible');
     cy.get('[data-cy="cyAccordionContent-How much can you get"]').should(
-      'not.be.visible'
+      'not.be.visible',
     );
 
     cy.get('[data-cy="cyAccordionButton-Location"]').click();
@@ -102,7 +102,7 @@ describe('Accordion and Filter states to work as expected', () => {
     cy.get('[data-cy=cyApplyFilter]').click();
     cy.get('[data-cy="cyGrantsFoundMessage"]').should(
       'contain',
-      'We’ve found 0 grants'
+      'We’ve found 0 grants',
     );
     cy.wait(1000);
 

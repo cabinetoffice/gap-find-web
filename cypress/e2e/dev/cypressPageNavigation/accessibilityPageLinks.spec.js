@@ -19,7 +19,7 @@ describe('Links on the accessibility', () => {
 
   it('should be able to access the Gov Community Email', () => {
     cy.get(
-      '[data-cy="cyAccessibilityLink_mailto:govtgrantscommunity@cabinetoffice.gov.uk"]'
+      '[data-cy="cyAccessibilityLink_mailto:govtgrantscommunity@cabinetoffice.gov.uk"]',
     )
       .invoke('removeAttr', 'target')
       .invoke('attr', 'href')
@@ -28,7 +28,7 @@ describe('Links on the accessibility', () => {
 
   it('should be able to access the Gov Community Email for Accessibility Issues', () => {
     cy.get(
-      '[data-cy="cyAccessibilityLink_mailto:govtgrantscommunity@cabinetoffice.gov.uk"]'
+      '[data-cy="cyAccessibilityLink_mailto:govtgrantscommunity@cabinetoffice.gov.uk"]',
     )
       .invoke('removeAttr', 'target')
       .invoke('attr', 'href')
@@ -37,7 +37,7 @@ describe('Links on the accessibility', () => {
 
   it('should be able to access the EASS page', () => {
     cy.get(
-      '[data-cy="cyAccessibilityLink_https://www.equalityadvisoryservice.com/"]'
+      '[data-cy="cyAccessibilityLink_https://www.equalityadvisoryservice.com/"]',
     )
       .should('have.attr', 'href')
       .and('eq', 'https://www.equalityadvisoryservice.com/');
