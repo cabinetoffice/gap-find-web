@@ -1,7 +1,0 @@
-module.exports = {
-  baseUrl: 'http://localhost:3000',
-  watchForFileChanges: false,
-  video: false,
-  screenshotOnRunFailure: false,
-  chromeWebSecurity: false,
-};
