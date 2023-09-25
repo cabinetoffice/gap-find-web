@@ -134,7 +134,7 @@ jobs:
       - name: Run cypress tests (accessibility only)
         uses: cypress-io/github-action@v2
         with:
-          start: yarn start --headless=new
+          start: yarn start
           record: false
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 60
