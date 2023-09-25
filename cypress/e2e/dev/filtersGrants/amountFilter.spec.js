@@ -15,11 +15,11 @@ describe('Amount Filter', () => {
     cy.get('[data-cy="cyApplyFilter"').click();
     cy.get('[data-cy="cyGrantsFoundMessage"]').should(
       'contain',
-      'We’ve found 0 grants'
+      'We’ve found 0 grants',
     );
     cy.get('[data-cy="cyNoGrantFoundMessage"]').should(
       'contain',
-      'No grants found'
+      'No grants found',
     );
     cy.get('[data-cy=cyGrantNameAndLink]').should('not.exist');
   });

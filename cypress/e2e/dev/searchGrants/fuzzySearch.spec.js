@@ -12,7 +12,7 @@ describe('successfully searches using fuzzy search parameters', () => {
     cy.get('[data-cy=cyGrantNameAndLink]').should('exist');
     cy.get('[data-cy=cyGrantNameAndLink]').should(
       'contain',
-      'Urban Tree Challenge Fund'
+      'Urban Tree Challenge Fund',
     );
     cy.get('[data-cy=cyGrantNameAndLink]').then((elements) => {
       cy.get(elements).should('have.length.greaterThan', 0);
@@ -26,7 +26,7 @@ describe('successfully searches using fuzzy search parameters', () => {
     cy.get('[data-cy=cyGrantNameAndLink]').should('exist');
     cy.get('[data-cy=cyGrantNameAndLink]').should(
       'contain',
-      'Workplace Charging Scheme'
+      'Workplace Charging Scheme',
     );
     cy.get('[data-cy=cyGrantNameAndLink]').then((elements) => {
       cy.get(elements).should('have.length.greaterThan', 0);
@@ -40,7 +40,7 @@ describe('successfully searches using fuzzy search parameters', () => {
     cy.get('[data-cy=cyGrantNameAndLink]').should('exist');
     cy.get('[data-cy=cyGrantNameAndLink]').should(
       'contain',
-      'BFI Development Fund'
+      'BFI Development Fund',
     );
     cy.get('[data-cy=cyGrantNameAndLink]').then((elements) => {
       cy.get(elements).should('have.length.greaterThan', 0);

@@ -21,12 +21,12 @@ describe('Links on the homepage', () => {
     cy.get('[data-cy=cyBetaFeedbackLinkHomePage]').should('exist');
     cy.get('[data-cy=cyBetaFeedbackLinkHomePage]').invoke(
       'removeAttr',
-      'target'
+      'target',
     );
     cy.get('[data-cy=cyBetaFeedbackLinkHomePage]').click();
     cy.url().should(
       'eq',
-      'https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform'
+      'https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform',
     );
   });
 
