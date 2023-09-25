@@ -1,5 +1,4 @@
 import { defineConfig } from 'cypress';
-import cypressPostgres from 'cypress-postgres';
 import makeEmailAccount from './cypress/plugins/email-account';
 
 export default defineConfig({
@@ -23,7 +22,8 @@ export default defineConfig({
         process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
 
       on('task', {
-        dbQuery: (query) => cypressPostgres(query.query, query.connection),
+        // tests that use this currently disabled
+        // dbQuery: (query) => cypressPostgres(query.query, query.connection),
         log(message) {
           console.log(message);
 
