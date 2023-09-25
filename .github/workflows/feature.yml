@@ -140,7 +140,7 @@ jobs:
           wait-on-timeout: 60
           browser: chrome
           runTests: true
-          spec: cypress/integration/dev/accessibility/*
+          spec: cypress/e2e/dev/accessibility/*
         env:
           CYPRESS_CACHE_FOLDER: '~/.cache/Cypress'
 
