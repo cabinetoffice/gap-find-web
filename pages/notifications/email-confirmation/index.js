@@ -1,7 +1,11 @@
 import Head from 'next/head';
 import gloss from '../../../src/utils/glossary.json';
 import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
-import { notificationRoutes, cookieName } from '../../../src/utils/constants';
+import {
+  notificationRoutes,
+  cookieName,
+  HEADERS,
+} from '../../../src/utils/constants';
 import Layout from '../../../src/components/partials/Layout';
 import { generateSignedApiKey } from '../../../src/service/api-key-service';
 import { sendEmail } from '../../../src/service/gov_notify_service';
@@ -11,6 +15,7 @@ import {
   EMAIL_ADDRESS_FORMAT_VALIDATION_ERROR,
 } from '../../../src/utils/constants';
 import { encrypt } from '../../../src/utils/encryption';
+import { logger } from '../../../src/utils';
 
 const generateConfirmationUrl = (apiKey) => {
   return `${process.env.HOST}${notificationRoutes['confirmSubscription']}/${apiKey}`;
@@ -87,13 +92,21 @@ export async function getServerSideProps(ctx) {
 
   const confirmationUrl = generateConfirmationUrl(apiKey);
 
-  await sendEmail(
-    email,
-    {
-      'confirmation link': confirmationUrl,
-    },
-    process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE,
-  );
+  try {
+    await sendEmail(
+      email,
+      {
+        'confirmation link': confirmationUrl,
+      },
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE,
+    );
+  } catch (error) {
+    logger.error('error sending sign in email for manage notifications', {
+      message: error.message,
+      stack: error.stack,
+      correlationId: ctx.req.headers[HEADERS.CORRELATION_ID],
+    });
+  }
 
   return {
     props: {

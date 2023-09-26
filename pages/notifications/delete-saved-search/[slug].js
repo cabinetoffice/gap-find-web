@@ -16,7 +16,7 @@ import nookies from 'nookies';
 import { decrypt } from '../../../src/utils/encryption';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
-import axios from 'axios';
+import { axios } from '../../../src/utils';
 
 const breadcrumbsRoutes = [
   {

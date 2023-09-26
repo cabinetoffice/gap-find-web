@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import { axios } from '../utils/axios';
 
 export class SubscriptionService {
   private static endpoint = {
@@ -9,7 +9,7 @@ export class SubscriptionService {
 
   private static instance: SubscriptionService;
 
-  private static client: AxiosInstance = axios.create({
+  private static client = axios.create({
     baseURL: `${process.env.BACKEND_HOST}/subscriptions/`,
   });
 

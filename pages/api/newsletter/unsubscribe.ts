@@ -8,6 +8,8 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
+import { logger } from '../../../src/utils';
+import { HEADERS } from '../../../src/utils/constants';
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,7 +36,11 @@ export default async function handler(
       NewsletterType.NEW_GRANTS,
     );
   } catch (e) {
-    console.error(e);
+    logger.error('error unsubscribing from newsletter', {
+      message: e.message,
+      stack: e.stack,
+      correlationId: req.headers[HEADERS.CORRELATION_ID],
+    });
   }
 
   res.redirect(

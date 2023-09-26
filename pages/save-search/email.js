@@ -16,6 +16,7 @@ import {
 import {
   EMAIL_ADDRESS_FORMAT_VALIDATION_ERROR,
   EMAIL_ADDRESS_REGEX,
+  HEADERS,
 } from '../../src/utils/constants';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 import gloss from '../../src/utils/glossary.json';
@@ -23,6 +24,7 @@ import {
   addPublishedDateFilter,
   extractFiltersFields,
 } from '../../src/utils/transform';
+import { logger } from '../../src/utils';
 
 //TODO confirm if we need to show only one error at a time or not
 const validate = (requestBody) => {
@@ -140,8 +142,15 @@ export async function getServerSideProps({ query, req }) {
     };
     const savedSearch = await save(searchToSave);
 
-    //TODO depending on how the confirmation journey is supposed to work, I suspect we may need to add more data to the token
-    await sendConfirmationEmail(savedSearch, body.user_email);
+    try {
+      await sendConfirmationEmail(savedSearch, body.user_email);
+    } catch (error) {
+      logger.error('error sending saved search confirmation email', {
+        message: error.message,
+        stack: error.stack,
+        correlationId: req.headers[HEADERS.CORRELATION_ID],
+      });
+    }
 
     return redirect(`check-email?email=${body.user_email}`);
   }

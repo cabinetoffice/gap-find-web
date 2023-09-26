@@ -1,21 +1,32 @@
 import handler from './[token]';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { notificationRoutes, URL_ACTIONS } from '../../../src/utils/constants';
-import axios from 'axios';
 import { encrypt } from '../../../src/utils/encryption';
+import { client } from '../../../src/utils';
 
-jest.mock('axios');
+jest.mock('../../../src/utils/axios', () => ({
+  client: {
+    post: jest.fn(),
+  },
+}));
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/encryption');
 jest.mock('nookies');
 
+const createMockRequest = (requestData) => ({
+  headers: {
+    'tco-correlation-id': 'correlationId',
+  },
+  ...requestData,
+});
+
 describe('newslettersignup', () => {
   it('should add a newsletter subscription', async () => {
-    const req = {
+    const req = createMockRequest({
       query: {
         token: 'an-encrypted-jwt',
       },
-    };
+    });
 
     const res = {
       redirect: jest.fn(),
@@ -31,7 +42,7 @@ describe('newslettersignup', () => {
 
     await handler(req, res);
 
-    expect(axios.post).toHaveBeenCalledWith(
+    expect(client.post).toHaveBeenCalledWith(
       new URL('/newsletters', process.env.BACKEND_HOST).toString(),
       tokenValues,
     );
@@ -45,11 +56,11 @@ describe('newslettersignup', () => {
   });
 
   it('should catch any errors thrown and continue', async () => {
-    const req = {
+    const req = createMockRequest({
       query: {
         token: 'an-encrypted-jwt',
       },
-    };
+    });
 
     const res = {
       redirect: jest.fn(),
@@ -62,11 +73,11 @@ describe('newslettersignup', () => {
 
     decryptSignedApiKey.mockReturnValue(tokenValues);
     encrypt.mockResolvedValue('an-encrypted-email');
-    axios.post.mockRejectedValue(new Error('Error from post request'));
+    client.post.mockRejectedValue(new Error('Error from post request'));
 
     await handler(req, res);
 
-    expect(axios.post).rejects.toThrow(new Error('Error from post request'));
+    expect(client.post).rejects.toThrow(new Error('Error from post request'));
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(
       new URL(

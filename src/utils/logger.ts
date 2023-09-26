@@ -1,4 +1,7 @@
+import createLogger from 'pino';
 const isProd = process.env.NODE_ENV === 'production';
+
+const log = createLogger();
 
 const CONSOLE_COLOURS = {
   BLACK: '\x1b[30m',
@@ -37,10 +40,8 @@ const withLogColour = (text: string, level: LogLevel) =>
 const formatTime = (date: Date) =>
   `${date.toLocaleTimeString()}.${date.getMilliseconds()}`;
 
-// next doesn't seem to log errors too well by default - do we need to handle logging
-// the stacktrace ourselves?
 const getLoggerWithLevel =
-  (level: LogLevel) => (logMessage: string | Error, json?: object) => {
+  (level: LogLevel) => (logMessage: string, json?: object) => {
     const date = new Date();
     const time = formatTime(date);
     if (!isProd) {
@@ -50,10 +51,8 @@ const getLoggerWithLevel =
       );
       if (json) console.dir(json, { depth: null });
     } else
-      console.log({
+      log[level]({
         logMessage,
-        level,
-        timestamp: date.toISOString(),
         ...json,
       });
   };

@@ -8,8 +8,6 @@ import {
 } from '../../src/utils/transform';
 import {
   arrayQuery,
-  dateFilterObject,
-  dateQuery,
   filterArray,
   filterObj,
   filters,
@@ -51,7 +49,7 @@ describe('Transform export function extract filter fields', () => {
 
   it('export functions should work when a filter is added that does not exist', async () => {
     expect(extractFiltersFields(incorrectArrayQuery, filters)).toEqual(
-      incorrectFilterObj
+      incorrectFilterObj,
     );
   });
 });
@@ -127,7 +125,7 @@ describe('clearFiltersFromQuery', () => {
     };
 
     expect(clearFiltersFromQuery(query, ['from', 'to'])).toStrictEqual(
-      response
+      response,
     );
   });
 });
@@ -154,13 +152,6 @@ describe('generateSearchHeadingFromDateRange', () => {
 });
 
 describe('addPublishedDateFilter', () => {
-  beforeAll(() => {
-    const consoleSpy = jest.spyOn(global.console, 'error').mockImplementation();
-  })
-
-  afterAll(() => {
-    jest.resetAllMocks();
-  })
   it('should make no changes to the filter if no dates have been supplied', () => {
     const query = {
       searchTerm: '',
@@ -212,13 +203,12 @@ describe('addPublishedDateFilter', () => {
       dateRange: {
         values: [
           {
-            search_parameter: {
-            },
+            search_parameter: {},
             from: {
               dateStr: null,
-              day: "1",
+              day: '1',
               month: 5,
-              year: "2022",
+              year: '2022',
             },
             to: {
               dateStr: null,
@@ -234,7 +224,7 @@ describe('addPublishedDateFilter', () => {
           },
         ],
       },
-    }
+    };
 
     addPublishedDateFilter(query, filterObj);
 
@@ -267,8 +257,7 @@ describe('addPublishedDateFilter', () => {
       dateRange: {
         values: [
           {
-            search_parameter: {
-            },
+            search_parameter: {},
             from: {
               dateStr: null,
               day: null,
@@ -282,20 +271,19 @@ describe('addPublishedDateFilter', () => {
             },
             to: {
               dateStr: null,
-              day: "4",
+              day: '4',
               month: 5,
-              year: "2022",
+              year: '2022',
             },
           },
         ],
       },
-    }
+    };
 
     addPublishedDateFilter(query, filterObj);
 
     expect(filterObj).toStrictEqual(expectedFilterObj);
   });
-
 
   it('should add an error if to date is before from date', () => {
     const query = {
@@ -323,13 +311,12 @@ describe('addPublishedDateFilter', () => {
       dateRange: {
         values: [
           {
-            search_parameter: {
-            },
+            search_parameter: {},
             from: {
-              dateStr: "4 May 2022",
-              day: "4",
+              dateStr: '4 May 2022',
+              day: '4',
               month: 5,
-              year: "2022",
+              year: '2022',
               error: {
                 day: true,
                 month: true,
@@ -337,10 +324,10 @@ describe('addPublishedDateFilter', () => {
               },
             },
             to: {
-              dateStr: "1 May 2022",
-              day: "1",
+              dateStr: '1 May 2022',
+              day: '1',
               month: 5,
-              year: "2022",
+              year: '2022',
               error: {
                 day: true,
                 month: true,
@@ -350,7 +337,7 @@ describe('addPublishedDateFilter', () => {
           },
         ],
       },
-    }
+    };
 
     addPublishedDateFilter(query, filterObj);
 
@@ -374,33 +361,36 @@ describe('addPublishedDateFilter', () => {
     };
 
     const expectedFilterObj = {
-      errors: [
-      ],
+      errors: [],
       dateRange: {
-        index_name: "sys.createdAt",
-        type: "range-filter",
+        index_name: 'sys.createdAt',
+        type: 'range-filter',
         values: [
           {
             search_parameter: {
-              gte: moment({day: 1, month: 4, year: 2022}).startOf('day').toISOString(true),
-              lte: moment({day: 4, month: 4, year: 2022}).endOf('day').toISOString(true)
+              gte: moment({ day: 1, month: 4, year: 2022 })
+                .startOf('day')
+                .toISOString(true),
+              lte: moment({ day: 4, month: 4, year: 2022 })
+                .endOf('day')
+                .toISOString(true),
             },
             from: {
-              dateStr: "1 May 2022",
-              day: "1",
+              dateStr: '1 May 2022',
+              day: '1',
               month: 5,
-              year: "2022",
+              year: '2022',
             },
             to: {
-              dateStr: "4 May 2022",
-              day: "4",
+              dateStr: '4 May 2022',
+              day: '4',
               month: 5,
-              year: "2022",
+              year: '2022',
             },
           },
         ],
       },
-    }
+    };
 
     addPublishedDateFilter(query, filterObj);
 

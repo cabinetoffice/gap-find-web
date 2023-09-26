@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axios } from '../utils/axios';
 
 //TODO remove these ESLint exceptions and fix
 export enum SavedSearchStatusType {

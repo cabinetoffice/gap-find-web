@@ -1,5 +1,6 @@
 import { DateValidationError } from './transformer/date-range-transformer.errors';
 import { transformQueryDateToMoment } from './transformer/date-range-transformer';
+import { logger } from './logger';
 
 export const extractFiltersFields = (query, filters) => {
   const filterObj = {};
@@ -91,7 +92,8 @@ export function addPublishedDateFilter(query, filterObj) {
         lte: toDate.endOf('day').toISOString(true),
       };
     } catch (error) {
-      console.error(error);
+      // logged at info level as these errors are from bad user input
+      logger.info('error validating dates from search filter', { ...error });
       filterObj.errors.push({
         error: error.message,
         field: 'datepicker',

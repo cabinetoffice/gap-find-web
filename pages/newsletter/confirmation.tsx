@@ -16,6 +16,8 @@ import {
 } from '../../src/types/newsletter';
 import gloss from '../../src/utils/glossary.json';
 import { getBody, getPreviousFormValues } from '../../src/utils/request';
+import { logger } from '../../src/utils';
+import { HEADERS } from '../../src/utils/constants';
 
 const generateConfirmationUrl = (apiKey: string) => {
   return new URL(
@@ -63,7 +65,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_NEWSLETTER_TEMPLATE,
     );
   } catch (e) {
-    console.error(e);
+    logger.error('error sending newsletter signup confirmation email', {
+      message: e.message,
+      stack: e.stack,
+      correlationId: req.headers[HEADERS.CORRELATION_ID],
+    });
   }
 
   return {

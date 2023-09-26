@@ -4,15 +4,17 @@ import {
   generateSignedApiKey,
 } from '../../../src/service/api-key-service';
 import { NewsletterSubscription } from '../../../src/types/newsletter';
-import axios from 'axios';
+import { client as axios } from '../../../src/utils/axios';
 import nookies from 'nookies';
 import {
   cookieName,
+  HEADERS,
   maxAgeForCookies,
   notificationRoutes,
   URL_ACTIONS,
 } from '../../../src/utils/constants';
 import { encrypt } from '../../../src/utils/encryption';
+import { logger } from '../../../src/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,7 +33,11 @@ export default async function handler(
       newsletterSubscription,
     );
   } catch (e) {
-    console.error(e);
+    logger.error('error subscribing to newletter', {
+      message: e.message,
+      stack: e.stack,
+      correlationId: req.headers[HEADERS.CORRELATION_ID],
+    });
   }
 
   await addEmailAddressCookieToResponse(tokenValues, res);
