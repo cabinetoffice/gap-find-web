@@ -132,7 +132,7 @@ jobs:
           yarn build
 
       - name: Run cypress tests (accessibility only)
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
         with:
           start: yarn start
           record: false
