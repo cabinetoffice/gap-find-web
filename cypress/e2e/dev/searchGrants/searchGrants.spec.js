@@ -18,7 +18,7 @@ describe('searchGrants', () => {
     cy.get('[data-cy=cyGrantNameAndLink]').should('exist');
     cy.get('[data-cy=cyGrantNameAndLink]').should(
       'contain',
-      'Workplace Charging Scheme'
+      'Workplace Charging Scheme',
     );
     cy.get('[data-cy=cyGrantNameAndLink]').should('have.length.greaterThan', 0);
     cy.get('[data-cy=cyGrantsFoundMessage]').should('exist');
@@ -49,7 +49,7 @@ describe('searchGrants', () => {
     cy.get('[data-cy=cySearchAgainInput]').should('have.value', 'upfront');
     cy.get('[data-cy=cyGrantNameAndLink]').should('have.length.greaterThan', 0);
     cy.get(
-      '[data-cy=cyGrantShortDescriptions-workplace-charging-scheme]'
+      '[data-cy=cyGrantShortDescriptions-workplace-charging-scheme]',
     ).should('contain', 'upfront');
 
     // should search with an empty search input
@@ -64,11 +64,11 @@ describe('searchGrants', () => {
     cy.get('[data-cy=cySearchAgainButton]').click();
     cy.get('[data-cy="cyGrantsFoundMessage"]').should(
       'contain',
-      'We’ve found 0 grants'
+      'We’ve found 0 grants',
     );
     cy.get('[data-cy="cyNoGrantFoundMessage"]').should(
       'contain',
-      'No grants found'
+      'No grants found',
     );
     cy.get('[data-cy=cyGrantNameAndLink]').should('not.exist');
   });
