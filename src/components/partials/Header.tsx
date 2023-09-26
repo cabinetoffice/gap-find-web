@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { isIE } from 'react-device-detect';
 import { skipToMainContent } from '../../utils/skipToMainContent';
 
-const Header = () => {
+const Header = ({ showNavigation, showBetaBlock }) => {
   const router = useRouter();
   const navItems = [
     {
@@ -144,65 +144,62 @@ const Header = () => {
 
           <div className="govuk-header__content">
             <div className="govuk-heading-m gap-service-name">Find a grant</div>
-            {/*
-              <button type="button"  className="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide navigation menu" aria-expanded="false">Menu</button>
-            */}
           </div>
-          {/*
-          <details className="menu-toggler-mobile">
-            <summary>Details</summary>
-            <p>Something small enough to escape casual notice.</p>
-          </details>
-          */}
         </div>
       </header>
 
       {/* MOBILE VIEW MENU */}
-      <details className="menu-toggler-mobile govuk-body">
-        <summary
-          data-cy="cyMobileMenuBtn"
-          role="button"
-          aria-label="Show or hide menu"
-        >
-          Menu
-        </summary>
-        {/* MAIN NAV BLOCK */}
-        <nav aria-label="menu">
-          <ul> {mobileLinks} </ul>
-        </nav>
-      </details>
+      {showNavigation && (
+        <details className="menu-toggler-mobile govuk-body">
+          <summary
+            data-cy="cyMobileMenuBtn"
+            role="button"
+            aria-label="Show or hide menu"
+          >
+            Menu
+          </summary>
+          {/* MAIN NAV BLOCK */}
+          <nav aria-label="menu">
+            <ul> {mobileLinks} </ul>
+          </nav>
+        </details>
+      )}
 
       {/* BETA BLOCK */}
-      <div className="govuk-width-container ">
-        <div className="govuk-phase-banner">
-          <p className="govuk-phase-banner__content">
-            <strong className="govuk-tag govuk-phase-banner__content__tag">
-              BETA
-            </strong>
-            <span className="govuk-phase-banner__text">
-              This is a new service – your{' '}
-              <Link href={mailToFeebackContent}>
-                <a
-                  className="govuk-link"
-                  target="_blank"
-                  data-cy="cyBetaFeedbackLinkBanner"
-                >
-                  feedback
-                </a>
-              </Link>{' '}
-              will help us to improve it.
-            </span>
-          </p>
+      {showBetaBlock && (
+        <div className="govuk-width-container ">
+          <div className="govuk-phase-banner">
+            <p className="govuk-phase-banner__content">
+              <strong className="govuk-tag govuk-phase-banner__content__tag">
+                BETA
+              </strong>
+              <span className="govuk-phase-banner__text">
+                This is a new service – your{' '}
+                <Link href={mailToFeebackContent}>
+                  <a
+                    className="govuk-link"
+                    target="_blank"
+                    data-cy="cyBetaFeedbackLinkBanner"
+                  >
+                    feedback
+                  </a>
+                </Link>{' '}
+                will help us to improve it.
+              </span>
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* MAIN NAV BLOCK */}
-      <nav className="app-navigation govuk-clearfix g2_navigation govuk-width-container">
-        <ul className="app-navigation__list app-width-container g2_navigation__menu gap_nav-wrapper">
-          {' '}
-          {links}{' '}
-        </ul>
-      </nav>
+      {showNavigation && (
+        <nav className="app-navigation govuk-clearfix g2_navigation govuk-width-container">
+          <ul className="app-navigation__list app-width-container g2_navigation__menu gap_nav-wrapper">
+            {' '}
+            {links}{' '}
+          </ul>
+        </nav>
+      )}
     </>
   );
 };
