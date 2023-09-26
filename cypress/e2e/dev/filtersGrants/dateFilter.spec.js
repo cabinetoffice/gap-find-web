@@ -55,7 +55,7 @@ describe('Date Filter', () => {
     cy.get('[data-cy="cyDateFilter-toYear"]').should('have.value', '2022');
     cy.get('[data-cy="cyGrantNameAndLink"]').should(
       'have.length.greaterThan',
-      0
+      0,
     );
     cy.get('[data-cy="cyEnglandCheckbox"]').should('be.checked');
 
@@ -70,7 +70,7 @@ describe('Date Filter', () => {
     cy.get('[data-cy="cyDateFilter-toYear"]').should('have.value', '2022');
     cy.get('[data-cy="cyGrantNameAndLink"]').should(
       'have.length.greaterThan',
-      0
+      0,
     );
     cy.get('[data-cy="cyEnglandCheckbox"]').should('be.checked');
   });
@@ -81,7 +81,7 @@ describe('Date Filter', () => {
     cy.get('[data-cy=cyApplyFilter]').click();
     cy.get('[data-cy="cyError_datepicker"]').should('exist');
     cy.get(
-      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]'
+      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]',
     ).should('exist');
     clearFilterErrorMessages();
 
@@ -92,7 +92,7 @@ describe('Date Filter', () => {
     cy.get('[data-cy=cyApplyFilter]').click();
     cy.get('[data-cy="cyError_datepicker"]').should('exist');
     cy.get(
-      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]'
+      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]',
     ).should('exist');
     cy.get('[data-cy="cyError_datepicker"]').should('exist');
     clearFilterErrorMessages();
@@ -108,7 +108,7 @@ describe('Date Filter', () => {
     cy.get('[data-cy=cyApplyFilter]').click();
     cy.get('[data-cy="cyError_datepicker"]').should('exist');
     cy.get(
-      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]'
+      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]',
     ).should('exist');
     cy.get('[data-cy="cyError_datepicker"]').should('exist');
   });

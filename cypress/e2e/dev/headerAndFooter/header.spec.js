@@ -57,7 +57,7 @@ describe('Header', () => {
     cy.get('[data-cy=cyBetaFeedbackLinkBanner]').click();
     cy.url().should(
       'eq',
-      'https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform'
+      'https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform',
     );
   });
 

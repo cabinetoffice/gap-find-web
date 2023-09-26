@@ -1,11 +1,11 @@
 /* eslint no-undef: 0 */
 import cy_visit from '../../utils/cyVisit';
 import run_accessibility from '../../utils/run_accessbility';
-import checkSaveSearchData from '../../utils/checkSaveSearchData';
-import deleteSavedSearches from '../../utils/deleteSavedSearches';
+// import checkSaveSearchData from '../../utils/checkSaveSearchData';
+// import deleteSavedSearches from '../../utils/deleteSavedSearches';
 import accessEmail from '../../utils/accessEmail';
 import clickEmailConfirmation from '../../utils/clickEmailConfirmation';
-import insertSavedSearch from '../../utils/insertSavedSearch';
+// import insertSavedSearch from '../../utils/insertSavedSearch';
 import { userEmail } from '../../constants/constants';
 
 describe('saveSearch', () => {
@@ -18,7 +18,7 @@ describe('saveSearch', () => {
   });
 
   afterEach(() => {
-    deleteSavedSearches();
+    // deleteSavedSearches();
   });
 
   it.skip('should view the manage notifications page (no notifications)', () => {
@@ -41,7 +41,7 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy="cyManageYourNotificationsNoData"]').should(
       'have.text',
-      `You are not signed up for any notifications, and you don't have any saved searches.`
+      `You are not signed up for any notifications, and you don't have any saved searches.`,
     );
 
     cy.get('[data-cy="cySearchForGrantsLink"]').click();
@@ -62,7 +62,7 @@ describe('saveSearch', () => {
     cy.get('[data-cy=cyGrantNameAndLink]').should('exist');
     cy.get('[data-cy=cyGrantNameAndLink]').should(
       'contain',
-      'Workplace Charging Scheme'
+      'Workplace Charging Scheme',
     );
     cy.get('[data-cy=cyGrantNameAndLink]').should('have.length.greaterThan', 0);
     cy.get('[data-cy=cyGrantsFoundMessage]').should('exist');
@@ -79,27 +79,27 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy=cySaveSearchHeader]').should(
       'have.text',
-      'Save your search'
+      'Save your search',
     );
     cy.get('[data-cy=cySaveSearchFilters]').should(
       'have.text',
-      'The filters you have chosen include:'
+      'The filters you have chosen include:',
     );
     cy.get('[data-cy="cyFilterKeyWho can apply"]').should(
       'have.text',
-      'Who can apply'
+      'Who can apply',
     );
     cy.get('[data-cy="cyFilterValueNon profit"]').should(
       'have.text',
-      'Non profit'
+      'Non profit',
     );
     cy.get('[data-cy=cyNameThisSearchLabel]').should(
       'have.text',
-      'Name this search'
+      'Name this search',
     );
     cy.get('[data-cy=cyNameThisSearchDescription]').should(
       'have.text',
-      'You can save more than one search. Add a name so it is easier to tell your searches apart.'
+      'You can save more than one search. Add a name so it is easier to tell your searches apart.',
     );
     cy.get('[data-cy=cyNameThisSearchInput]').type('Cypress Notification Yes');
     cy.get('[data-cy=cySaveAndContinueButton]').click();
@@ -109,12 +109,12 @@ describe('saveSearch', () => {
 
     cy.get('[ data-cy="cy-save-search-consent-header"]').should(
       'have.text',
-      'Sign up for email updates'
+      'Sign up for email updates',
     );
 
     cy.get('[data-cy="cy-save-search-notifications-description"]').should(
       'have.text',
-      "Select 'Yes' if you want to be updated when grants that match your saved search are added."
+      "Select 'Yes' if you want to be updated when grants that match your saved search are added.",
     );
 
     cy.get('[data-cy="cySubmitNotificationsChoice"]').click();
@@ -127,7 +127,7 @@ describe('saveSearch', () => {
       .should('have.text', "Select 'Yes' or 'No'");
     cy.get('[data-cy="cy-error-wrapper"]').should(
       'have.class',
-      'govuk-form-group--error'
+      'govuk-form-group--error',
     );
     cy.get('[data-cy="cyError_consent-radio"]')
       .should('have.text', "Select 'Yes' or 'No'")
@@ -140,11 +140,11 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy=cyEmailAddressHeader]').should(
       'have.text',
-      'Enter your email address'
+      'Enter your email address',
     );
     cy.get('[data-cy=cyEmailAddressLabel]').should(
       'have.text',
-      'To save your search, enter your email address below.'
+      'To save your search, enter your email address below.',
     );
     cy.get('[data-cy=cyNotificationPrivacyCheckbox]').click();
     cy.get('[data-cy=cyEmailAddressInput]').type(userEmail);
@@ -185,7 +185,7 @@ describe('saveSearch', () => {
     cy.get('[data-cy=cyGrantNameAndLink]').should('exist');
     cy.get('[data-cy=cyGrantNameAndLink]').should(
       'contain',
-      'Workplace Charging Scheme'
+      'Workplace Charging Scheme',
     );
 
     cy.get('[data-cy=cyGrantsFoundMessage]').should('exist');
@@ -200,30 +200,30 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy=cySaveSearchHeader]').should(
       'have.text',
-      'Save your search'
+      'Save your search',
     );
     cy.get('[data-cy=cySaveSearchFilters]').should(
       'have.text',
-      'The filters you have chosen include:'
+      'The filters you have chosen include:',
     );
     cy.get('[data-cy="cyFilterKeyWho can apply"]').should(
       'have.text',
-      'Who can apply'
+      'Who can apply',
     );
     cy.get('[data-cy="cyFilterValueNon profit"]').should(
       'have.text',
-      'Non profit'
+      'Non profit',
     );
     cy.get('[data-cy=cyNameThisSearchLabel]').should(
       'have.text',
-      'Name this search'
+      'Name this search',
     );
     cy.get('[data-cy=cyNameThisSearchDescription]').should(
       'have.text',
-      'You can save more than one search. Add a name so it is easier to tell your searches apart.'
+      'You can save more than one search. Add a name so it is easier to tell your searches apart.',
     );
     cy.get('[data-cy=cyNameThisSearchInput]').type(
-      'Cypress Notification Yes - back used'
+      'Cypress Notification Yes - back used',
     );
     cy.get('[data-cy=cySaveAndContinueButton]').click();
 
@@ -232,12 +232,12 @@ describe('saveSearch', () => {
 
     cy.get('[ data-cy="cy-save-search-consent-header"]').should(
       'have.text',
-      'Sign up for email updates'
+      'Sign up for email updates',
     );
 
     cy.get('[data-cy="cy-save-search-notifications-description"]').should(
       'have.text',
-      "Select 'Yes' if you want to be updated when grants that match your saved search are added."
+      "Select 'Yes' if you want to be updated when grants that match your saved search are added.",
     );
 
     cy.get('[data-cy="cySubmitNotificationsChoice"]').click();
@@ -250,7 +250,7 @@ describe('saveSearch', () => {
       .should('have.text', "Select 'Yes' or 'No'");
     cy.get('[data-cy="cy-error-wrapper"]').should(
       'have.class',
-      'govuk-form-group--error'
+      'govuk-form-group--error',
     );
     cy.get('[data-cy="cyError_consent-radio"]')
       .should('have.text', "Select 'Yes' or 'No'")
@@ -268,11 +268,11 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy=cyEmailAddressHeader]').should(
       'have.text',
-      'Enter your email address'
+      'Enter your email address',
     );
     cy.get('[data-cy=cyEmailAddressLabel]').should(
       'have.text',
-      'To save your search, enter your email address below.'
+      'To save your search, enter your email address below.',
     );
     cy.get('[data-cy=cyNotificationPrivacyCheckbox]').click();
     cy.get('[data-cy=cyEmailAddressInput]').type(userEmail);
@@ -306,7 +306,7 @@ describe('saveSearch', () => {
     cy.get('[data-cy=cyGrantNameAndLink]').should('exist');
     cy.get('[data-cy=cyGrantNameAndLink]').should(
       'contain',
-      'Workplace Charging Scheme'
+      'Workplace Charging Scheme',
     );
     cy.get('[data-cy=cyGrantNameAndLink]').should('have.length.greaterThan', 0);
     cy.get('[data-cy=cyGrantsFoundMessage]').should('exist');
@@ -323,30 +323,30 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy=cySaveSearchHeader]').should(
       'have.text',
-      'Save your search'
+      'Save your search',
     );
     cy.get('[data-cy=cySaveSearchFilters]').should(
       'have.text',
-      'The filters you have chosen include:'
+      'The filters you have chosen include:',
     );
     cy.get('[data-cy="cyFilterKeyWho can apply"]').should(
       'have.text',
-      'Who can apply'
+      'Who can apply',
     );
     cy.get('[data-cy="cyFilterValueNon profit"]').should(
       'have.text',
-      'Non profit'
+      'Non profit',
     );
     cy.get('[data-cy=cyNameThisSearchLabel]').should(
       'have.text',
-      'Name this search'
+      'Name this search',
     );
     cy.get('[data-cy=cyNameThisSearchDescription]').should(
       'have.text',
-      'You can save more than one search. Add a name so it is easier to tell your searches apart.'
+      'You can save more than one search. Add a name so it is easier to tell your searches apart.',
     );
     cy.get('[data-cy=cyNameThisSearchInput]').type(
-      'Cypress Notification No - back used'
+      'Cypress Notification No - back used',
     );
     cy.get('[data-cy=cySaveAndContinueButton]').click();
 
@@ -355,12 +355,12 @@ describe('saveSearch', () => {
 
     cy.get('[ data-cy="cy-save-search-consent-header"]').should(
       'have.text',
-      'Sign up for email updates'
+      'Sign up for email updates',
     );
 
     cy.get('[data-cy="cy-save-search-notifications-description"]').should(
       'have.text',
-      "Select 'Yes' if you want to be updated when grants that match your saved search are added."
+      "Select 'Yes' if you want to be updated when grants that match your saved search are added.",
     );
 
     cy.get('[data-cy="cySubmitNotificationsChoice"]').click();
@@ -373,7 +373,7 @@ describe('saveSearch', () => {
       .should('have.text', "Select 'Yes' or 'No'");
     cy.get('[data-cy="cy-error-wrapper"]').should(
       'have.class',
-      'govuk-form-group--error'
+      'govuk-form-group--error',
     );
     cy.get('[data-cy="cyError_consent-radio"]')
       .should('have.text', "Select 'Yes' or 'No'")
@@ -391,11 +391,11 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy=cyEmailAddressHeader]').should(
       'have.text',
-      'Enter your email address'
+      'Enter your email address',
     );
     cy.get('[data-cy=cyEmailAddressLabel]').should(
       'have.text',
-      'To save your search, enter your email address below.'
+      'To save your search, enter your email address below.',
     );
     cy.get('[data-cy=cyNotificationPrivacyCheckbox]').click();
     cy.get('[data-cy=cyEmailAddressInput]').type(userEmail);
@@ -447,11 +447,11 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy=cyEmailAddressHeader]').should(
       'have.text',
-      'Enter your email address'
+      'Enter your email address',
     );
     cy.get('[data-cy=cyEmailAddressLabel]').should(
       'have.text',
-      'To save your search, enter your email address below.'
+      'To save your search, enter your email address below.',
     );
     cy.get('[data-cy=cyNotificationPrivacyCheckbox]').click();
     cy.get('[data-cy=cyEmailAddressInput]').type(userEmail);
@@ -492,11 +492,11 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy=cyEmailAddressHeader]').should(
       'have.text',
-      'Enter your email address'
+      'Enter your email address',
     );
     cy.get('[data-cy=cyEmailAddressLabel]').should(
       'have.text',
-      'To save your search, enter your email address below.'
+      'To save your search, enter your email address below.',
     );
     cy.get('[data-cy=cyNotificationPrivacyCheckbox]').click();
     cy.get('[data-cy=cyEmailAddressInput]').type(userEmail);
@@ -541,7 +541,7 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy="cySubscribeSuccessMessageContent"]').should(
       'have.text',
-      'You have deleted the saved search called:  Delete Search'
+      'You have deleted the saved search called:  Delete Search',
     );
 
     cy.get('[data-cy="cyManageYourNotificationsNoData"]').should('exist');
@@ -554,7 +554,7 @@ describe('saveSearch', () => {
     cy.url().should('include', 'notifications/check-email');
     cy.get('[data-cy="cyUnsubscribeTitle"]').should(
       'have.text',
-      'Manage notifications and saved searches'
+      'Manage notifications and saved searches',
     );
   });
 
@@ -574,7 +574,7 @@ describe('saveSearch', () => {
 
     cy.get('[data-cy="cyErrorMessage"]').should(
       'have.text',
-      'You do not have permission to delete this saved search.'
+      'You do not have permission to delete this saved search.',
     );
   });
 });

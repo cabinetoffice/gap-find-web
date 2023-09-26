@@ -30,16 +30,16 @@ describe('Allow unsubscription', () => {
     cy.get('[data-cy="cyManageYourNotificationsHeading"]').should('exist');
     run_accessibility();
     cy.get(
-      '[data-cy="cyChargepoint Grant for people renting and living in flatsUnsubscriptionTableName"]'
+      '[data-cy="cyChargepoint Grant for people renting and living in flatsUnsubscriptionTableName"]',
     ).should('exist');
 
     cy.get(
-      '[data-cy="cyChargepoint Grant for people renting and living in flatsUnsubscribeLink"]'
+      '[data-cy="cyChargepoint Grant for people renting and living in flatsUnsubscribeLink"]',
     )
       .eq(0)
       .click();
     cy.get('[data-cy="cyUnsubscribeConfirmationGrantsDetail"]').contains(
-      'Chargepoint Grant for people renting and living in flats'
+      'Chargepoint Grant for people renting and living in flats',
     );
 
     run_accessibility();
@@ -50,7 +50,7 @@ describe('Allow unsubscription', () => {
 
     cy.get('[data-cy="cySubscribeSuccessMessageContent"]').should('exist');
     cy.get('[data-cy="cySubscribeSuccessMessageContent"]').contains(
-      'You have been unsubscribed from "Chargepoint Grant for people renting and living in flats"'
+      'You have been unsubscribed from "Chargepoint Grant for people renting and living in flats"',
     );
     run_accessibility();
   });
@@ -69,10 +69,10 @@ describe('Allow unsubscription', () => {
 
     // Put in checks about the page that tells you you've just submitted
     cy.get('[data-cy="cyCheckUnsubscribeEmailHeading"]').contains(
-      'Check your email'
+      'Check your email',
     );
     cy.get('[data-cy="cyUnsubscribeEmail"]').contains(
-      `We’ve sent an email to ${userEmail}`
+      `We’ve sent an email to ${userEmail}`,
     );
     run_accessibility();
     //fetch the email
@@ -82,7 +82,7 @@ describe('Allow unsubscription', () => {
       {
         timeout: 15000, // retry up to 15 seconds
         delay: 5000, // wait 5 seconds between attempts
-      }
+      },
     )
       .its('html')
       .then((html) => {
@@ -99,16 +99,16 @@ describe('Allow unsubscription', () => {
     cy.get('[data-cy="cyManageYourNotificationsHeading"]').should('exist');
     run_accessibility();
     cy.get(
-      '[data-cy="cyChargepoint Grant for people renting and living in flatsUnsubscriptionTableName"]'
+      '[data-cy="cyChargepoint Grant for people renting and living in flatsUnsubscriptionTableName"]',
     ).should('exist');
 
     cy.get(
-      '[data-cy="cyChargepoint Grant for people renting and living in flatsUnsubscribeLink"]'
+      '[data-cy="cyChargepoint Grant for people renting and living in flatsUnsubscribeLink"]',
     )
       .eq(0)
       .click();
     cy.get('[data-cy="cyUnsubscribeConfirmationGrantsDetail"]').contains(
-      'Chargepoint Grant for people renting and living in flats'
+      'Chargepoint Grant for people renting and living in flats',
     );
 
     run_accessibility();
@@ -119,7 +119,7 @@ describe('Allow unsubscription', () => {
 
     cy.get('[data-cy="cySubscribeSuccessMessageContent"]').should('exist');
     cy.get('[data-cy="cySubscribeSuccessMessageContent"]').contains(
-      'You have been unsubscribed from "Chargepoint Grant for people renting and living in flats"'
+      'You have been unsubscribed from "Chargepoint Grant for people renting and living in flats"',
     );
     run_accessibility();
   });
@@ -136,13 +136,13 @@ describe('Validate the email input for manage notifications', () => {
 
     cy.get('[data-cy="cyErrorBannerHeading"]').should(
       'contain',
-      'There is a problem'
+      'There is a problem',
     );
     cy.get(
-      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]'
+      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]',
     ).should('exist');
     cy.get(
-      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]'
+      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]',
     ).should('contain', 'You must enter an email address.');
 
     cy.get('[data-cy="cyError_email"]').click();
@@ -162,25 +162,25 @@ describe('Validate the email input for manage notifications', () => {
 
     cy.get('[data-cy="cyErrorBannerHeading"]').should(
       'contain',
-      'There is a problem'
+      'There is a problem',
     );
     cy.get(
-      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]'
+      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]',
     ).should('exist');
     cy.get(
-      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]'
+      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]',
     ).should(
       'contain',
-      'Enter an email address in the correct format, like name@example.com'
+      'Enter an email address in the correct format, like name@example.com',
     );
     cy.get('[data-cy="cyManageNotificationsInputValidationError"]').should(
-      'exist'
+      'exist',
     );
     cy.get(
-      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]'
+      '[data-cy="cyManageNotificationsInputValidationErrorDetails"]',
     ).should(
       'contain',
-      'Enter an email address in the correct format, like name@example.com'
+      'Enter an email address in the correct format, like name@example.com',
     );
     cy.get('[data-cy="cyError_email"]').click();
     cy.focused().should('have.attr', 'name', 'email');

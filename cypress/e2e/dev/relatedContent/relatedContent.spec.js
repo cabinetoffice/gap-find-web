@@ -4,7 +4,7 @@ describe('Related Content', () => {
     cy_visit('/info/about-us');
     cy.get('[data-cy="cyTerms and conditionsTitle"]').should('not.exist');
     cy.get(
-      '[data-cy="cyRelatedContentLinkFor_/info/terms-and-conditions"]'
+      '[data-cy="cyRelatedContentLinkFor_/info/terms-and-conditions"]',
     ).click();
     cy.url().should('include', '/info/terms-and-conditions');
     cy.get('[data-cy="cyTerms and conditionsTitle"]').should('exist');

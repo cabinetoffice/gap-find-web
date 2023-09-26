@@ -24,7 +24,7 @@ describe('signup to new grants newsletter', () => {
     cy.url().should('include', 'newsletter/confirmation');
     cy.get('[data-cy="cySignUpCheckEmailMessage"]').should(
       'contain',
-      'Click the link in the email to confirm you want updates about new grants.'
+      'Click the link in the email to confirm you want updates about new grants.',
     );
     cy.get('[data-cy="cySignUpCheckSubscribedTo"]').should('not.exist');
 
@@ -34,7 +34,7 @@ describe('signup to new grants newsletter', () => {
     cy.url().should('include', '/notifications/manage-notifications');
     cy.get('[data-cy="cySubscribeSuccessMessageContent"]').should(
       'contain',
-      'You have signed up for updates about new grants.'
+      'You have signed up for updates about new grants.',
     );
 
     //checks updates about new grants
@@ -44,7 +44,7 @@ describe('signup to new grants newsletter', () => {
     cy.url().should('contain', Cypress.config().baseUrl + '/grants');
     cy.get('[data-cy="cySearchDescription"]').should(
       'include.text',
-      'Showing grants added between'
+      'Showing grants added between',
     );
 
     cy_visit('/notifications/manage-notifications');
@@ -56,7 +56,7 @@ describe('signup to new grants newsletter', () => {
 
     cy.get('[data-cy="cySubscribeSuccessMessageContent"]').should(
       'contain',
-      'You have unsubscribed from updates about new grants.'
+      'You have unsubscribed from updates about new grants.',
     );
     cy.get('[data-cy="cyUnsubscribeNewsGrantsLink"]').should('not.exist');
     run_accessibility();
@@ -72,14 +72,14 @@ describe('signup to new grants newsletter', () => {
     cy.get('[data-cy="cyError_user_email"]').should('exist');
     cy.get('[data-cy="cyError_user_email"]').should(
       'contain',
-      'You must enter an email address'
+      'You must enter an email address',
     );
     cy.get('[data-cy="cyError_notification_privacy"]').should('exist');
     run_accessibility();
 
     // Check state has been retained
     cy.get('[data-cy="cyNotificationPrivacyCheckbox"]').should(
-      'not.be.checked'
+      'not.be.checked',
     );
     cy.get('[data-cy="cyNotificationPrivacyEmail"]').should('have.value', '');
 
@@ -100,13 +100,13 @@ describe('signup to new grants newsletter', () => {
     cy.get('[data-cy="cyNotificationPrivacyCheckbox"]').should('be.checked');
     cy.get('[data-cy="cyNotificationPrivacyEmail"]').should(
       'have.value',
-      'chris.palmer'
+      'chris.palmer',
     );
 
     cy.get('[data-cy="cyError_user_email"]').should('exist');
     cy.get('[data-cy="cyError_user_email"]').should(
       'contain',
-      'Enter an email address in the correct format, like name@example.com'
+      'Enter an email address in the correct format, like name@example.com',
     );
     cy.get('[data-cy="cyError_user_email"]').click();
     cy.focused().should('have.attr', 'name', 'user_email');
