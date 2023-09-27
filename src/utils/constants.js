@@ -115,3 +115,7 @@ export const ELASTIC_GRANT_PAGE_FIELDS = [
   'fields.label',
   'fields.grantApplicantType',
 ];
+
+export const HEADERS = {
+  CORRELATION_ID: 'tco-correlation-id',
+};

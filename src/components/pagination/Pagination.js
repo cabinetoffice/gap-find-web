@@ -41,8 +41,8 @@ const Pagination = ({
         router,
         currentPage,
         itemsPerPage,
-        PAGINATION_PREVIOUS_ELEMENT
-      )
+        PAGINATION_PREVIOUS_ELEMENT,
+      ),
     );
   }
 
@@ -56,8 +56,8 @@ const Pagination = ({
           itemsPerPage,
           PAGINATION_ELLIPSIS_ELEMENT,
           pageIndexArr[i + 1],
-          pageIndexArr[i - 1]
-        )
+          pageIndexArr[i - 1],
+        ),
       );
     } else {
       if (currentPage === pageIndexArr[i]) {
@@ -66,8 +66,8 @@ const Pagination = ({
             router,
             pageIndexArr[i],
             itemsPerPage,
-            PAGINATION_ACTIVE_ELEMENT
-          )
+            PAGINATION_ACTIVE_ELEMENT,
+          ),
         );
       } else {
         paginationElements.push(
@@ -75,8 +75,8 @@ const Pagination = ({
             router,
             pageIndexArr[i],
             itemsPerPage,
-            PAGINATION_NUMERIC_ELEMENT
-          )
+            PAGINATION_NUMERIC_ELEMENT,
+          ),
         );
       }
     }
@@ -89,8 +89,8 @@ const Pagination = ({
         router,
         currentPage,
         itemsPerPage,
-        PAGINATION_NEXT_ELEMENT
-      )
+        PAGINATION_NEXT_ELEMENT,
+      ),
     );
   }
   return (

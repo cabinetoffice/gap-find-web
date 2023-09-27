@@ -92,7 +92,7 @@ export async function getServerSideProps(ctx) {
     {
       'confirmation link': confirmationUrl,
     },
-    process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE
+    process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE,
   );
 
   return {

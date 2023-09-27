@@ -11,7 +11,7 @@ import { NewsletterType } from '../../../src/types/newsletter';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const newsletterService = NewsletterSubscriptionService.getInstance();
   if (!req.cookies[cookieName.currentEmailAddress]) {
@@ -24,12 +24,15 @@ export default async function handler(
   }
 
   const decodedEmailCookie = decryptSignedApiKey(
-    req.cookies[cookieName['currentEmailAddress']]
+    req.cookies[cookieName['currentEmailAddress']],
   );
   const decryptedEmailAddress = await decrypt(decodedEmailCookie.email);
 
   try {
-    newsletterService.unsubscribeFromNewsletter(decryptedEmailAddress, NewsletterType.NEW_GRANTS);
+    newsletterService.unsubscribeFromNewsletter(
+      decryptedEmailAddress,
+      NewsletterType.NEW_GRANTS,
+    );
   } catch (e) {
     console.error(e);
   }
@@ -37,7 +40,7 @@ export default async function handler(
   res.redirect(
     new URL(
       `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.NEWSLETTER_UNSUBSCRIBE}`,
-      process.env.HOST
-    ).toString()
+      process.env.HOST,
+    ).toString(),
   );
 }

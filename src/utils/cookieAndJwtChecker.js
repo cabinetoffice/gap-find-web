@@ -9,7 +9,7 @@ const cookieExistsAndContainsValidJwt = (ctx, cookieName) => {
   const cookies = nookies.get(ctx);
   const cookie = cookies[cookieName];
 
-  if (!!cookie) {
+  if (cookie) {
     return jwt.verify(cookie, process.env.JWT_SECRET_KEY, hasValidJwt);
   }
 

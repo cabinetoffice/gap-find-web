@@ -205,7 +205,7 @@ Select.prototype.init = function () {
     const optionEl = this.createOption(option, index);
     this.listboxEl.appendChild(optionEl);
 
-    if(option.value === this.initialValue){
+    if (option.value === this.initialValue) {
       this.selectOption(index);
     }
   });
@@ -281,12 +281,12 @@ Select.prototype.onComboKeyDown = function (event) {
     case SelectActions.PageDown:
       event.preventDefault();
       return this.onOptionChange(
-        getUpdatedIndex(this.activeIndex, max, action)
+        getUpdatedIndex(this.activeIndex, max, action),
       );
     case SelectActions.CloseSelect:
       event.preventDefault();
       this.selectOption(this.activeIndex);
-      if(this.onChange){
+      if (this.onChange) {
         this.resultingAction(this.activeIndex);
       }
     // intentional fallthrough
@@ -310,7 +310,7 @@ Select.prototype.onComboType = function (letter) {
   const searchIndex = getIndexByLetter(
     this.options,
     searchString,
-    this.activeIndex + 1
+    this.activeIndex + 1,
   );
 
   // if a match was found, go to it
@@ -354,7 +354,7 @@ Select.prototype.onOptionClick = function (index) {
   this.onOptionChange(index);
   this.selectOption(index);
   this.updateMenuState(false);
-  if(this.onChange){
+  if (this.onChange) {
     this.resultingAction(index);
   }
 };
@@ -362,7 +362,7 @@ Select.prototype.onOptionClick = function (index) {
 Select.prototype.resultingAction = function (index) {
   const options = this.el.querySelectorAll('[role=option]');
   this.onChange(options[index].getAttribute('data-value'));
-}
+};
 
 Select.prototype.onOptionMouseDown = function () {
   // Clicking an option will cause a blur event,
@@ -415,4 +415,3 @@ function initialize($el, options, onChange, initialValue) {
 }
 
 exports.Select = initialize;
-

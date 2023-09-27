@@ -49,14 +49,14 @@ const Footer = () => {
                 <Link
                   href={
                     RelatedContentLinks.get(
-                      RelatedLinksNames.TERMS_AND_CONDITIONS
+                      RelatedLinksNames.TERMS_AND_CONDITIONS,
                     ).href
                   }
                 >
                   <a className="govuk-footer__link" data-cy="cyTCLinkFooter">
                     {
                       RelatedContentLinks.get(
-                        RelatedLinksNames.TERMS_AND_CONDITIONS
+                        RelatedLinksNames.TERMS_AND_CONDITIONS,
                       ).title
                     }
                   </a>

@@ -17,7 +17,7 @@ describe('SearchInputBar component', () => {
     expect(textbox.getAttribute('class')).toBe('govuk-input');
     expect(textbox.getAttribute('name')).toBe('searchTerm');
     expect(textbox.getAttribute('placeholder')).toBe(
-      'enter a keyword or search term here'
+      'enter a keyword or search term here',
     );
   });
 

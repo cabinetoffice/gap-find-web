@@ -14,7 +14,7 @@ jest.mock('../../../src/service/api-key-service');
 describe('newsletter unsubscribe api', () => {
   const newsletterSubscriptionServiceSpy = jest.spyOn(
     NewsletterSubscriptionService,
-    'getInstance'
+    'getInstance',
   );
   const mockDecrypt = decrypt as jest.Mock;
   const mockNewsletterService = {
@@ -26,7 +26,7 @@ describe('newsletter unsubscribe api', () => {
   const cookie = { email: encryptedEmail };
   const expectedUrl = new URL(
     `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.NEWSLETTER_UNSUBSCRIBE}`,
-    process.env.HOST
+    process.env.HOST,
   ).toString();
 
   beforeEach(() => {
@@ -57,7 +57,7 @@ describe('newsletter unsubscribe api', () => {
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(1);
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
       decryptedEmail,
-      NewsletterType.NEW_GRANTS
+      NewsletterType.NEW_GRANTS,
     );
     expect(res.redirect).toBeCalledTimes(1);
     expect(res.redirect).toBeCalledWith(expectedUrl);
@@ -93,7 +93,7 @@ describe('newsletter unsubscribe api', () => {
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(1);
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
       decryptedEmail,
-      NewsletterType.NEW_GRANTS
+      NewsletterType.NEW_GRANTS,
     );
     expect(consoleSpy).toBeCalledTimes(1);
     expect(consoleSpy).toBeCalledWith(error);

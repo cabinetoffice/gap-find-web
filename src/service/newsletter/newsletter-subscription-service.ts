@@ -20,19 +20,22 @@ export class NewsletterSubscriptionService {
 
   async getByEmailAndNewsletterType(
     email: string,
-    newsletterType: NewsletterType
+    newsletterType: NewsletterType,
   ): Promise<NewsletterSubscription> {
     const encodedemail = encodeURIComponent(email);
     const response = await NewsletterSubscriptionService.client.get(
-      `/users/${encodedemail}/types/${newsletterType}`
+      `/users/${encodedemail}/types/${newsletterType}`,
     );
 
     return response.data;
   }
 
-  async unsubscribeFromNewsletter(plaintextEmail: string, type: NewsletterType): Promise<void> {
+  async unsubscribeFromNewsletter(
+    plaintextEmail: string,
+    type: NewsletterType,
+  ): Promise<void> {
     return await NewsletterSubscriptionService.client.delete(
-      `/users/${plaintextEmail}/types/${type}`
+      `/users/${plaintextEmail}/types/${type}`,
     );
   }
 }

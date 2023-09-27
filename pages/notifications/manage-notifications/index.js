@@ -54,13 +54,13 @@ async function mergeGrantNameIntoSubscriptions(subscriptions) {
   // Fetch grants that the user is subscribed to from Contentful
   const subscribedGrants = await fetchByGrantIds(
     subscriptions.map(
-      (subscription) => subscription.contentfulGrantSubscriptionId
-    )
+      (subscription) => subscription.contentfulGrantSubscriptionId,
+    ),
   );
 
   return subscriptions.map((subscription) => {
     const foundGrant = subscribedGrants.find(
-      (grant) => subscription.contentfulGrantSubscriptionId === grant.sys.id
+      (grant) => subscription.contentfulGrantSubscriptionId === grant.sys.id,
     );
 
     if (foundGrant) {
@@ -92,7 +92,7 @@ export async function getServerSideProps(ctx) {
   const subscriptionService = SubscriptionService.getInstance();
   const plainTextEmailAddress = await getEmailAddressFromCookies(ctx);
   let subscriptions = await subscriptionService.getSubscriptionsByEmail(
-    plainTextEmailAddress
+    plainTextEmailAddress,
   );
   if (subscriptions) {
     subscriptions = await mergeGrantNameIntoSubscriptions(subscriptions);
@@ -103,7 +103,7 @@ export async function getServerSideProps(ctx) {
   const newsletterSubscription =
     await newsletterSubsService.getByEmailAndNewsletterType(
       plainTextEmailAddress,
-      NewsletterType.NEW_GRANTS
+      NewsletterType.NEW_GRANTS,
     );
 
   const newGrantsParams = generateWeeklyNewsletterParams();
@@ -128,7 +128,7 @@ export async function getServerSideProps(ctx) {
 
 async function getEmailAddressFromCookies(ctx) {
   const decodedEmailCookie = decryptSignedApiKey(
-    ctx.req.cookies['currentEmailAddress']
+    ctx.req.cookies['currentEmailAddress'],
   );
   return decrypt(decodedEmailCookie.email);
 }
@@ -153,14 +153,14 @@ function generateSuccessMessage(action, grantDetails, deletedSavedSearchName) {
 function buildQueryString(filters) {
   const filterArray = [];
   filters.forEach((filter) =>
-    filterArray.push(`${filter.name}=${filter.subFilterid}`)
+    filterArray.push(`${filter.name}=${filter.subFilterid}`),
   );
 
   return filterArray.join('&');
 }
 function ManageNotifications(props) {
   const sortedSubscribedGrantUpdateList = JSON.parse(
-    props.currentNotificationList
+    props.currentNotificationList,
   ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const { grantDetails, urlAction, savedSearches, deletedSavedSearchName } =
     props;
@@ -177,7 +177,7 @@ function ManageNotifications(props) {
     notificationAndSavedSearchList.map((item) => {
       const isGrant = Object.prototype.hasOwnProperty.call(
         item,
-        'contentfulGrantSubscriptionId'
+        'contentfulGrantSubscriptionId',
       );
 
       const cells = [
@@ -248,7 +248,7 @@ function ManageNotifications(props) {
               message={generateSuccessMessage(
                 urlAction,
                 grantDetails,
-                deletedSavedSearchName
+                deletedSavedSearchName,
               )}
             />
           )}

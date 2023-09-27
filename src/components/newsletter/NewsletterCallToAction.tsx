@@ -3,8 +3,8 @@ import { BellIcon } from '../icons/BellIcon/BellIcon';
 import styles from './NewsletterCallToAction.module.css';
 
 type NewsletterCTAProps = {
-  returnParams: any
-}
+  returnParams: any;
+};
 
 const NewsletterCallToAction = ({ returnParams }: NewsletterCTAProps) => {
   return (
@@ -15,7 +15,7 @@ const NewsletterCallToAction = ({ returnParams }: NewsletterCTAProps) => {
           <h3 className={`govuk-heading-s ${styles.newsletterCtaTitle}`}>
             Get updates about new grants
           </h3>
-          <Link href={{ pathname: '/newsletter', query: returnParams }} >
+          <Link href={{ pathname: '/newsletter', query: returnParams }}>
             <a
               className={`govuk-link govuk-link--no-visited-state govuk-!-font-size-19`}
               data-cy="cySignUpNewsletter"

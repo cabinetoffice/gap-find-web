@@ -17,7 +17,7 @@ import { getBody, getPreviousFormValues } from '../../src/utils/request';
 const generateConfirmationUrl = (apiKey) => {
   return new URL(
     `${notificationRoutes['addSubscription']}${apiKey}`,
-    process.env.HOST
+    process.env.HOST,
   ).toString();
 };
 
@@ -55,7 +55,7 @@ export async function getServerSideProps({ req, res }) {
         'name of grant': grantTitle,
         'Confirmation link for updates': confirmationUrl,
       },
-      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE,
     );
   } catch (e) {
     console.error(e);
