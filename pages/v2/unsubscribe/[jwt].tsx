@@ -6,29 +6,51 @@ import { SubscriptionService } from '../../../src/service/subscription-service';
 import { decrypt } from '../../../src/utils/encryption';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
-import {
-  deleteSaveSearch,
-  getBySavedSearchId,
-} from '../../../src/service/saved_search_service';
+import { deleteSaveSearch } from '../../../src/service/saved_search_service';
+import ServiceErrorPage from '../../service-error/index.page';
 
-export async function getServerSideProps({ query: { jwt = '' } = {} } = {}) {
+export async function getServerSideProps({ query: { jwt = '' } = {} }) {
+  let emailAddress: string,
+    type: keyof typeof UNSUBSCRIBE_HANDLER_MAP,
+    id: NotificationKey;
   try {
     const decodedJwt = decryptSignedApiKey(jwt);
-    const { id, type } = decodedJwt;
-    let emailAddress = decodedJwt.emailAddress;
-    //SAVED_SEARCH is the only notification that doesn't have an encrypted email address
+    type = decodedJwt.type;
+    id = decodedJwt.id;
+    emailAddress = decodedJwt.emailAddress;
     if (type !== 'SAVED_SEARCH') {
-      console.log({ type });
+      //SAVED_SEARCH doesn't encrypted the email address
       emailAddress = await decrypt(emailAddress);
     }
-
     await handleUnsubscribe(type, id, emailAddress);
-    return { props: { err: '' } };
-  } catch (err: unknown) {
-    //redirect?
-    return { props: { err: JSON.stringify(err) } };
+  } catch (error: unknown) {
+    return handleServerSideError(error, { type, emailAddress, id });
   }
 }
+
+const handleServerSideError = (
+  error: unknown,
+  {
+    type,
+    id,
+    emailAddress,
+  }: {
+    type: keyof typeof UNSUBSCRIBE_HANDLER_MAP;
+    id: NotificationKey;
+    emailAddress: string;
+  }
+) => {
+  if (!type || !id || !emailAddress) {
+    console.error('Failed to decrypt jwt. Error: ' + JSON.stringify(error));
+  } else {
+    console.error(
+      `Failed to unsubscribe from notification type: ${type}, id: ${id}, with email: ${emailAddress}. Error: ${JSON.stringify(
+        error
+      )}`
+    );
+  }
+  return { props: { error: true } };
+};
 
 const grantSubscriptionHandler = async (
   id: NotificationKey,
@@ -69,14 +91,16 @@ const handleUnsubscribe = async (
 
 type NotificationKey = string | NewsletterType | number;
 
-const Unsubscribe = ({ err }) => {
+const Unsubscribe = (props) => {
+  if (props.error) {
+    return <ServiceErrorPage />;
+  }
   return (
     <>
       <Head>
         <title>Unsubscribe Confirmation</title>
       </Head>
       <Layout showBetaBlock={false} showNavigation={false}>
-        {err && JSON.stringify(err)}
         <div className="govuk-grid-row govuk-body govuk-!-margin-top-8">
           <div className="govuk-grid-column-full">
             <h1
