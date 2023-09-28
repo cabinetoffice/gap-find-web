@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { isIE } from 'react-device-detect';
 import { skipToMainContent } from '../../utils/skipToMainContent';
 
-const Header = ({ showNavigation, showBetaBlock }) => {
+const Header = ({ showNavigation = true , showBetaBlock = true }) => {
   const router = useRouter();
   const navItems = [
     {
