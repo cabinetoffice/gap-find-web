@@ -23,7 +23,7 @@ export async function getServerSideProps({ query: { jwt = '' } = {} }) {
       emailAddress = await decrypt(emailAddress);
     }
     await handleUnsubscribe(type, id, emailAddress);
-    return {error: false}
+    return { props: { error: false } }
   } catch (error: unknown) {
     return handleServerSideError(error, { type, emailAddress, id });
   }
