@@ -17,4 +17,4 @@
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/lib/ie11_nodelist_polyfill.js"],
   "exclude": ["node_modules"]
-}
+} 
