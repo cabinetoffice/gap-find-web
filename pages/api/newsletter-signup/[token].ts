@@ -4,7 +4,7 @@ import {
   generateSignedApiKey,
 } from '../../../src/service/api-key-service';
 import { NewsletterSubscription } from '../../../src/types/newsletter';
-import { client as axios } from '../../../axios';
+import { client as axios } from '../../../src/utils';
 import nookies from 'nookies';
 import {
   cookieName,

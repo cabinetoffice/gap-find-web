@@ -93,7 +93,10 @@ export function addPublishedDateFilter(query, filterObj) {
       };
     } catch (error) {
       // logged at info level as these errors are from bad user input
-      logger.info('error validating dates from search filter', { ...error });
+      logger.info('error validating dates from search filter', {
+        message: error.message,
+        stack: error.stack,
+      });
       filterObj.errors.push({
         error: error.message,
         field: 'datepicker',
