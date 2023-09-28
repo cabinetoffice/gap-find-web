@@ -6,17 +6,20 @@ import { getServerSideProps } from '../../../pages/unsubscribe/[jwt].page';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { SubscriptionService } from '../../../src/service/subscription-service';
 import { deleteSaveSearch } from '../../../src/service/saved_search_service';
+import ServiceErrorPage from '../../../pages/service-error/index.page';
+import { decrypt } from '../../../src/utils/encryption';
 
-jest.mock('../service-error/index.page', () => ({
+
+jest.mock('../../../pages/service-error/index.page', () => ({
   default: () => <p>ServiceErrorPage</p>,
 }));
-jest.mock('../../src/service/api-key-service', () => ({
+jest.mock('../../../src/service/api-key-service', () => ({
   decryptSignedApiKey: jest.fn(),
 }));
-jest.mock('../../src/utils/encryption', () => ({
+jest.mock('../../../src/utils/encryption', () => ({
   decrypt: jest.fn(),
 }));
-jest.mock('../../src/service/saved_search_service');
+jest.mock('../../../src/service/saved_search_service'); 
 
 const newsletterSubscriptionServiceSpy = ({ throwsError }) =>
   jest
