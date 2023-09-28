@@ -7,7 +7,6 @@ import { TokenExpiredError } from 'jsonwebtoken';
 import { SubscriptionService } from '../../../src/service/subscription-service';
 import { deleteSaveSearch } from '../../../src/service/saved_search_service';
 
-
 jest.mock('../../../pages/service-error/index.page', () => ({
   default: () => <p>ServiceErrorPage</p>,
 }));
@@ -17,7 +16,7 @@ jest.mock('../../../src/service/api-key-service', () => ({
 jest.mock('../../../src/utils/encryption', () => ({
   decrypt: jest.fn(),
 }));
-jest.mock('../../../src/service/saved_search_service'); 
+jest.mock('../../../src/service/saved_search_service');
 
 const newsletterSubscriptionServiceSpy = ({ throwsError }) =>
   jest
@@ -100,15 +99,11 @@ describe('getServerSideProps()', () => {
       mockServiceFunction({ throwsError: mockServiceThrowsError });
       const response = await getServerSideProps(context);
 
-      expect(response).toEqual(
-        mockServiceThrowsError
-          ? {
-              props: {
-                error: true,
-              },
-            }
-          : undefined
-      );
+      expect(response).toEqual({
+        props: {
+          error: mockServiceThrowsError,
+        },
+      });
     }
   );
 });
