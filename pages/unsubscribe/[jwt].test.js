@@ -1,7 +1,8 @@
+import '@testing-library/jest-dom';
 import { AxiosError } from 'axios';
 import { decryptSignedApiKey } from '../../src/service/api-key-service';
 import { NewsletterSubscriptionService } from '../../src/service/newsletter/newsletter-subscription-service';
-import { getServerSideProps } from './[jwt]';
+import { getServerSideProps } from './[jwt].page';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { SubscriptionService } from '../../src/service/subscription-service';
 import { deleteSaveSearch } from '../../src/service/saved_search_service';
