@@ -1,12 +1,10 @@
 import { AxiosError } from 'axios';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
-import Unsubscribe, { getServerSideProps } from './[jwt]';
+import { getServerSideProps } from './[jwt]';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { roundToNearestMinutes } from 'date-fns/esm';
 import { SubscriptionService } from '../../../src/service/subscription-service';
 import { deleteSaveSearch } from '../../../src/service/saved_search_service';
-import { render } from '@testing-library/react';
 
 jest.mock('../../service-error/index.page', () => ({
   default: () => <p>ServiceErrorPage</p>,
@@ -48,7 +46,7 @@ const grantSubscriptionSpy = ({ throwsError }) =>
   }));
 
 const mockSavedSearch = ({ throwsError }) => {
-  (deleteSaveSearch as jest.Mock).mockImplementation(() => {
+  deleteSaveSearch.mockImplementation(() => {
     if (throwsError) {
       throw new AxiosError();
     } else {
@@ -67,7 +65,7 @@ describe('getServerSideProps()', () => {
   beforeEach(jest.clearAllMocks);
 
   it('should return error when jwt has expired', async () => {
-    (decryptSignedApiKey as jest.Mock).mockImplementation(() => {
+    decryptSignedApiKey.mockImplementation(() => {
       throw new TokenExpiredError();
     });
     const context = getContext({ jwt: 'invalid-jwt' });
@@ -91,7 +89,7 @@ describe('getServerSideProps()', () => {
   `(
     'should return correct props when jwt is valid and $type mock service is called with throwsError: $mockServiceThrowsError',
     async ({ type, mockServiceFunction, mockServiceThrowsError }) => {
-      (decryptSignedApiKey as jest.Mock).mockReturnValue({
+      decryptSignedApiKey.mockReturnValue({
         id: 'some-id',
         type,
         emailAddress: 'some-email',
