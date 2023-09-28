@@ -1,13 +1,13 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import Layout from '../../../src/components/partials/Layout';
-import { decryptSignedApiKey } from '../../../src/service/api-key-service';
-import { SubscriptionService } from '../../../src/service/subscription-service';
-import { decrypt } from '../../../src/utils/encryption';
-import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
-import { NewsletterType } from '../../../src/types/newsletter';
-import { deleteSaveSearch } from '../../../src/service/saved_search_service';
-import ServiceErrorPage from '../../service-error/index.page';
+import Layout from '../../src/components/partials/Layout';
+import { decryptSignedApiKey } from '../../src/service/api-key-service';
+import { SubscriptionService } from '../../src/service/subscription-service';
+import { decrypt } from '../../src/utils/encryption';
+import { NewsletterSubscriptionService } from '../../src/service/newsletter/newsletter-subscription-service';
+import { NewsletterType } from '../../src/types/newsletter';
+import { deleteSaveSearch } from '../../src/service/saved_search_service';
+import ServiceErrorPage from '../service-error/index.page';
 
 export async function getServerSideProps({ query: { jwt = '' } = {} }) {
   let emailAddress: string,
