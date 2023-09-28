@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Layout from '../../src/components/partials/Layout';
 
 const ServiceErrorPage = () => {
   return (
@@ -6,6 +7,7 @@ const ServiceErrorPage = () => {
       <Head>
         <title>Service error</title>
       </Head>
+      <Layout showBetaBlock={false} showNavigation={false}>
       <div className="govuk-width-container">
         <main className="govuk-main-wrapper govuk-main-wrapper--l" role="main">
           <div className="govuk-grid-row">
@@ -18,6 +20,8 @@ const ServiceErrorPage = () => {
           </div>
         </main>
       </div>
+      </Layout>
+
     </>
   );
 };

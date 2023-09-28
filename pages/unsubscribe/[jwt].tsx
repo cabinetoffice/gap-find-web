@@ -23,6 +23,7 @@ export async function getServerSideProps({ query: { jwt = '' } = {} }) {
       emailAddress = await decrypt(emailAddress);
     }
     await handleUnsubscribe(type, id, emailAddress);
+    return {error: false}
   } catch (error: unknown) {
     return handleServerSideError(error, { type, emailAddress, id });
   }
@@ -91,7 +92,7 @@ const handleUnsubscribe = async (
 
 type NotificationKey = string | NewsletterType | number;
 
-const Unsubscribe = (props) => {
+const Unsubscribe = (props: undefined | {error: boolean}) => {
   if (props.error) {
     return <ServiceErrorPage />;
   }

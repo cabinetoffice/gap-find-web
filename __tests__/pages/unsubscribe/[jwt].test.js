@@ -2,12 +2,10 @@ import '@testing-library/jest-dom';
 import { AxiosError } from 'axios';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
-import { getServerSideProps } from '../../../pages/unsubscribe/[jwt].page';
+import { getServerSideProps } from '../../../pages/unsubscribe/[jwt]';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { SubscriptionService } from '../../../src/service/subscription-service';
 import { deleteSaveSearch } from '../../../src/service/saved_search_service';
-import ServiceErrorPage from '../../../pages/service-error/index.page';
-import { decrypt } from '../../../src/utils/encryption';
 
 
 jest.mock('../../../pages/service-error/index.page', () => ({
