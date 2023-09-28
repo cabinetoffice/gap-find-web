@@ -13,15 +13,8 @@ import { logger } from '../../../src/utils/logger';
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/utils/logger', () => ({
-  logger: { error: jest.fn() },
+  error: jest.fn(),
 }));
-
-const createMockRequest = (requestData) => ({
-  headers: {
-    'tco-correlation-id': 'correlationId',
-  },
-  ...requestData,
-});
 
 describe('newsletter unsubscribe api', () => {
   const newsletterSubscriptionServiceSpy = jest.spyOn(
@@ -107,18 +100,7 @@ describe('newsletter unsubscribe api', () => {
       NewsletterType.NEW_GRANTS,
     );
     expect(logger.error).toBeCalledTimes(1);
-    expect(logger.error).toBeCalledWith('error unsubscribing from newsletter', {
-      correlationId: 'correlationId',
-      message: 'failed',
-      stack: `Error: failed
-    at Object.<anonymous> (/Users/jamiegunn/Projects/gap-find-web/pages/api/newsletter/unsubscribe.test.ts:79:19)
-    at Object.asyncJestTest (/Users/jamiegunn/Projects/gap-find-web/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:106:37)
-    at /Users/jamiegunn/Projects/gap-find-web/node_modules/jest-jasmine2/build/queueRunner.js:45:12
-    at new Promise (<anonymous>)
-    at mapper (/Users/jamiegunn/Projects/gap-find-web/node_modules/jest-jasmine2/build/queueRunner.js:28:19)
-    at /Users/jamiegunn/Projects/gap-find-web/node_modules/jest-jasmine2/build/queueRunner.js:75:41
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)`,
-    });
+    expect(logger.error).toBeCalledWith(error);
     expect(res.redirect).toBeCalledTimes(1);
     expect(res.redirect).toBeCalledWith(expectedUrl);
   });

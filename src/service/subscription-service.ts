@@ -1,4 +1,4 @@
-import { axios } from '../utils/axios';
+import { axios } from '../../src/utils';
 
 export class SubscriptionService {
   private static endpoint = {

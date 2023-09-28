@@ -37,8 +37,7 @@ export default async function handler(
     );
   } catch (e) {
     logger.error('error unsubscribing from newsletter', {
-      message: e.message,
-      stack: e.stack,
+      ...e,
       correlationId: req.headers[HEADERS.CORRELATION_ID],
     });
   }

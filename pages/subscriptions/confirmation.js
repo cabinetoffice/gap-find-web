@@ -60,8 +60,7 @@ export async function getServerSideProps({ req, res }) {
     );
   } catch (e) {
     logger.error('error sending subscription confirmation email', {
-      message: e.message,
-      stack: e.stack,
+      ...e,
       correlationId: req.headers[HEADERS.CORRELATION_ID],
     });
   }

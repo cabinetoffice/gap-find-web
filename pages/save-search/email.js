@@ -146,8 +146,7 @@ export async function getServerSideProps({ query, req }) {
       await sendConfirmationEmail(savedSearch, body.user_email);
     } catch (error) {
       logger.error('error sending saved search confirmation email', {
-        message: error.message,
-        stack: error.stack,
+        ...error,
         correlationId: req.headers[HEADERS.CORRELATION_ID],
       });
     }

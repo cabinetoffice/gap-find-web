@@ -66,10 +66,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     );
   } catch (e) {
     logger.error('error sending newsletter signup confirmation email', {
-      message: e.message,
-      stack: e.stack,
+      ...e,
       correlationId: req.headers[HEADERS.CORRELATION_ID],
     });
+    throw e;
   }
 
   return {

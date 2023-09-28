@@ -4,7 +4,7 @@ import {
   generateSignedApiKey,
 } from '../../../src/service/api-key-service';
 import { NewsletterSubscription } from '../../../src/types/newsletter';
-import { client as axios } from '../../../src/utils/axios';
+import { client as axios } from '../../../axios';
 import nookies from 'nookies';
 import {
   cookieName,
@@ -34,8 +34,7 @@ export default async function handler(
     );
   } catch (e) {
     logger.error('error subscribing to newletter', {
-      message: e.message,
-      stack: e.stack,
+      ...e,
       correlationId: req.headers[HEADERS.CORRELATION_ID],
     });
   }

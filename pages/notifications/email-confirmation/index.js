@@ -102,8 +102,7 @@ export async function getServerSideProps(ctx) {
     );
   } catch (error) {
     logger.error('error sending sign in email for manage notifications', {
-      message: error.message,
-      stack: error.stack,
+      ...error,
       correlationId: ctx.req.headers[HEADERS.CORRELATION_ID],
     });
   }
