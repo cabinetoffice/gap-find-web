@@ -45,6 +45,9 @@ const withLogColour = (text: string, level: LogLevel) =>
 const formatTime = (date: Date) =>
   `${date.toLocaleTimeString()}.${date.getMilliseconds()}`;
 
+const getProdLogLevel = (level: LogLevel) =>
+  level === LOG_LEVELS.HTTP ? LOG_LEVELS.INFO : level;
+
 const getLoggerWithLevel =
   (level: LogLevel) => (logMessage: string, info?: object | Error) => {
     const date = new Date();
@@ -59,7 +62,7 @@ const getLoggerWithLevel =
       );
       if (info) console.dir(info, { depth: null });
     } else
-      log[level]({
+      log[getProdLogLevel(level)]({
         logMessage,
         timestamp: date.toISOString(),
         ...info,
