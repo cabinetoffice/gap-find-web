@@ -45,6 +45,7 @@ const withLogColour = (text: string, level: LogLevel) =>
 const formatTime = (date: Date) =>
   `${date.toLocaleTimeString()}.${date.getMilliseconds()}`;
 
+// pino doesn't have a log.http
 const getProdLogLevel = (level: LogLevel) =>
   level === LOG_LEVELS.HTTP ? LOG_LEVELS.INFO : level;
 
