@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { parseBody } from 'next/dist/server/api-utils/node';
 import Router from 'next/router';
@@ -398,7 +397,7 @@ describe('getServerSideProps', () => {
         'Confirmation link for saved search': `${process.env.HOST}/api/save-search/confirm/${token}`,
         'name of saved search': searchAfterSave.name,
       },
-      process.env.GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE
+      process.env.GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE,
     );
     expect(methodResponse).toEqual({
       redirect: {
@@ -436,8 +435,8 @@ describe('getServerSideProps', () => {
 
       expect(
         screen.queryAllByText(
-          'To save your search, enter your email address below.'
-        )
+          'To save your search, enter your email address below.',
+        ),
       ).toHaveLength(1);
     });
 
@@ -466,7 +465,7 @@ describe('getServerSideProps', () => {
       render(<Email {...PropsWithExistingValues} />);
 
       expect(document.getElementById('user_email')).toHaveValue(
-        'test@gmail.com'
+        'test@gmail.com',
       );
       expect(document.getElementById('notification_privacy')).toBeChecked();
     });
@@ -485,7 +484,7 @@ describe('getServerSideProps', () => {
 
       expect(screen.queryByText('There is a problem')).toBeDefined();
       expect(document.getElementById('red-banner')).toHaveClass(
-        'govuk-form-group--error'
+        'govuk-form-group--error',
       );
     });
 
@@ -507,15 +506,15 @@ describe('getServerSideProps', () => {
       render(<Email {...propsWithErrors} />);
 
       expect(document.getElementById('user_email')).toHaveClass(
-        'govuk-input--error'
+        'govuk-input--error',
       );
       expect(screen.queryAllByText('Enter your email address.')).toHaveLength(
-        2
+        2,
       );
       expect(
         screen.queryAllByText(
-          'You must confirm that you have read and understood the privacy policy.'
-        )
+          'You must confirm that you have read and understood the privacy policy.',
+        ),
       ).toHaveLength(2);
     });
 
@@ -528,7 +527,7 @@ describe('getServerSideProps', () => {
       render(<Email {...propsWithQueryString} />);
 
       expect(
-        document.getElementById('saved-search-email-form')
+        document.getElementById('saved-search-email-form'),
       ).toHaveAttribute('action', `/save-search/email?${queryString}`);
     });
 
@@ -543,7 +542,7 @@ describe('getServerSideProps', () => {
 
       expect(screen.getByTestId('govuk-back')).toHaveAttribute(
         'href',
-        '/save-search/notifications?searchTerm=test'
+        '/save-search/notifications?searchTerm=test',
       );
     });
   });

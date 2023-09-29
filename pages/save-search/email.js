@@ -16,7 +16,6 @@ import {
 import {
   EMAIL_ADDRESS_FORMAT_VALIDATION_ERROR,
   EMAIL_ADDRESS_REGEX,
-  HEADERS,
 } from '../../src/utils/constants';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 import gloss from '../../src/utils/glossary.json';
@@ -24,7 +23,7 @@ import {
   addPublishedDateFilter,
   extractFiltersFields,
 } from '../../src/utils/transform';
-import { logger } from '../../src/utils';
+import { addErrorInfo, logger } from '../../src/utils';
 
 //TODO confirm if we need to show only one error at a time or not
 const validate = (requestBody) => {
@@ -144,11 +143,11 @@ export async function getServerSideProps({ query, req }) {
 
     try {
       await sendConfirmationEmail(savedSearch, body.user_email);
-    } catch (error) {
-      logger.error('error sending saved search confirmation email', {
-        ...error,
-        correlationId: req.headers[HEADERS.CORRELATION_ID],
-      });
+    } catch (e) {
+      logger.error(
+        'error sending saved search confirmation email',
+        addErrorInfo(e, req),
+      );
     }
 
     return redirect(`check-email?email=${body.user_email}`);

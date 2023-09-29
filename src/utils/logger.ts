@@ -1,4 +1,12 @@
+// eslint-disable-next-line @next/next/no-server-import-in-page
+import { NextRequest } from 'next/server';
+import { NextApiRequest } from 'next';
+import getLogger from 'pino';
+import { HEADERS } from './constants';
+
 const isProd = process.env.NODE_ENV === 'production';
+
+const log = getLogger();
 
 const CONSOLE_COLOURS = {
   BLACK: '\x1b[30m',
@@ -37,24 +45,24 @@ const withLogColour = (text: string, level: LogLevel) =>
 const formatTime = (date: Date) =>
   `${date.toLocaleTimeString()}.${date.getMilliseconds()}`;
 
-// next doesn't seem to log errors too well by default - do we need to handle logging
-// the stacktrace ourselves?
 const getLoggerWithLevel =
-  (level: LogLevel) => (logMessage: string | Error, json?: object) => {
+  (level: LogLevel) => (logMessage: string, info?: object | Error) => {
     const date = new Date();
     const time = formatTime(date);
+    if (info && info instanceof Error)
+      // object spread ignores properties inherited from prototype
+      info = { ...info, message: info.message, stack: info.stack };
     if (!isProd) {
       console.log(
         `[${time}] ` +
           withLogColour(`${level.toUpperCase()}: ${logMessage}`, level),
       );
-      if (json) console.dir(json, { depth: null });
+      if (info) console.dir(info, { depth: null });
     } else
-      console.log({
+      log[level]({
         logMessage,
-        level,
         timestamp: date.toISOString(),
-        ...json,
+        ...info,
       });
   };
 
@@ -64,3 +72,10 @@ export const logger = Object.values(LOG_LEVELS).reduce(
   (acc, value) => ({ ...acc, [value]: getLoggerWithLevel(value) }),
   {} as Logger,
 );
+
+export const addErrorInfo = (error, req: NextRequest | NextApiRequest) => {
+  if (req instanceof NextRequest)
+    error.correlationId = req.headers.get(HEADERS.CORRELATION_ID);
+  else error.correlationId = req.headers[HEADERS.CORRELATION_ID];
+  return error;
+};

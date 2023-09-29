@@ -69,6 +69,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^7.0.4",
+    "isomorphic-fetch": "^3.0.0",
     "jest": "26",
     "jest-fetch-mock": "^3.0.3",
     "prettier": "3.0.3",

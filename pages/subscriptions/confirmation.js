@@ -9,11 +9,11 @@ import {
 } from '../../src/manager/signup_manager';
 import { generateSignedApiKey } from '../../src/service/api-key-service';
 import { sendEmail } from '../../src/service/gov_notify_service';
-import { HEADERS, notificationRoutes } from '../../src/utils/constants';
+import { notificationRoutes } from '../../src/utils/constants';
 import { encrypt } from '../../src/utils/encryption';
 import gloss from '../../src/utils/glossary.json';
 import { getBody, getPreviousFormValues } from '../../src/utils/request';
-import { logger } from '../../src/utils';
+import { addErrorInfo, logger } from '../../src/utils';
 
 const generateConfirmationUrl = (apiKey) => {
   return new URL(
@@ -59,10 +59,10 @@ export async function getServerSideProps({ req, res }) {
       process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE,
     );
   } catch (e) {
-    logger.error('error sending subscription confirmation email', {
-      ...e,
-      correlationId: req.headers[HEADERS.CORRELATION_ID],
-    });
+    logger.error(
+      'error sending subscription confirmation email',
+      addErrorInfo(e, req),
+    );
   }
 
   return {

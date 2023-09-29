@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import Router from 'next/router';
 import CheckEmail from '../../../pages/save-search/check-email';
@@ -6,8 +5,8 @@ import CheckEmail from '../../../pages/save-search/check-email';
 describe('save-search/check-email.js testing the page', () => {
   const mockBack = jest.fn();
   const props = {
-    email: 'test@gmail.com'
-  }
+    email: 'test@gmail.com',
+  };
   beforeAll(async () => {
     const useRouter = jest.spyOn(Router, 'useRouter');
 
@@ -33,11 +32,11 @@ describe('save-search/check-email.js testing the page', () => {
     expect(email.textContent).toBe('test@gmail.com');
     expect(
       screen.queryAllByText(
-        'Click the link in the email to confirm your email address.'
-      )
+        'Click the link in the email to confirm your email address.',
+      ),
     ).toHaveLength(1);
     expect(
-      screen.queryAllByText('The link will stop working after 7 days.')
+      screen.queryAllByText('The link will stop working after 7 days.'),
     ).toHaveLength(1);
   });
 
@@ -46,7 +45,7 @@ describe('save-search/check-email.js testing the page', () => {
 
     expect(screen.queryAllByText('Not received an email?')).toHaveLength(1);
     expect(
-      screen.queryAllByText('Emails sometimes take a few minutes to arrive.')
+      screen.queryAllByText('Emails sometimes take a few minutes to arrive.'),
     ).toHaveLength(1);
   });
 });

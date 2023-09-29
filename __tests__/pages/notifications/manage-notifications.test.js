@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
@@ -91,7 +90,7 @@ describe('Testing manage-notifications component', () => {
   it('should call the confirmation message when there are deleted grants', async () => {
     render(<management.default {...deletedProps} />);
     const heading = screen.getAllByText(
-      /You have been unsubscribed from "Test Grant"/
+      /You have been unsubscribed from "Test Grant"/,
     );
     expect(heading).toHaveLength(1);
   });
@@ -99,7 +98,7 @@ describe('Testing manage-notifications component', () => {
   it('should call the confirmation message when there are subscribed grants', async () => {
     render(<management.default {...subscribedProps} />);
     const heading = screen.getAllByText(
-      /You have signed up for updates about "Test Grant"/
+      /You have signed up for updates about "Test Grant"/,
     );
     expect(heading).toHaveLength(1);
   });
@@ -121,7 +120,7 @@ describe('Testing manage-notifications component', () => {
   it('should display notifications sorted by time (newest to oldest), and saved searches sorted by time (newest to oldest)', async () => {
     render(<management.default {...noNotificationNoSavedSearchesProps} />);
     screen.getByText(
-      /you are not signed up for any notifications, and you don't have any saved searches\./i
+      /you are not signed up for any notifications, and you don't have any saved searches\./i,
     );
     const searchForGrantLink = screen.getByRole('link', {
       name: /search for grants/i,
@@ -159,7 +158,7 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType'
+        'getByEmailAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 
@@ -185,7 +184,7 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType'
+        'getByEmailAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 
@@ -211,7 +210,7 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType'
+        'getByEmailAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 

@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -66,7 +65,7 @@ describe('grants-pid page', () => {
     it('Should render a Get Updates heading.', () => {
       render(component);
       expect(
-        screen.getByRole('heading', { name: 'Get updates about this grant' })
+        screen.getByRole('heading', { name: 'Get updates about this grant' }),
       ).toBeDefined();
     });
 
@@ -78,11 +77,11 @@ describe('grants-pid page', () => {
       expect(screen.getByRole('link', { name: 'Dates' })).toBeDefined();
       expect(screen.getByRole('link', { name: 'How to apply' })).toBeDefined();
       expect(
-        screen.getByRole('link', { name: 'Supporting information' })
+        screen.getByRole('link', { name: 'Supporting information' }),
       ).toBeDefined();
       expect(screen.getByRole('link', { name: 'FAQs' })).toBeDefined();
       expect(
-        screen.getByRole('link', { name: 'Awarded grants' })
+        screen.getByRole('link', { name: 'Awarded grants' }),
       ).toBeDefined();
     });
 
@@ -91,17 +90,17 @@ describe('grants-pid page', () => {
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#fileType')
+          .some((link) => link.getAttribute('href') === '#fileType'),
       ).toBe(false);
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#emptyTab')
+          .some((link) => link.getAttribute('href') === '#emptyTab'),
       ).toBe(false);
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#test_pipeline')
+          .some((link) => link.getAttribute('href') === '#test_pipeline'),
       ).toBe(false);
     });
 
@@ -111,7 +110,7 @@ describe('grants-pid page', () => {
           grantDetail={grantDetail}
           enableFAQTab="true"
           enableAwardsTab="false"
-        />
+        />,
       );
       expect(screen.getByRole('link', { name: 'FAQs' })).toBeDefined();
     });
@@ -122,12 +121,12 @@ describe('grants-pid page', () => {
           grantDetail={grantDetail}
           enableFAQTab="false"
           enableAwardsTab="false"
-        />
+        />,
       );
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#faqs')
+          .some((link) => link.getAttribute('href') === '#faqs'),
       ).toBe(false);
     });
 
@@ -137,10 +136,10 @@ describe('grants-pid page', () => {
           grantDetail={grantDetail}
           enableFAQTab="false"
           enableAwardsTab="true"
-        />
+        />,
       );
       expect(
-        screen.getByRole('link', { name: 'Awarded grants' })
+        screen.getByRole('link', { name: 'Awarded grants' }),
       ).toBeDefined();
     });
 
@@ -150,19 +149,19 @@ describe('grants-pid page', () => {
           grantDetail={grantDetail}
           enableFAQTab="false"
           enableAwardsTab="false"
-        />
+        />,
       );
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#awarded')
+          .some((link) => link.getAttribute('href') === '#awarded'),
       ).toBe(false);
     });
 
     it('Should render summary tab content by default', () => {
       render(component);
       expect(
-        screen.getByText('Some text that should be rendered')
+        screen.getByText('Some text that should be rendered'),
       ).toBeDefined();
     });
   });

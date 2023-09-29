@@ -8,8 +8,7 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
-import { logger } from '../../../src/utils';
-import { HEADERS } from '../../../src/utils/constants';
+import { addErrorInfo, logger } from '../../../src/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,15 +30,12 @@ export default async function handler(
   const decryptedEmailAddress = await decrypt(decodedEmailCookie.email);
 
   try {
-    newsletterService.unsubscribeFromNewsletter(
+    await newsletterService.unsubscribeFromNewsletter(
       decryptedEmailAddress,
       NewsletterType.NEW_GRANTS,
     );
   } catch (e) {
-    logger.error('error unsubscribing from newsletter', {
-      ...e,
-      correlationId: req.headers[HEADERS.CORRELATION_ID],
-    });
+    logger.error('error unsubscribing from newsletter', addErrorInfo(e, req));
   }
 
   res.redirect(

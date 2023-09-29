@@ -4,11 +4,10 @@ import {
   generateSignedApiKey,
 } from '../../../src/service/api-key-service';
 import { NewsletterSubscription } from '../../../src/types/newsletter';
-import { client as axios } from '../../../src/utils';
+import { addErrorInfo, client as axios } from '../../../src/utils';
 import nookies from 'nookies';
 import {
   cookieName,
-  HEADERS,
   maxAgeForCookies,
   notificationRoutes,
   URL_ACTIONS,
@@ -33,10 +32,7 @@ export default async function handler(
       newsletterSubscription,
     );
   } catch (e) {
-    logger.error('error subscribing to newletter', {
-      ...e,
-      correlationId: req.headers[HEADERS.CORRELATION_ID],
-    });
+    logger.error('error subscribing to newletter', addErrorInfo(e, req));
   }
 
   await addEmailAddressCookieToResponse(tokenValues, res);

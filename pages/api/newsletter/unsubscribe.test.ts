@@ -13,8 +13,18 @@ import { logger } from '../../../src/utils/logger';
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/utils/logger', () => ({
-  error: jest.fn(),
+  logger: {
+    error: jest.fn(),
+  },
+  addErrorInfo: (err) => err,
 }));
+
+const createMockRequest = (requestData) => ({
+  headers: {
+    'tco-correlation-id': 'correlationId',
+  },
+  ...requestData,
+});
 
 describe('newsletter unsubscribe api', () => {
   const newsletterSubscriptionServiceSpy = jest.spyOn(
@@ -100,7 +110,10 @@ describe('newsletter unsubscribe api', () => {
       NewsletterType.NEW_GRANTS,
     );
     expect(logger.error).toBeCalledTimes(1);
-    expect(logger.error).toBeCalledWith(error);
+    expect(logger.error).toBeCalledWith(
+      'error unsubscribing from newsletter',
+      error,
+    );
     expect(res.redirect).toBeCalledTimes(1);
     expect(res.redirect).toBeCalledWith(expectedUrl);
   });
