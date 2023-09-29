@@ -3,7 +3,6 @@ import { notificationRoutes, URL_ACTIONS } from '../../../src/utils/constants';
 import DeleteSaveSearch, {
   getServerSideProps,
 } from '../../../pages/notifications/delete-saved-search/[slug]';
-import '@testing-library/jest-dom';
 
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { useRouter } from 'next/router';
@@ -72,16 +71,16 @@ describe('Testing Delete Search component', () => {
   it('renders a Delete search heading', async () => {
     render(<DeleteSaveSearch {...propsWithNoErrorMessage} />);
     const heading = screen.getAllByText(
-      /Are you sure you want to delete this saved search/
+      /Are you sure you want to delete this saved search/,
     );
     expect(heading).toHaveLength(1);
     expect(
-      screen.getByRole('button', { name: 'Confirm delete' })
+      screen.getByRole('button', { name: 'Confirm delete' }),
     ).toBeDefined();
     const button = screen.getByText(/Cancel/);
     expect(button).toHaveAttribute(
       'href',
-      '/notifications/manage-notifications'
+      '/notifications/manage-notifications',
     );
   });
 
@@ -206,7 +205,7 @@ describe('get server side props', () => {
     expect(getServerSideProps(context)).rejects.toThrowError(
       expect.objectContaining({
         message: 'Email',
-      })
+      }),
     );
   });
 

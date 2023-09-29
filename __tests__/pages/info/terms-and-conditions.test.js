@@ -5,7 +5,6 @@ import {
   RelatedContentLinks,
   RelatedLinksNames,
 } from '../../../src/utils/related-content-links';
-import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -38,7 +37,7 @@ describe('Rendering the terms and conidtions page', () => {
   it('Should render a page header', () => {
     render(component);
     expect(
-      screen.getByRole('heading', { name: 'Terms and conditions' })
+      screen.getByRole('heading', { name: 'Terms and conditions' }),
     ).toBeDefined();
   });
 
@@ -54,7 +53,7 @@ describe('Rendering the terms and conidtions page', () => {
     expect(screen.getByText('Crown copyright protection')).toBeDefined();
     expect(screen.getByText('Crown copyright protection')).toHaveAttribute(
       'href',
-      'https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/'
+      'https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/',
     );
   });
 
@@ -62,8 +61,8 @@ describe('Rendering the terms and conidtions page', () => {
     render(component);
     expect(
       screen.getByText(
-        'the protection of any information you give to these websites'
-      )
+        'the protection of any information you give to these websites',
+      ),
     ).toBeDefined();
   });
 });

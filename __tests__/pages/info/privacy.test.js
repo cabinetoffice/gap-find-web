@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import Privacy from '../../../pages/info/privacy';
-import '@testing-library/jest-dom/extend-expect';
 import {
   govUkBody,
   govUkGapHeadingBlack,
@@ -64,7 +63,7 @@ describe('Rendering the privacy notice', () => {
     render(component);
     expect(screen.getByText('cookie preferences').closest('a')).toHaveAttribute(
       'href',
-      '/info/cookies'
+      '/info/cookies',
     );
   });
 });

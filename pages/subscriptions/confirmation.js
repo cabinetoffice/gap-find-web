@@ -13,6 +13,7 @@ import { notificationRoutes } from '../../src/utils/constants';
 import { encrypt } from '../../src/utils/encryption';
 import gloss from '../../src/utils/glossary.json';
 import { getBody, getPreviousFormValues } from '../../src/utils/request';
+import { addErrorInfo, logger } from '../../src/utils';
 
 const generateConfirmationUrl = (apiKey) => {
   return new URL(
@@ -49,7 +50,7 @@ export async function getServerSideProps({ req, res }) {
   const confirmationUrl = generateConfirmationUrl(apiKey);
 
   try {
-    sendEmail(
+    await sendEmail(
       email,
       {
         'name of grant': grantTitle,
@@ -58,7 +59,10 @@ export async function getServerSideProps({ req, res }) {
       process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE,
     );
   } catch (e) {
-    console.error(e);
+    logger.error(
+      'error sending subscription confirmation email',
+      addErrorInfo(e, req),
+    );
   }
 
   return {

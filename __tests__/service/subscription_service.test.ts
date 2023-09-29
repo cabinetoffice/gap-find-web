@@ -1,10 +1,10 @@
 import { SubscriptionService } from '../../src/service/subscription-service';
 import body from './subscriptionManager.data';
-import axios from 'axios';
+import { axios } from '../../src/utils/axios';
 
 jest.mock('jsonwebtoken');
 
-jest.mock('axios', () => {
+jest.mock('../../src/utils/axios', () => {
   const createMock = {
     post: jest.fn().mockImplementation(() => {
       return {
@@ -29,7 +29,6 @@ jest.mock('axios', () => {
         ],
       };
     }),
-    interceptors: jest.fn(),
     getUri: jest.fn(),
     defaults: jest.fn(),
     request: jest.fn(),
@@ -43,9 +42,11 @@ jest.mock('axios', () => {
     patchForm: jest.fn(),
   };
   return {
-    create: jest.fn().mockImplementation(() => {
-      return createMock;
-    }),
+    axios: {
+      create: jest.fn().mockImplementation(() => {
+        return createMock;
+      }),
+    },
   };
 });
 
@@ -61,7 +62,7 @@ describe('subscription manager add subscription', () => {
   it('should return true when a correct email and grant id are passed in', async () => {
     const result = await subscriptionService.addSubscription(
       body.encrypted_email_address,
-      body.contentful_grant_subscription_id
+      body.contentful_grant_subscription_id,
     );
     expect(result).toBe(true);
     expect(instance.post).toHaveBeenNthCalledWith(1, ' ', {
@@ -76,12 +77,12 @@ describe('subscription manager delete Subscription By ID', () => {
     const result =
       await subscriptionService.deleteSubscriptionByEmailAndGrantId(
         body.encrypted_email_address,
-        body.contentful_grant_subscription_id
+        body.contentful_grant_subscription_id,
       );
 
     expect(instance.delete).toHaveBeenNthCalledWith(
       1,
-      'users/fake%40fake.com/grants/12345678'
+      'users/fake%40fake.com/grants/12345678',
     );
     expect(result).toBe(true);
   });
@@ -92,7 +93,7 @@ describe('subscription manager get Subscription By Email', () => {
     jest.clearAllMocks();
   });
   it('should return records when they are found', async () => {
-    let example = [
+    const example = [
       {
         encrypted_email_address: 'test@test.com',
         hashed_email_address: 'test@test.com',
@@ -102,9 +103,8 @@ describe('subscription manager get Subscription By Email', () => {
       },
     ];
 
-    const result = await subscriptionService.getSubscriptionsByEmail(
-      'test@test.com'
-    );
+    const result =
+      await subscriptionService.getSubscriptionsByEmail('test@test.com');
 
     expect(result).toEqual(example);
 
@@ -118,7 +118,7 @@ describe('subscription manager get Subscription By Email', () => {
       };
     });
     expect(
-      await subscriptionService.getSubscriptionsByEmail('test@test.com')
+      await subscriptionService.getSubscriptionsByEmail('test@test.com'),
     ).toEqual({});
     expect(instance.get).toHaveBeenNthCalledWith(1, 'users/test%40test.com');
   });
@@ -129,7 +129,7 @@ describe('subscription manager get Subscription By Email and ID', () => {
     jest.clearAllMocks();
   });
   it('should return emails if any are found', async () => {
-    let example = {
+    const example = {
       encrypted_email_address: 'test@test.com',
       hashed_email_address: 'test@test.com',
       contentful_grant_subscription_id: '12345678',
@@ -144,12 +144,12 @@ describe('subscription manager get Subscription By Email and ID', () => {
     expect(
       await subscriptionService.getSubscriptionByEmailAndGrantId(
         'test@test.com',
-        '12345678'
-      )
+        '12345678',
+      ),
     ).toEqual(example);
     expect(instance.get).toHaveBeenNthCalledWith(
       1,
-      'users/test%40test.com/grants/12345678'
+      'users/test%40test.com/grants/12345678',
     );
   });
 
@@ -162,12 +162,12 @@ describe('subscription manager get Subscription By Email and ID', () => {
     expect(
       await subscriptionService.getSubscriptionByEmailAndGrantId(
         'test@test.com',
-        '12345678'
-      )
+        '12345678',
+      ),
     ).toEqual({});
     expect(instance.get).toHaveBeenNthCalledWith(
       1,
-      'users/test%40test.com/grants/12345678'
+      'users/test%40test.com/grants/12345678',
     );
   });
 });

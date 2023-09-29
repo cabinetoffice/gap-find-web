@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Cookies from '../../../pages/info/cookies';
-import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -19,7 +18,7 @@ describe('Rendering the cookies page', () => {
   it('Should render a gov-uk body of text', () => {
     render(component);
     const text = screen.getByText(
-      'These cookies are used across the Find a grant website.'
+      'These cookies are used across the Find a grant website.',
     );
     expect(text).toBeDefined();
     expect(text).toHaveAttribute('class', 'govuk-body');
@@ -30,7 +29,7 @@ describe('Rendering the cookies page', () => {
     expect(screen.getByText('how to manage cookies')).toBeDefined();
     expect(screen.getByText('how to manage cookies')).toHaveAttribute(
       'href',
-      'https://ico.org.uk/for-the-public/online/cookies'
+      'https://ico.org.uk/for-the-public/online/cookies',
     );
   });
 
@@ -38,8 +37,8 @@ describe('Rendering the cookies page', () => {
     render(component);
     expect(
       screen.getByText(
-        'one remembers when you accept or reject cookies on our website'
-      )
+        'one remembers when you accept or reject cookies on our website',
+      ),
     ).toBeDefined();
   });
 
@@ -63,7 +62,7 @@ describe('Rendering the cookies page', () => {
   it('Should render save button', () => {
     render(component);
     expect(
-      screen.getByRole('button', { name: 'Save cookie settings' })
+      screen.getByRole('button', { name: 'Save cookie settings' }),
     ).toBeDefined();
   });
 });

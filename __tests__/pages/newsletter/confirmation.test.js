@@ -1,13 +1,12 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import NewsletterConfirmation, {
-  getServerSideProps
+  getServerSideProps,
 } from '../../../pages/newsletter/confirmation';
 import { validateSignupForm } from '../../../src/manager/signup_manager';
 import { generateSignedApiKey } from '../../../src/service/api-key-service';
 import { sendEmail } from '../../../src/service/gov_notify_service';
- 
+
 jest.mock('next/router', () => {
   return {
     useRouter: jest.fn(),
@@ -45,11 +44,11 @@ describe('Should Render Newsletter Confirmation Page', () => {
     expect(returnLink).toHaveAttribute('href', '/');
 
     expect(screen.getByTestId('email')).toHaveTextContent('test@email.com');
-    expect(screen.getByTestId('signed_up_to_text')).toHaveTextContent('new grants');
+    expect(screen.getByTestId('signed_up_to_text')).toHaveTextContent(
+      'new grants',
+    );
 
-    expect(
-      screen.getByRole('heading', { name: 'Related link' })
-    ).toBeDefined();
+    expect(screen.getByRole('heading', { name: 'Related link' })).toBeDefined();
   });
 });
 
@@ -101,17 +100,20 @@ describe('getServerSideProps', () => {
       {
         'Confirmation link for updates': new URL(
           `api/newsletter-signup/${keyValue}`,
-          process.env.HOST
+          process.env.HOST,
         ).toString(),
       },
-      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_NEWSLETTER_TEMPLATE
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_NEWSLETTER_TEMPLATE,
     );
   });
 
   it('should handle any errors and continue', async () => {
     const keyValue = 'an-encrypted-jwt';
     generateSignedApiKey.mockReturnValue(keyValue);
-    sendEmail.mockRejectedValue(new Error('something went wrong'));
+
+    sendEmail.mockReturnValue(
+      Promise.reject(new Error('something went wrong')),
+    );
 
     const result = await getServerSideProps({ req, res });
 

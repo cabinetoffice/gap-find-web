@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import Router from 'next/router';
 import nookies from 'nookies';
@@ -43,7 +42,7 @@ describe('notifications/index.js testing the page', () => {
     render(<Notifications {...props} />);
 
     let heading = screen.getAllByText(
-      'You can choose to get updates about any grant. Updates are always sent by email.'
+      'You can choose to get updates about any grant. Updates are always sent by email.',
     );
     expect(heading).toHaveLength(1);
   });
