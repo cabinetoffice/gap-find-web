@@ -65,7 +65,6 @@ const getLoggerWithLevel =
     } else
       log[getProdLogLevel(level)]({
         logMessage,
-        timestamp: date.toISOString(),
         ...info,
       });
   };
