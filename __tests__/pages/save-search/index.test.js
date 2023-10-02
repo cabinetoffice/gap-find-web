@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { parseBody } from 'next/dist/server/api-utils/node';
 import Router from 'next/router';
@@ -254,7 +253,7 @@ describe('save-search/index.js testing the page', () => {
     render(<SaveSearch {...propsWithoutErrors} />);
 
     expect(
-      screen.queryAllByText('The filters you have chosen include:')
+      screen.queryAllByText('The filters you have chosen include:'),
     ).toHaveLength(1);
   });
 
@@ -270,8 +269,8 @@ describe('save-search/index.js testing the page', () => {
     expect(screen.getAllByText('Name this search')).toHaveLength(1);
     expect(
       screen.getAllByText(
-        'You can save more than one search. Add a name so it is easier to tell your searches apart.'
-      )
+        'You can save more than one search. Add a name so it is easier to tell your searches apart.',
+      ),
     ).toHaveLength(1);
   });
 
@@ -346,10 +345,10 @@ describe('save-search/index.js testing the page', () => {
     expect(screen.queryByText('There is a problem')).toBeDefined();
     expect(screen.queryAllByText('Enter a saved seaarch name')).toHaveLength(2);
     expect(document.getElementById('search_name')).toHaveClass(
-      'govuk-input--error'
+      'govuk-input--error',
     );
     expect(screen.getByTestId('red-banner')).toHaveClass(
-      'govuk-form-group--error'
+      'govuk-form-group--error',
     );
   });
 
@@ -361,7 +360,7 @@ describe('save-search/index.js testing the page', () => {
     render(<SaveSearch {...propsWithSavedSearch} />);
 
     expect(document.getElementById('search_name')).toHaveValue(
-      propsWithSavedSearch.savedSearchName
+      propsWithSavedSearch.savedSearchName,
     );
   });
 });

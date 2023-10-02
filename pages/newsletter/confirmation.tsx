@@ -16,11 +16,12 @@ import {
 } from '../../src/types/newsletter';
 import gloss from '../../src/utils/glossary.json';
 import { getBody, getPreviousFormValues } from '../../src/utils/request';
+import { addErrorInfo, logger } from '../../src/utils';
 
 const generateConfirmationUrl = (apiKey: string) => {
   return new URL(
     `api/newsletter-signup/${apiKey}`,
-    process.env.HOST
+    process.env.HOST,
   ).toString();
 };
 
@@ -55,17 +56,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const confirmationUrl = generateConfirmationUrl(apiKey);
 
   try {
+    console.log('hello');
     await sendEmail(
       signedUpEmail,
       {
         'Confirmation link for updates': confirmationUrl,
       },
-      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_NEWSLETTER_TEMPLATE
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_NEWSLETTER_TEMPLATE,
     );
   } catch (e) {
-    console.error(e);
+    logger.error(
+      'error sending newsletter signup confirmation email',
+      addErrorInfo(e, req),
+    );
+    console.log('world');
   }
-
+  console.log('returning...');
   return {
     props: {
       signedUpEmail,

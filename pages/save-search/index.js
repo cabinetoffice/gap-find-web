@@ -23,7 +23,7 @@ export function buildQueryString(query) {
   for (const indexName in query) {
     if (Array.isArray(query[indexName])) {
       query[indexName].forEach((value) =>
-        queryArray.push(`${indexName}=${value}`)
+        queryArray.push(`${indexName}=${value}`),
       );
     } else {
       queryArray.push(`${indexName}=${query[indexName]}`);
@@ -146,7 +146,7 @@ const SaveSearch = ({
                                         {selected.display}
                                       </li>
                                     );
-                                  }
+                                  },
                                 )}
                             </ul>
                           </dd>

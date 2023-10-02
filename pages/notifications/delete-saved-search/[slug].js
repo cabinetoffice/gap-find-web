@@ -16,7 +16,7 @@ import nookies from 'nookies';
 import { decrypt } from '../../../src/utils/encryption';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
-import axios from 'axios';
+import { axios } from '../../../src/utils';
 
 const breadcrumbsRoutes = [
   {
@@ -61,7 +61,7 @@ export async function getServerSideProps(ctx) {
       const savedSearch = await getBySavedSearchId(slug);
       await deleteSaveSearch(slug, decryptedEmailAddress);
       return redirect(
-        `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.DELETE_SAVED_SEARCH}&savedSearchName=${savedSearch.name}`
+        `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.DELETE_SAVED_SEARCH}&savedSearchName=${savedSearch.name}`,
       );
     } catch (error) {
       if (axios.isAxiosError(error)) {

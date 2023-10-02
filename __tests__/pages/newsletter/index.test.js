@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import NewsletterLandingPage from '../../../pages/newsletter/index';
 import { useRouter } from 'next/router';
 
@@ -26,7 +25,7 @@ describe('Should Render Newsletter Landing Page', () => {
     render(<NewsletterLandingPage returnParams={{ searchTerm: 'testing' }} />);
 
     expect(
-      screen.getByRole('heading', { name: 'Get updates about new grants' })
+      screen.getByRole('heading', { name: 'Get updates about new grants' }),
     ).toBeDefined();
 
     const continueLink = screen.getByRole('link', {

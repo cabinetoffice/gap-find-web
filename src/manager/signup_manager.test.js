@@ -27,7 +27,7 @@ describe('validateSignupForm', () => {
           field: 'notification_privacy',
           error: PRIVACY_POLICY_VALIDATION_ERROR,
         }),
-      ])
+      ]),
     );
   });
 
@@ -38,11 +38,10 @@ describe('validateSignupForm', () => {
     };
     const resultUndefined = validateSignupForm({});
     expect(resultUndefined).toEqual(
-      expect.arrayContaining([expect.objectContaining(expectedErrorObj)])
+      expect.arrayContaining([expect.objectContaining(expectedErrorObj)]),
     );
-    const resultEmpty = validateSignupForm({ user_email: '' });
     expect(resultUndefined).toEqual(
-      expect.arrayContaining([expect.objectContaining(expectedErrorObj)])
+      expect.arrayContaining([expect.objectContaining(expectedErrorObj)]),
     );
   });
 
@@ -54,7 +53,7 @@ describe('validateSignupForm', () => {
           field: 'user_email',
           error: EMAIL_ADDRESS_FORMAT_VALIDATION_ERROR,
         }),
-      ])
+      ]),
     );
   });
 });

@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom/extend-expect';
 import { render, screen, within } from '@testing-library/react';
 import SignupConfirmation, {
   getServerSideProps,
@@ -22,7 +21,6 @@ const props = {
   grantTitle: 'Chargepoint Grant for people renting and living in flats (1)',
 };
 const component = <SignupConfirmation {...props} />;
-
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -52,7 +50,7 @@ describe('Confirmation', () => {
   it('Should display the name of the grant', async () => {
     render(component);
     expect(screen.getByTestId('signed_up_to_bold')).toHaveTextContent(
-      'Chargepoint Grant for people renting and living in flats (1)'
+      'Chargepoint Grant for people renting and living in flats (1)',
     );
   });
 
@@ -119,7 +117,7 @@ describe('Server Side Props', () => {
   it('should send a verification email', async () => {
     const url = new URL(
       `${notificationRoutes['addSubscription']}${tokenValue}`,
-      process.env.HOST
+      process.env.HOST,
     ).toString();
 
     const expectedEmailBody = {
@@ -143,7 +141,7 @@ describe('Server Side Props', () => {
     expect(sendEmail).toHaveBeenCalledWith(
       email,
       expectedEmailBody,
-      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE,
     );
     expect(response).toStrictEqual({
       props: {
@@ -157,7 +155,7 @@ describe('Server Side Props', () => {
   it('should still render the page if the email failed to send', async () => {
     const url = new URL(
       `${notificationRoutes['addSubscription']}${tokenValue}`,
-      process.env.HOST
+      process.env.HOST,
     ).toString();
 
     const expectedEmailBody = {
@@ -185,7 +183,7 @@ describe('Server Side Props', () => {
     expect(sendEmail).toHaveBeenCalledWith(
       email,
       expectedEmailBody,
-      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE,
     );
     expect(response).toStrictEqual({
       props: {

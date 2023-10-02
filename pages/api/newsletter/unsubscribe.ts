@@ -8,10 +8,11 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
+import { addErrorInfo, logger } from '../../../src/utils';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const newsletterService = NewsletterSubscriptionService.getInstance();
   if (!req.cookies[cookieName.currentEmailAddress]) {
@@ -24,20 +25,23 @@ export default async function handler(
   }
 
   const decodedEmailCookie = decryptSignedApiKey(
-    req.cookies[cookieName['currentEmailAddress']]
+    req.cookies[cookieName['currentEmailAddress']],
   );
   const decryptedEmailAddress = await decrypt(decodedEmailCookie.email);
 
   try {
-    newsletterService.unsubscribeFromNewsletter(decryptedEmailAddress, NewsletterType.NEW_GRANTS);
+    await newsletterService.unsubscribeFromNewsletter(
+      decryptedEmailAddress,
+      NewsletterType.NEW_GRANTS,
+    );
   } catch (e) {
-    console.error(e);
+    logger.error('error unsubscribing from newsletter', addErrorInfo(e, req));
   }
 
   res.redirect(
     new URL(
       `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.NEWSLETTER_UNSUBSCRIBE}`,
-      process.env.HOST
-    ).toString()
+      process.env.HOST,
+    ).toString(),
   );
 }

@@ -29,7 +29,7 @@ describe('Header Component that is used within the layout', () => {
     listitem.forEach((item) => {
       if (item.getAttribute('data-cy') === 'cybrowseGrantsPageLink') {
         expect(item.getAttribute('class')).toEqual(
-          'app-navigation__list-item app-navigation__list-item--current'
+          'app-navigation__list-item app-navigation__list-item--current',
         );
       }
     });

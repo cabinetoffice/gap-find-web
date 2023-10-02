@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   const savedSearchId = decryptSignedApiKey(token);
   const savedSearch = await updateStatus(
     savedSearchId.id,
-    SavedSearchStatusType.CONFIRMED
+    SavedSearchStatusType.CONFIRMED,
   );
 
   const cookieSignedKey = generateSignedApiKey({
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
   res.redirect(
     new URL(
       `${notificationRoutes['manageNotifications']}`,
-      process.env.HOST
-    ).toString()
+      process.env.HOST,
+    ).toString(),
   );
 }

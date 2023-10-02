@@ -65,7 +65,7 @@ describe('handler', () => {
     expect(decryptSignedApiKey).toHaveBeenCalledWith(token);
     expect(updateStatus).toHaveBeenCalledWith(
       savedSearch.id,
-      SavedSearchStatusType.CONFIRMED
+      SavedSearchStatusType.CONFIRMED,
     );
     expect(generateSignedApiKey).toHaveBeenCalledWith({
       email: savedSearch.user.encryptedEmailAddress,
@@ -73,8 +73,8 @@ describe('handler', () => {
     expect(res.redirect).toHaveBeenCalledWith(
       new URL(
         `${notificationRoutes['manageNotifications']}`,
-        process.env.HOST
-      ).toString()
+        process.env.HOST,
+      ).toString(),
     );
   });
 });

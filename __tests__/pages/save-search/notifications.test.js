@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { createMockRouter } from '../../../src/utils/createMockRouter';
 import SignupSavedSearch, {
@@ -62,12 +61,12 @@ describe('Rendering serverside props', () => {
           titleContent={'Sign Up For Save Search - Find a grant'}
           query={{ searchTerm: 'test' }}
         />
-      </RouterContext.Provider>
+      </RouterContext.Provider>,
     );
 
     expect(screen.getByTestId('govuk-back')).toHaveAttribute(
       'href',
-      '/save-search?searchTerm=test'
+      '/save-search?searchTerm=test',
     );
   });
 
@@ -109,7 +108,7 @@ describe('Rendering signup page', () => {
           validationErrors={[]}
           titleContent={'Sign Up For Save Search - Find a grant'}
         />
-      </RouterContext.Provider>
+      </RouterContext.Provider>,
     );
     expect(screen.getByText('Sign up for email updates')).toBeDefined();
     const description =
@@ -133,17 +132,17 @@ describe('Rendering signup page', () => {
           validationErrors={[{ field: 'consent-radio', error: 'test' }]}
           titleContent={'Sign Up For Save Search - Find a grant'}
         />
-      </RouterContext.Provider>
+      </RouterContext.Provider>,
     );
     expect(screen.getByText('Sign up for email updates')).toBeDefined();
     expect(
-      screen.getByRole('heading', { name: 'There is a problem' })
+      screen.getByRole('heading', { name: 'There is a problem' }),
     ).toBeDefined();
     expect(screen.getByRole('link', { name: 'test' })).toBeDefined();
     const error = screen.getByTestId('red-banner');
     expect(error).toHaveClass('govuk-form-group--error');
     expect(screen.getByTestId('specific-error-message')).toHaveClass(
-      'govuk-error-message'
+      'govuk-error-message',
     );
   });
 });

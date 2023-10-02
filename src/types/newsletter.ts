@@ -2,7 +2,7 @@ export type NewsletterSubscription = {
   id?: number;
   email: string;
   newsletterType: string;
-  createdAt?: Date; 
+  createdAt?: Date;
   updatedAt?: Date;
 };
 

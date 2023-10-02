@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import RelatedContent from '../related-content';
 import SignupConfirmation from './SignupConfirmation';
@@ -33,7 +32,7 @@ describe('Rendering Signup Confirmation Component', () => {
         subscribedTo="Test Subscription"
         displayBold={true}
         returnParams={{ href: '/test/url', linkText: 'Back to another page' }}
-      />
+      />,
     );
     const signedUpTo = screen.getByTestId('signed_up_to_bold');
     expect(signedUpTo).toBeDefined();
@@ -66,11 +65,11 @@ describe('Rendering Signup Confirmation Component', () => {
         <RelatedContent
           links={[{ title: 'Similar Page', href: '/similarPage' }]}
         />
-      </SignupConfirmation>
+      </SignupConfirmation>,
     );
 
     expect(
-      screen.getByRole('heading', { name: 'Related content' })
+      screen.getByRole('heading', { name: 'Related content' }),
     ).toBeDefined();
   });
 });

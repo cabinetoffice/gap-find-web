@@ -52,10 +52,10 @@ export async function getServerSideProps(ctx) {
   const subscription =
     await subscriptionService.getSubscriptionByEmailAndGrantId(
       decryptedEmailAddress,
-      slug
+      slug,
     );
   const grantDetails = await fetchByGrantId(
-    subscription.contentfulGrantSubscriptionId
+    subscription.contentfulGrantSubscriptionId,
   );
   return {
     props: {

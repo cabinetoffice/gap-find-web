@@ -13,5 +13,5 @@ export const getPreviousFormValues = (requestBody) => {
 };
 
 export const getBody = util.promisify(
-  bodyParser.urlencoded({ extended: true })
+  bodyParser.urlencoded({ extended: true }),
 );

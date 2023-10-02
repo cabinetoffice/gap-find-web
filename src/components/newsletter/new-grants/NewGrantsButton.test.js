@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
 import { NewGrantsButton } from './NewGrantsButton';
 
@@ -13,7 +12,7 @@ const mockParams = {
     month: '5',
     year: '2022',
   },
-}
+};
 
 describe('Render the new grants button', () => {
   it('Should render form with correct hidden properties', () => {
@@ -34,10 +33,10 @@ describe('Render the new grants button', () => {
   it('Should render the new grants button', () => {
     render(<NewGrantsButton dateParams={mockParams} />);
 
-    const button = screen.getByRole('button', {name: 'View Updates'});
+    const button = screen.getByRole('button', { name: 'View Updates' });
     expect(button).toBeDefined();
     expect(button).toHaveAttribute('type', 'submit');
-    expect(button).toHaveAttribute('data-module', 'govuk-button')
+    expect(button).toHaveAttribute('data-module', 'govuk-button');
     expect(button).toHaveClass('govuk-button--secondary');
   });
 

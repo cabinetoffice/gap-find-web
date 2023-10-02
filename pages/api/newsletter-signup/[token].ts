@@ -4,7 +4,7 @@ import {
   generateSignedApiKey,
 } from '../../../src/service/api-key-service';
 import { NewsletterSubscription } from '../../../src/types/newsletter';
-import axios from 'axios';
+import { addErrorInfo, client as axios } from '../../../src/utils';
 import nookies from 'nookies';
 import {
   cookieName,
@@ -13,10 +13,11 @@ import {
   URL_ACTIONS,
 } from '../../../src/utils/constants';
 import { encrypt } from '../../../src/utils/encryption';
+import { logger } from '../../../src/utils';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const tokenValues = decryptSignedApiKey(req.query.token.toString());
   const newsletterSubscription: NewsletterSubscription = {
@@ -28,10 +29,10 @@ export default async function handler(
   try {
     await axios.post(
       new URL('/newsletters', process.env.BACKEND_HOST).toString(),
-      newsletterSubscription
+      newsletterSubscription,
     );
   } catch (e) {
-    console.error(e);
+    logger.error('error subscribing to newletter', addErrorInfo(e, req));
   }
 
   await addEmailAddressCookieToResponse(tokenValues, res);
@@ -39,11 +40,14 @@ export default async function handler(
   res.redirect(
     new URL(
       `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.NEWSLETTER_SUBSCRIBE}`,
-      process.env.HOST
-    ).toString()
+      process.env.HOST,
+    ).toString(),
   );
 }
-async function addEmailAddressCookieToResponse(tokenValues: any, res: NextApiResponse<any>) {
+async function addEmailAddressCookieToResponse(
+  tokenValues: any,
+  res: NextApiResponse<any>,
+) {
   const encryptedEmailAddress = await encrypt(tokenValues.email);
   const emailAddressJwt = generateSignedApiKey({
     email: encryptedEmailAddress,
@@ -55,4 +59,3 @@ async function addEmailAddressCookieToResponse(tokenValues: any, res: NextApiRes
     httpOnly: true,
   });
 }
-

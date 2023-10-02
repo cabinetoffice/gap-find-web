@@ -1,11 +1,11 @@
-import { decryptSignedApiKey, generateSignedApiKey } from "./api-key-service";
-import jwt from "jsonwebtoken"
+import { decryptSignedApiKey, generateSignedApiKey } from './api-key-service';
+import jwt from 'jsonwebtoken';
 
 jest.mock('jsonwebtoken');
 
 describe('generateSignedApiKey', () => {
   it('should generate a signed API key', () => {
-    const props = { value: 'a-random-test-string'};
+    const props = { value: 'a-random-test-string' };
 
     jwt.sign.mockReturnValue('a-signed-token-string');
 

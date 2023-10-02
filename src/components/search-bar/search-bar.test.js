@@ -8,22 +8,22 @@ describe('SearchBar component', () => {
     render(component);
     expect(
       screen.getByText(
-        'Find government grants and check if you are eligible to apply.'
-      )
+        'Find government grants and check if you are eligible to apply.',
+      ),
     ).toBeDefined();
   });
 
   it('should render the input field with the default value Term', () => {
     render(component);
     expect(screen.getByRole('textbox', { name: 'Search grants' }).value).toBe(
-      'Term'
+      'Term',
     );
   });
 
   it('should render the input field without the input being pre-populated if no term is passed', () => {
     render(<SearchBar />);
     expect(screen.getByRole('textbox', { name: 'Search grants' }).value).toBe(
-      ''
+      '',
     );
   });
 

@@ -1,6 +1,6 @@
 import { NewsletterSubscriptionService } from './newsletter-subscription-service';
-import axios from 'axios';
 import { NewsletterType } from '../../types/newsletter';
+import { axios } from '../../../src/utils/axios';
 
 jest.mock('next/config', () => {
   return jest.fn().mockImplementation(() => {
@@ -8,7 +8,7 @@ jest.mock('next/config', () => {
   });
 });
 
-jest.mock('axios', () => {
+jest.mock('../../../src/utils/axios', () => {
   const createMock = {
     get: jest.fn().mockImplementation(() => {
       return {
@@ -19,13 +19,18 @@ jest.mock('axios', () => {
         },
       };
     }),
-
     delete: jest.fn(),
+    interceptors: {
+      request: { use: jest.fn() },
+      response: { use: jest.fn() },
+    },
   };
   return {
-    create: jest.fn().mockImplementation(() => {
-      return createMock;
-    }),
+    axios: {
+      create: jest.fn().mockImplementation(() => {
+        return createMock;
+      }),
+    },
   };
 });
 
@@ -52,12 +57,12 @@ describe('newsletter-subscription-service', () => {
       const result =
         await newsletterSubscriptionService.getByEmailAndNewsletterType(
           email,
-          newsletterType
+          newsletterType,
         );
 
       expect(spy).toHaveBeenCalledWith(email);
       expect(axiosInstance.get).toHaveBeenCalledWith(
-        `/users/${encodedEmail}/types/${newsletterType}`
+        `/users/${encodedEmail}/types/${newsletterType}`,
       );
       expect(result).toEqual(expectedResult);
     });
@@ -66,9 +71,14 @@ describe('newsletter-subscription-service', () => {
   describe('unsubscribeFromNewsletter', () => {
     it('should unsubscrube from the new grants newsletter', async () => {
       const email = 'email@email.com';
-      await newsletterSubscriptionService.unsubscribeFromNewsletter(email, NewsletterType.NEW_GRANTS);
+      await newsletterSubscriptionService.unsubscribeFromNewsletter(
+        email,
+        NewsletterType.NEW_GRANTS,
+      );
 
-      expect(axiosInstance.delete).toHaveBeenCalledWith(`/users/${email}/types/${NewsletterType.NEW_GRANTS}`)
+      expect(axiosInstance.delete).toHaveBeenCalledWith(
+        `/users/${email}/types/${NewsletterType.NEW_GRANTS}`,
+      );
     });
   });
 });

@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom/extend-expect';
 import {
   RelatedContentLinks,
   RelatedLinksNames,
@@ -45,7 +44,7 @@ describe('Get server side props', () => {
     const result = await getServerSideProps();
     expect(ContentfulPageServiceMock).toHaveBeenCalledTimes(1);
     expect(ContentfulPageServiceMock).toHaveBeenCalledWith(
-      ContentfulPage.WRITING_GOOD_ADVERTS
+      ContentfulPage.WRITING_GOOD_ADVERTS,
     );
     expect(result).toStrictEqual(expectedResult);
   });

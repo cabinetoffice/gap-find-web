@@ -1,5 +1,6 @@
 import { DateValidationError } from './transformer/date-range-transformer.errors';
 import { transformQueryDateToMoment } from './transformer/date-range-transformer';
+import { logger } from './logger';
 
 export const extractFiltersFields = (query, filters) => {
   const filterObj = {};
@@ -72,7 +73,7 @@ export function addPublishedDateFilter(query, filterObj) {
 
       if (toDate.isBefore(fromDate)) {
         const error = new DateValidationError(
-          'To date must be the same as or after From date'
+          'To date must be the same as or after From date',
         );
         error.fieldName = 'Both';
         error.fields.day = true;
@@ -91,7 +92,11 @@ export function addPublishedDateFilter(query, filterObj) {
         lte: toDate.endOf('day').toISOString(true),
       };
     } catch (error) {
-      console.error(error);
+      // logged at info level as these errors are from bad user input
+      logger.info('error validating dates from search filter', {
+        message: error.message,
+        stack: error.stack,
+      });
       filterObj.errors.push({
         error: error.message,
         field: 'datepicker',
@@ -115,7 +120,7 @@ export function addPublishedDateFilter(query, filterObj) {
             break;
           case 'from':
             fromBuilder = {
-              error: error.fields
+              error: error.fields,
             };
             break;
         }

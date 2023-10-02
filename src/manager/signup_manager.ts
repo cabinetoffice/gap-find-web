@@ -30,7 +30,7 @@ function validateSignupForm(body: any) {
   return errors;
 }
 
-const generateSignupErrorsRedirectParam = (errors: Array<Object>) => {
+const generateSignupErrorsRedirectParam = (errors: Array<object>) => {
   return errors.map((error) => '&errors[]=' + JSON.stringify(error)).join('');
 };
 

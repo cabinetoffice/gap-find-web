@@ -8,13 +8,28 @@ import {
 } from '../../../src/utils/constants';
 import { decrypt } from '../../../src/utils/encryption';
 import subject from './unsubscribe';
-jest.mock('../../../src/utils/encryption');
+import { logger } from '../../../src/utils/logger';
+
 jest.mock('../../../src/service/api-key-service');
+jest.mock('../../../src/utils/encryption');
+jest.mock('../../../src/utils/logger', () => ({
+  logger: {
+    error: jest.fn(),
+  },
+  addErrorInfo: (err) => err,
+}));
+
+const createMockRequest = (requestData) => ({
+  headers: {
+    'tco-correlation-id': 'correlationId',
+  },
+  ...requestData,
+});
 
 describe('newsletter unsubscribe api', () => {
   const newsletterSubscriptionServiceSpy = jest.spyOn(
     NewsletterSubscriptionService,
-    'getInstance'
+    'getInstance',
   );
   const mockDecrypt = decrypt as jest.Mock;
   const mockNewsletterService = {
@@ -26,7 +41,7 @@ describe('newsletter unsubscribe api', () => {
   const cookie = { email: encryptedEmail };
   const expectedUrl = new URL(
     `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.NEWSLETTER_UNSUBSCRIBE}`,
-    process.env.HOST
+    process.env.HOST,
   ).toString();
 
   beforeEach(() => {
@@ -38,11 +53,11 @@ describe('newsletter unsubscribe api', () => {
     (decryptSignedApiKey as jest.Mock).mockReturnValue(cookie);
     mockDecrypt.mockResolvedValue(decryptedEmail);
 
-    const req = {
+    const req = createMockRequest({
       cookies: {
         [cookieName.currentEmailAddress]: cookie,
       },
-    };
+    });
 
     const res = {
       redirect: jest.fn(),
@@ -57,7 +72,7 @@ describe('newsletter unsubscribe api', () => {
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(1);
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
       decryptedEmail,
-      NewsletterType.NEW_GRANTS
+      NewsletterType.NEW_GRANTS,
     );
     expect(res.redirect).toBeCalledTimes(1);
     expect(res.redirect).toBeCalledWith(expectedUrl);
@@ -65,7 +80,6 @@ describe('newsletter unsubscribe api', () => {
 
   it('should log a console error if newsletter unsubscrube fails and continue to redirect', async () => {
     const error = new Error('failed');
-    const consoleSpy = jest.spyOn(global.console, 'error').mockImplementation();
     newsletterSubscriptionServiceSpy.mockReturnValue(mockNewsletterService);
     (decryptSignedApiKey as jest.Mock).mockReturnValue(cookie);
     mockDecrypt.mockResolvedValue(decryptedEmail);
@@ -73,11 +87,11 @@ describe('newsletter unsubscribe api', () => {
       throw error;
     });
 
-    const req = {
+    const req = createMockRequest({
       cookies: {
         [cookieName.currentEmailAddress]: cookie,
       },
-    };
+    });
 
     const res = {
       redirect: jest.fn(),
@@ -93,10 +107,13 @@ describe('newsletter unsubscribe api', () => {
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(1);
     expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
       decryptedEmail,
-      NewsletterType.NEW_GRANTS
+      NewsletterType.NEW_GRANTS,
     );
-    expect(consoleSpy).toBeCalledTimes(1);
-    expect(consoleSpy).toBeCalledWith(error);
+    expect(logger.error).toBeCalledTimes(1);
+    expect(logger.error).toBeCalledWith(
+      'error unsubscribing from newsletter',
+      error,
+    );
     expect(res.redirect).toBeCalledTimes(1);
     expect(res.redirect).toBeCalledWith(expectedUrl);
   });
@@ -106,9 +123,9 @@ describe('newsletter unsubscribe api', () => {
     (decryptSignedApiKey as jest.Mock).mockReturnValue(cookie);
     mockDecrypt.mockResolvedValue(decryptedEmail);
 
-    const req = {
+    const req = createMockRequest({
       cookies: {},
-    };
+    });
 
     const res = {
       redirect: jest.fn(),

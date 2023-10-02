@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import SignupForm from './SignupForm';
 
@@ -20,7 +19,7 @@ const formData = {
 describe('Rendering Signup Form', () => {
   it('Should render Signup form', () => {
     render(
-      <SignupForm formData={formData} errors={[]} previousFormValues={{}} />
+      <SignupForm formData={formData} errors={[]} previousFormValues={{}} />,
     );
 
     const signupForm = screen.getByTestId('signup-form');
@@ -43,7 +42,7 @@ describe('Rendering Signup Form', () => {
 
   it('Should render form fields', () => {
     render(
-      <SignupForm formData={formData} errors={[]} previousFormValues={{}} />
+      <SignupForm formData={formData} errors={[]} previousFormValues={{}} />,
     );
 
     expect(screen.getByTestId('notification_privacy')).toBeDefined();
@@ -59,7 +58,7 @@ describe('Rendering Signup Form', () => {
 
   it('Should render any additional form fields', () => {
     render(
-      <SignupForm formData={formData} errors={[]} previousFormValues={{}} />
+      <SignupForm formData={formData} errors={[]} previousFormValues={{}} />,
     );
 
     const additionalFormFields = screen.getByTestId('hidden-field');
@@ -79,12 +78,12 @@ describe('Rendering Signup Form', () => {
           },
         ]}
         previousFormValues={{}}
-      />
+      />,
     );
 
     expect(screen.getByRole('alert')).toBeDefined();
     expect(screen.getByTestId('red-banner')).toHaveClass(
-      'govuk-form-group govuk-form-group--error'
+      'govuk-form-group govuk-form-group--error',
     );
     const emailError = screen.getByTestId('specific-error-message');
     expect(emailError).toBeDefined();
@@ -95,7 +94,7 @@ describe('Rendering Signup Form', () => {
           element.tagName.toLowerCase() === 'p' &&
           content === 'This is a test error.'
         );
-      })
+      }),
     ).toBeDefined();
 
     expect(screen.getByTestId('user_email')).toHaveClass('govuk-input--error');
@@ -107,7 +106,7 @@ describe('Rendering Signup Form', () => {
         formData={formData}
         errors={[]}
         previousFormValues={{ user_email: 'test@email.com' }}
-      />
+      />,
     );
 
     const emailField = screen.getByTestId('user_email');

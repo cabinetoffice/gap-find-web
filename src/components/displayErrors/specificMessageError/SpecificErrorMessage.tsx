@@ -1,12 +1,12 @@
 interface ReturnProps {
-  field: string,
-  error: string,
+  field: string;
+  error: string;
 }
 
 type SpecificErrorMessageProps = {
-  errors: ReturnProps[],
-  errorType: string
-}
+  errors: ReturnProps[];
+  errorType: string;
+};
 
 /**
  * Generic component to be used when adding a GDS error summary to one of our pages.
@@ -15,9 +15,12 @@ type SpecificErrorMessageProps = {
  * @param {Array} errors
  * @returns GDS error summary component
  */
-const SpecificErrorMessage = ({ errors, errorType }: SpecificErrorMessageProps) => {
+const SpecificErrorMessage = ({
+  errors,
+  errorType,
+}: SpecificErrorMessageProps) => {
   const errorMessagesAvailable = errors.some(
-    (error) => error.field === errorType
+    (error) => error.field === errorType,
   )
     ? true
     : false;

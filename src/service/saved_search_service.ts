@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axios } from '../../src/utils';
 
 //TODO remove these ESLint exceptions and fix
 export enum SavedSearchStatusType {
@@ -69,7 +69,7 @@ export async function getAllSavedSearches(email: string) {
 
 export async function updateStatus(
   savedSearchId: number,
-  status: SavedSearchStatusType
+  status: SavedSearchStatusType,
 ) {
   const response = await axios({
     method: 'patch',
