@@ -16,24 +16,35 @@ jest.mock('../../../src/service/api-key-service', () => ({
 jest.mock('../../../src/utils/encryption', () => ({
   decrypt: jest.fn(),
 }));
+jest.mock(
+  '../../../src/service/newsletter/newsletter-subscription-service',
+  () => ({
+    NewsletterSubscriptionService: {
+      getInstance: jest.fn(),
+    },
+  }),
+);
+jest.mock('../../../src/service/subscription-service', () => ({
+  SubscriptionService: {
+    getInstance: jest.fn(),
+  },
+}));
 jest.mock('../../../src/service/saved_search_service');
 
 const newsletterSubscriptionServiceSpy = ({ throwsError }) =>
-  jest
-    .spyOn(NewsletterSubscriptionService, 'getInstance')
-    .mockImplementation(() => ({
-      unsubscribeFromNewsletter: () => {
-        if (throwsError) {
-          throw new AxiosError();
-        } else {
-          return Promise.resolve();
-        }
-      },
-      getByEmailAndNewsletterType: undefined,
-    }));
+  NewsletterSubscriptionService.getInstance.mockImplementation(() => ({
+    unsubscribeFromNewsletter: () => {
+      if (throwsError) {
+        throw new AxiosError();
+      } else {
+        return Promise.resolve();
+      }
+    },
+    getByEmailAndNewsletterType: undefined,
+  }));
 
 const grantSubscriptionSpy = ({ throwsError }) =>
-  jest.spyOn(SubscriptionService, 'getInstance').mockImplementation(() => ({
+  SubscriptionService.getInstance.mockImplementation(() => ({
     addSubscription: null,
     getSubscriptionByEmailAndGrantId: null,
     getSubscriptionsByEmail: null,
@@ -104,6 +115,6 @@ describe('getServerSideProps()', () => {
           error: mockServiceThrowsError,
         },
       });
-    }
+    },
   );
 });

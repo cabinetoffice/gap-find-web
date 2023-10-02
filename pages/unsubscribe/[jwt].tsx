@@ -23,7 +23,7 @@ export async function getServerSideProps({ query: { jwt = '' } = {} }) {
       emailAddress = await decrypt(emailAddress);
     }
     await handleUnsubscribe(type, id, emailAddress);
-    return { props: { error: false } }
+    return { props: { error: false } };
   } catch (error: unknown) {
     return handleServerSideError(error, { type, emailAddress, id });
   }
@@ -39,15 +39,15 @@ const handleServerSideError = (
     type: keyof typeof UNSUBSCRIBE_HANDLER_MAP;
     id: NotificationKey;
     emailAddress: string;
-  }
+  },
 ) => {
   if (!type || !id || !emailAddress) {
     console.error('Failed to decrypt jwt. Error: ' + JSON.stringify(error));
   } else {
     console.error(
       `Failed to unsubscribe from notification type: ${type}, id: ${id}, with email: ${emailAddress}. Error: ${JSON.stringify(
-        error
-      )}`
+        error,
+      )}`,
     );
   }
   return { props: { error: true } };
@@ -55,13 +55,13 @@ const handleServerSideError = (
 
 const grantSubscriptionHandler = async (
   id: NotificationKey,
-  emailAddress: string
+  emailAddress: string,
 ) => {
   const subscriptionService = SubscriptionService.getInstance();
 
   return subscriptionService.deleteSubscriptionByEmailAndGrantId(
     emailAddress,
-    id as string
+    id as string,
   );
 };
 
@@ -71,7 +71,7 @@ const newsletterHandler = async (id: NotificationKey, emailAddress: string) => {
 
   return newsletterSubscriptionService.unsubscribeFromNewsletter(
     emailAddress,
-    id as NewsletterType
+    id as NewsletterType,
   );
 };
 
@@ -87,12 +87,12 @@ const UNSUBSCRIBE_HANDLER_MAP = {
 const handleUnsubscribe = async (
   type: keyof typeof UNSUBSCRIBE_HANDLER_MAP,
   id: NotificationKey,
-  emailAddress: string
+  emailAddress: string,
 ) => UNSUBSCRIBE_HANDLER_MAP[type](id, emailAddress);
 
 type NotificationKey = string | NewsletterType | number;
 
-const Unsubscribe = (props: undefined | {error: boolean}) => {
+const Unsubscribe = (props: undefined | { error: boolean }) => {
   if (props.error) {
     return <ServiceErrorPage />;
   }
