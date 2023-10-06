@@ -1,12 +1,25 @@
 // eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextRequest } from 'next/server';
 import { NextApiRequest } from 'next';
-import getLogger from 'pino';
+import pino from 'pino';
 import { HEADERS } from './constants';
 
-const isProd = process.env.NODE_ENV === 'production';
+const log = pino({
+  browser: {
+    write(obj) {
+      try {
+        console.log(JSON.stringify(obj));
+      } catch (err) {
+        if (err instanceof Error) {
+          console.log(JSON.stringify(err, ['name', 'message', 'stack']));
+        }
+        console.log(JSON.stringify({ message: 'Unknown error type' }));
+      }
+    },
+  },
+});
 
-const log = getLogger();
+const isProd = true;
 
 const CONSOLE_COLOURS = {
   BLACK: '\x1b[30m',
@@ -53,20 +66,18 @@ const getLoggerWithLevel =
   (level: LogLevel) => (logMessage: string, info?: object | Error) => {
     const date = new Date();
     const time = formatTime(date);
-    if (info && info instanceof Error)
-      // object spread ignores properties inherited from prototype
-      info = { ...info, message: info.message, stack: info.stack };
     if (!isProd) {
       console.log(
         `[${time}] ` +
           withLogColour(`${level.toUpperCase()}: ${logMessage}`, level),
       );
-      if (info) console.dir(info, { depth: null });
-    } else
-      log[getProdLogLevel(level)]({
-        logMessage,
-        ...info,
-      });
+      if (info) {
+        if (info instanceof Error)
+          // object spread ignores properties inherited from prototype
+          info = { ...info, message: info.message, stack: info.stack };
+        console.dir(info, { depth: null });
+      }
+    } else log[getProdLogLevel(level)](info, logMessage);
   };
 
 type Logger = Record<LogLevel, ReturnType<typeof getLoggerWithLevel>>;
