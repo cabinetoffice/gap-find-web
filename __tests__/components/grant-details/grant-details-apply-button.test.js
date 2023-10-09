@@ -8,14 +8,21 @@ describe('GrantDetailsApplyButton component', () => {
       grantShowApplyButton: true,
     };
 
-    render(<GrantDetailsApplyButton grant={grantWithApplyButtonShown} />);
+    render(
+      <GrantDetailsApplyButton
+        grant={grantWithApplyButtonShown}
+        applicantUrl={'http://localhost'}
+      />,
+    );
 
     const link = screen.getByRole('button', { name: 'Start new application' });
     const button = screen.getByText('Start new application');
 
     expect(link).toBeDefined();
     expect(button).toBeDefined();
-    expect(link.getAttribute('href')).toBe('/apply/test');
+    expect(link.getAttribute('href')).toBe(
+      `http://localhost/api/redirect-from-find?slug=${grantWithApplyButtonShown.label}`,
+    );
     expect(button.getAttribute('class')).toBe('govuk-button');
     expect(button.getAttribute('disabled')).toBeNull();
     expect(button.getAttribute('aria-disabled')).toBe('false');
@@ -35,7 +42,7 @@ describe('GrantDetailsApplyButton component', () => {
     const button = screen.getByText('Start new application');
     expect(button).toBeDefined();
     expect(button.getAttribute('class')).toBe(
-      'govuk-button govuk-button--disabled'
+      'govuk-button govuk-button--disabled',
     );
     expect(button.getAttribute('disabled')).not.toBeNull();
     expect(button.getAttribute('aria-disabled')).toBe('true');
