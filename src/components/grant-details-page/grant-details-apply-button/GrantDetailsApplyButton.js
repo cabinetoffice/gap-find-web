@@ -6,8 +6,9 @@ export function GrantDetailsApplyButton({ grant, applicantUrl }) {
     <div className="govuk-grid-row govuk-body">
       <div className="govuk-grid-column-full">
         {grant.grantShowApplyButton ? (
-          // <Link href={`${applicantUrl}/api/redirect?slug=${grant.label}`}>
-          <Link href={`${applicantUrl}/api/redirect?slug=test-grant-1-2`}>
+          <Link
+            href={`${applicantUrl}/api/redirect-from-find?slug=${grant.label}`}
+          >
             <a
               target="_blank"
               className="govuk-button"
