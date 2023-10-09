@@ -19,7 +19,7 @@ const log = pino({
   },
 });
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = true;
 
 const CONSOLE_COLOURS = {
   BLACK: '\x1b[30m',
