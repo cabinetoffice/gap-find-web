@@ -4,9 +4,12 @@ import axios, {
   AxiosResponse,
   AxiosStatic,
 } from 'axios';
+import { v4 } from 'uuid';
 import { logger } from './logger';
+import { HEADERS } from './constants';
 
 const requestInterceptor = (request: AxiosRequestConfig) => {
+  request.headers[HEADERS.CORRELATION_ID] = v4();
   logger.http('Outgoing request', request);
   return request;
 };

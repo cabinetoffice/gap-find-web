@@ -5,10 +5,9 @@ import { logger } from './src/utils';
 import { HEADERS } from './src/utils/constants';
 
 const asObject = (entries: IterableIterator<[string, string]>) =>
-  Array.from(entries).reduce(
-    (acc, [key, value]) => ({ ...acc, [key]: value }),
-    {} as object,
-  );
+  Array.from(entries)
+    .filter(([key]) => key !== 'cookie')
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {} as object);
 
 const formatRequest = (req: NextRequest) => ({
   url: req.url,
