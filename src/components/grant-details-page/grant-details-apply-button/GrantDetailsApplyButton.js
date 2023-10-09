@@ -1,17 +1,13 @@
 import Link from 'next/link';
 import gloss from '../../../utils/glossary.json';
 
-export function GrantDetailsApplyButton({ grant }) {
+export function GrantDetailsApplyButton({ grant, applicantUrl }) {
   return (
     <div className="govuk-grid-row govuk-body">
       <div className="govuk-grid-column-full">
         {grant.grantShowApplyButton ? (
-          <Link
-            href={{
-              pathname: '/apply/[pid]',
-              query: { pid: grant.label },
-            }}
-          >
+          // <Link href={`${applicantUrl}/api/redirect?slug=${grant.label}`}>
+          <Link href={`${applicantUrl}/api/redirect?slug=test-grant-1-2`}>
             <a
               target="_blank"
               className="govuk-button"
