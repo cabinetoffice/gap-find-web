@@ -205,6 +205,7 @@ describe('grants-pid page', () => {
       process.env.ENABLE_AWARDS_TAB = true;
       process.env.ENABLE_FAQ_TAB = true;
       process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
+      process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'true';
       fetchEntry.mockResolvedValue({
         props: {
           grantDetail: 'test-grant',
@@ -221,6 +222,7 @@ describe('grants-pid page', () => {
             props: { grantDetail: 'test-grant' },
           },
           applicantUrl: 'applicantUrl',
+          newMandatoryQuestionsEnabled: 'true',
         },
       });
     });
@@ -229,6 +231,7 @@ describe('grants-pid page', () => {
       process.env.ENABLE_AWARDS_TAB = false;
       process.env.ENABLE_FAQ_TAB = false;
       process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
+      process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'true';
 
       fetchEntry.mockResolvedValue(props);
 
@@ -240,6 +243,7 @@ describe('grants-pid page', () => {
           enableFAQTab: 'false',
           grantDetail: { props: { grantDetail: 'test-grant' } },
           applicantUrl: 'applicantUrl',
+          newMandatoryQuestionsEnabled: 'true',
         },
       });
     });
@@ -248,6 +252,7 @@ describe('grants-pid page', () => {
       process.env.ENABLE_AWARDS_TAB = false;
       process.env.ENABLE_FAQ_TAB = true;
       process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
+      process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'true';
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -258,6 +263,7 @@ describe('grants-pid page', () => {
           enableFAQTab: 'true',
           grantDetail: { props: { grantDetail: 'test-grant' } },
           applicantUrl: 'applicantUrl',
+          newMandatoryQuestionsEnabled: 'true',
         },
       });
     });
@@ -266,6 +272,7 @@ describe('grants-pid page', () => {
       process.env.ENABLE_AWARDS_TAB = true;
       process.env.ENABLE_FAQ_TAB = false;
       process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
+      process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'true';
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -276,6 +283,7 @@ describe('grants-pid page', () => {
           enableFAQTab: 'false',
           grantDetail: { props: { grantDetail: 'test-grant' } },
           applicantUrl: 'applicantUrl',
+          newMandatoryQuestionsEnabled: 'true',
         },
       });
     });
