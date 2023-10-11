@@ -10,7 +10,9 @@ import gloss from '../../src/utils/glossary.json';
 
 export async function getServerSideProps({ params }) {
   let path = params.pid;
-
+  const applicantUrl = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
+  const newMandatoryQuestionsEnabled =
+    process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED;
   const grantDetail = await fetchEntry(path);
   if (
     grantDetail.props.grantDetail === null ||
@@ -33,11 +35,19 @@ export async function getServerSideProps({ params }) {
       enableAwardsTab: process.env.ENABLE_AWARDS_TAB
         ? process.env.ENABLE_AWARDS_TAB
         : true,
+      applicantUrl,
+      newMandatoryQuestionsEnabled,
     },
   };
 }
 
-const Grants = ({ grantDetail, enableFAQTab, enableAwardsTab }) => {
+const Grants = ({
+  grantDetail,
+  enableFAQTab,
+  enableAwardsTab,
+  applicantUrl,
+  newMandatoryQuestionsEnabled,
+}) => {
   const router = useRouter();
   const grant = grantDetail.props.grantDetail.fields;
 
@@ -71,7 +81,11 @@ const Grants = ({ grantDetail, enableFAQTab, enableAwardsTab }) => {
             <GrantDetailsSidebar grantLabel={grant.label} />
           </div>
 
-          <GrantDetailsApplyButton grant={grant} />
+          <GrantDetailsApplyButton
+            grant={grant}
+            applicantUrl={applicantUrl}
+            newMandatoryQuestionsEnabled={newMandatoryQuestionsEnabled}
+          />
 
           <GrantDetailsTabs grant={grant} filteredOutTabs={filteredOutTabs} />
         </div>

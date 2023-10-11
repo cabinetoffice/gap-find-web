@@ -204,6 +204,8 @@ describe('grants-pid page', () => {
     it('should return the correct props with true when both ENABLE TABS envs are set to true', async () => {
       process.env.ENABLE_AWARDS_TAB = true;
       process.env.ENABLE_FAQ_TAB = true;
+      process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
+      process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'true';
       fetchEntry.mockResolvedValue({
         props: {
           grantDetail: 'test-grant',
@@ -216,7 +218,11 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'true',
           enableFAQTab: 'true',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantDetail: {
+            props: { grantDetail: 'test-grant' },
+          },
+          applicantUrl: 'applicantUrl',
+          newMandatoryQuestionsEnabled: 'true',
         },
       });
     });
@@ -224,6 +230,9 @@ describe('grants-pid page', () => {
     it('should return the correct props with false when both ENABLE TABS envs are set to false', async () => {
       process.env.ENABLE_AWARDS_TAB = false;
       process.env.ENABLE_FAQ_TAB = false;
+      process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
+      process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'true';
+
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -233,6 +242,8 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'false',
           enableFAQTab: 'false',
           grantDetail: { props: { grantDetail: 'test-grant' } },
+          applicantUrl: 'applicantUrl',
+          newMandatoryQuestionsEnabled: 'true',
         },
       });
     });
@@ -240,6 +251,8 @@ describe('grants-pid page', () => {
     it('should return the correct props when Awards is set to false in the env and faq is set to true respectively', async () => {
       process.env.ENABLE_AWARDS_TAB = false;
       process.env.ENABLE_FAQ_TAB = true;
+      process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
+      process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'true';
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -249,6 +262,8 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'false',
           enableFAQTab: 'true',
           grantDetail: { props: { grantDetail: 'test-grant' } },
+          applicantUrl: 'applicantUrl',
+          newMandatoryQuestionsEnabled: 'true',
         },
       });
     });
@@ -256,6 +271,8 @@ describe('grants-pid page', () => {
     it('should return the correct props when faq is set to false in the env and awards is set to true respectively', async () => {
       process.env.ENABLE_AWARDS_TAB = true;
       process.env.ENABLE_FAQ_TAB = false;
+      process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
+      process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'true';
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -265,6 +282,8 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'true',
           enableFAQTab: 'false',
           grantDetail: { props: { grantDetail: 'test-grant' } },
+          applicantUrl: 'applicantUrl',
+          newMandatoryQuestionsEnabled: 'true',
         },
       });
     });
