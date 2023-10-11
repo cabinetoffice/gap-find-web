@@ -9,7 +9,7 @@ export function HomepageSidebar({ header, applicantUrl }) {
         here too.
       </p>
       <p>
-        <Link href="/notifications/check-email">
+        <Link href="/notifications/manage-notifications">
           <a
             className="govuk-link govuk-body"
             data-cy="cyManageNotificationsHomeLink"

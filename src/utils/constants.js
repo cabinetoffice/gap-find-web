@@ -4,6 +4,7 @@ export const cookieName = {
 };
 
 export const notificationRoutes = {
+  loginNotice: '/login-notice',
   emailSaveSearch: '/save-search/email',
   checkEmail: '/notifications/check-email',
   addSubscription: '/api/notification-signup/',

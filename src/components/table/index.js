@@ -1,8 +1,8 @@
 function Table({
   caption,
   captionClassName,
-  className,
-  firstCellIsHeader,
+  className = '',
+  firstCellIsHeader = false,
   head,
   rows,
   ...attributes
