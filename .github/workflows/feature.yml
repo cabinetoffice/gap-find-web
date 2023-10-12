@@ -90,16 +90,16 @@ jobs:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
           cache: 'yarn'
 
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
+
       - name: Snyk setup
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --fail-on=all
-
-      - name: Install dependencies
-        run: |
-          yarn install --frozen-lockfile
           
       - name: Units Tests
         run: |
