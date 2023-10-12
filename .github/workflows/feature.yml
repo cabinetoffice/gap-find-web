@@ -45,7 +45,7 @@ jobs:
       # ==============================
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Generate .env
         run: |
@@ -114,7 +114,7 @@ jobs:
           yarn build
 
       - name: Run cypress tests (accessibility only)
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           start: yarn start
           record: false
