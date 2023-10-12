@@ -95,9 +95,6 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --fail-on=all
-          
-      - name: Install yarn
-        run: npm install -g yarn
 
       - name: Read yarn cache directory path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -116,7 +113,7 @@ jobs:
       - name: Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
-          yarn install --frozen-lockfile
+          yarn install --immutable
 
       - name: Save cached dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
