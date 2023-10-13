@@ -41,7 +41,7 @@ describe('getServerSideProps', () => {
       redirect: {
         permanent: false,
         destination:
-          'applicantUrl/api/redirect-from-find?slug=test-grant-1-2&grantWebpageUrl=https://example.com',
+          'applicantUrl/api/redirect-from-find?slug=your-path&grantWebpageUrl=https://example.com',
       },
     });
   });
