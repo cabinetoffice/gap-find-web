@@ -24,7 +24,7 @@ export async function getServerSideProps({ params }) {
 
   const linkHref =
     newMandatoryQuestionsEnabled === 'true'
-      ? `${applicantUrl}/api/redirect-from-find?slug=test-grant-1-2&grantWebpageUrl=${grantDetail.props.grantDetail.fields.grantWebpageUrl}`
+      ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.props.grantDetail.fields.grantWebpageUrl}`
       : grantDetail.props.grantDetail.fields.grantWebpageUrl;
 
   return {
