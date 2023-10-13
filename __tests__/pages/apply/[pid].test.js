@@ -10,6 +10,11 @@ jest.mock('../../../src/utils/contentFulPage.ts', () => ({
     }),
   ),
 }));
+const applicantUrlBackup = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
+const mandatoryQsEnabledBackup =
+  process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED;
+process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
+process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'false';
 
 describe('getServerSideProps', () => {
   it('should return a redirect object with the expected destination when new mandatory question feature flag is off ', async () => {
@@ -41,3 +46,6 @@ describe('getServerSideProps', () => {
     });
   });
 });
+
+process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = applicantUrlBackup;
+process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = mandatoryQsEnabledBackup;
