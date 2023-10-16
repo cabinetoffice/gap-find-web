@@ -55,7 +55,7 @@ const manageNotificationsPattern = new URLPattern({
 export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
   // @TODO: check if user is saving notification here -
   // if so, set data to be saved in cookie in response
-  // not that if we get here, the user either isn't logged in
+  // note that if we get here, the user either isn't logged in
   // or needs to refresh their session, and will be redirected
   // away from the app before returning
   if (manageNotificationsPattern.test({ pathname: req.nextUrl.pathname })) {
