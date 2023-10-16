@@ -77,7 +77,28 @@ const getMobileLinkMapper = (router) =>
     );
   };
 
-const MobileViewMenu = ({ navItems }) => {
+const navItems = [
+  {
+    pageId: 'home',
+    link: '/',
+    as: '/',
+    title: 'Home',
+  },
+  {
+    pageId: 'browseGrants',
+    link: '/grants',
+    as: '/[slug]',
+    title: 'Browse grants',
+  },
+  {
+    pageId: 'aboutGrants',
+    link: '/info/about-us',
+    as: '/info/about-us',
+    title: 'About us',
+  },
+];
+
+const MobileViewMenu = () => {
   const router = useRouter();
   const mobileLinks = navItems.map(getMobileLinkMapper(router));
   return (
@@ -97,7 +118,9 @@ const MobileViewMenu = ({ navItems }) => {
   );
 };
 
-const BetaBlock = ({ mailToFeebackContent }) => (
+const mailToFeebackContent = `https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link`;
+
+const BetaBlock = () => (
   <div className="govuk-width-container ">
     <div className="govuk-phase-banner">
       <p className="govuk-phase-banner__content">
@@ -122,7 +145,7 @@ const BetaBlock = ({ mailToFeebackContent }) => (
   </div>
 );
 
-const MainNavBlock = ({ navItems }) => {
+const MainNavBlock = () => {
   const router = useRouter();
   const links = navItems.map((btn, index) => {
     return (
@@ -158,55 +181,27 @@ const MainNavBlock = ({ navItems }) => {
   );
 };
 
-const navItems = [
-  {
-    pageId: 'home',
-    link: '/',
-    as: '/',
-    title: 'Home',
-  },
-  {
-    pageId: 'browseGrants',
-    link: '/grants',
-    as: '/[slug]',
-    title: 'Browse grants',
-  },
-  {
-    pageId: 'aboutGrants',
-    link: '/info/about-us',
-    as: '/info/about-us',
-    title: 'About us',
-  },
-];
-
-const Header = ({ isBasic = false }) => {
-  // line-break: %0D%0A
-  // space: %20
-  // const mailToFeebackContent = `mailto:govtgrantscommunity@cabinetoffice.gov.uk?subject=Feedback%20for%20Find%20a%20Grant&body=Is%20the%20feedback%20about%20the%20whole%20site%20or%20a%20specific%20page?%0D%0A%0D%0AWhat%20is%20the%20feedback?%20Please%20do%20not%20include%20personal%20or%20financial%20information`;
-  const mailToFeebackContent = `https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link`;
-
-  return (
-    <>
-      <Link href="#main-content">
-        <a
-          className="govuk-skip-link"
-          data-module="govuk-skip-link"
-          data-cy="cySkipLink"
-          onClick={skipToMainContent}
-        >
-          Skip to main content
-        </a>
-      </Link>
-      <GovUKHeader />
-      <MobileViewMenu navItems={navItems} />
-      {!isBasic && (
-        <>
-          <BetaBlock mailToFeebackContent={mailToFeebackContent} />
-          <MainNavBlock navItems={navItems} />
-        </>
-      )}
-    </>
-  );
-};
+const Header = ({ isBasic = false }) => (
+  <>
+    <Link href="#main-content">
+      <a
+        className="govuk-skip-link"
+        data-module="govuk-skip-link"
+        data-cy="cySkipLink"
+        onClick={skipToMainContent}
+      >
+        Skip to main content
+      </a>
+    </Link>
+    <GovUKHeader />
+    <MobileViewMenu />
+    {!isBasic && (
+      <>
+        <BetaBlock />
+        <MainNavBlock />
+      </>
+    )}
+  </>
+);
 
 export default Header;

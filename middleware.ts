@@ -6,6 +6,7 @@ import { checkUserLoggedIn } from './src/service';
 import {
   HEADERS,
   notificationRoutes,
+  LOGIN_NOTICE_TYPES,
   logger,
   getJwtFromCookies,
   addErrorInfo,
@@ -59,7 +60,7 @@ export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
   // away from the app before returning
   if (manageNotificationsPattern.test({ pathname: req.nextUrl.pathname })) {
     return NextResponse.redirect(
-      `${HOST}${notificationRoutes.loginNotice}/manage-notifications`,
+      `${HOST}${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS}`,
     );
   }
   return NextResponse.redirect(redirectUri);
@@ -84,8 +85,7 @@ const authenticateRequest = async (req: NextRequest) => {
     const expiresAt = new Date(jwtPayload.expiresAt as string);
 
     if (isWithinNumberOfMinsOfExpiry(expiresAt, 30)) {
-      return buildMiddlewareResponse(
-        req,
+      return NextResponse.redirect(
         `${USER_SERVICE_HOST}/refresh-token?redirectUrl=${HOST}${req.nextUrl.pathname}`,
       );
     }
@@ -102,8 +102,7 @@ const isAuthenticatedPath = (url: NextURL) =>
   authenticatedPaths.some((path) => url.pathname.startsWith(path));
 
 export const middleware = async (req: NextRequest) => {
-  if (!req.headers.get('user-agent').startsWith('ELB-HealthChecker'))
-    logRequest(req);
-
+  const userAgentHeader = req.headers.get('user-agent') || '';
+  if (!userAgentHeader.startsWith('ELB-HealthChecker')) logRequest(req);
   if (isAuthenticatedPath(req.nextUrl)) return authenticateRequest(req);
 };

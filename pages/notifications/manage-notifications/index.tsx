@@ -29,8 +29,6 @@ import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
 import { getJwtFromCookies } from '../../../src/utils';
 
-const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
-
 //TODO GAP-560 / GAP-592
 const breadcrumbsRoutes = [
   {
@@ -75,9 +73,11 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
   });
 };
 
+const checkOneLoginEnabled = () => process.env.ONE_LOGIN_ENABLED === 'true';
+
 const getEmail = async (ctx) => {
-  if (!ONE_LOGIN_ENABLED) {
-    return await getEmailAddressFromCookies(ctx);
+  if (!checkOneLoginEnabled()) {
+    return getEmailAddressFromCookies(ctx);
   }
   const { jwtPayload } = await getJwtFromCookies(ctx.req);
   return jwtPayload.email as string;
@@ -85,7 +85,7 @@ const getEmail = async (ctx) => {
 
 export const getServerSideProps = async (ctx) => {
   if (
-    ONE_LOGIN_ENABLED &&
+    !checkOneLoginEnabled() &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
   ) {
     return {

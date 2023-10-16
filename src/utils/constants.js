@@ -3,8 +3,19 @@ export const cookieName = {
   notificationList: 'notificationList',
 };
 
+export const NOTIFICATION_TYPES = {
+  NEWSLETTER: 'newsletter',
+  SAVED_SEARCH: 'saved-search',
+  SUBSCRIPTION: 'subscription',
+};
+
+export const LOGIN_NOTICE_TYPES = {
+  ...NOTIFICATION_TYPES,
+  MANAGE_NOTIFICATIONS: 'manage-notifications',
+};
+
 export const notificationRoutes = {
-  loginNotice: '/login-notice',
+  loginNotice: '/login-notice/',
   emailSaveSearch: '/save-search/email',
   checkEmail: '/notifications/check-email',
   addSubscription: '/api/notification-signup/',

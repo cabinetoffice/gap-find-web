@@ -1,28 +1,30 @@
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Layout from '../../src/components/partials/Layout';
-import { notificationRoutes } from '../../src/utils';
+import { LOGIN_NOTICE_TYPES, notificationRoutes } from '../../src/utils';
 
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
 
+const { MANAGE_NOTIFICATIONS } = LOGIN_NOTICE_TYPES;
+
 const NOTICE_CONTENT = {
-  'manage-notifications': {
+  [MANAGE_NOTIFICATIONS]: {
     title: 'Manage your notifications',
     content: [
       'To manage your notifications, you need to sign in with GOV.UK One Login.',
       'If you do not have a GOV.UK One Login, you can create one.',
-
       'If you want to unsubscribe from notifications without creating a GOV.UK One Login, you can use the unsubscribe link in the emails we send to you.',
     ],
     redirectUrl: notificationRoutes.manageNotifications,
   },
 };
 
-export const getServerSideProps = (ctx: GetServerSidePropsContext) => {
-  return {
-    props: { type: ctx.params.type, userServiceHost: USER_SERVICE_HOST },
-  };
-};
+export const getServerSideProps = (ctx: GetServerSidePropsContext) => ({
+  props: {
+    type: ctx.params.type,
+    userServiceHost: USER_SERVICE_HOST,
+  },
+});
 
 const LoginNotice = ({ type, userServiceHost }) => {
   const { title, content, redirectUrl } = NOTICE_CONTENT[type];
