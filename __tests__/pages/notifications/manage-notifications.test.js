@@ -30,6 +30,7 @@ import {
   testResultSuccess,
   testSubscriptionArray,
 } from './manage-notifications.data';
+import getConfig from 'next/config';
 
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/utils/hash');
@@ -43,10 +44,6 @@ jest.mock('../../../src/utils/jwt', () => ({
     jwt: 'a.b.c',
   })),
 }));
-
-jest.mock('next/config', () =>
-  jest.fn().mockImplementation(() => ({ serverRuntimeConfig: {} })),
-);
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -134,7 +131,7 @@ describe('Testing manage-notifications component', () => {
 });
 
 describe('get server side props for manage notifications page', () => {
-  const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
+  const getConfigReturnVal = getConfig();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -150,12 +147,12 @@ describe('get server side props for manage notifications page', () => {
 
     jest.useFakeTimers('modern');
     jest.setSystemTime(new Date(2022, 2, 16));
-    process.env.ONE_LOGIN_ENABLED = 'false';
+    getConfig.mockReturnValue({
+      publicRuntimeConfig: { oneLoginEnabled: false },
+    });
   });
 
-  afterEach(() => {
-    process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
-  });
+  afterAll(() => getConfig.mockReturnValue(getConfigReturnVal));
 
   it('should proceed when a cookie is detected and no errors are thrown', async () => {
     cookieExistsAndContainsValidJwt.mockReturnValue(true);

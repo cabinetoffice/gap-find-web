@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import getConfig from 'next/config';
 import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import { ConfirmationMessage } from '../../../src/components/confirmation-message/ConfirmationMessage';
 import { ManageNewsletter } from '../../../src/components/manage-newsletter/ManageNewsletter';
@@ -73,7 +74,10 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
   });
 };
 
-const checkOneLoginEnabled = () => process.env.ONE_LOGIN_ENABLED === 'true';
+const checkOneLoginEnabled = () => {
+  const { publicRuntimeConfig } = getConfig();
+  return publicRuntimeConfig.oneLoginEnabled;
+};
 
 const getEmail = async (ctx) => {
   if (!checkOneLoginEnabled()) {
