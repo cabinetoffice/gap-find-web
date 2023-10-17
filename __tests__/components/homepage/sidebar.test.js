@@ -1,15 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import { HomepageSidebar } from '../../../src/components/homepage/sidebar/HomepageSidebar';
 import { notificationRoutes } from '../../../src/utils';
+import getConfig from 'next/config';
+
 const applicantUrl = 'http://localhost:3002';
-const component = (
-  <HomepageSidebar header={'Test'} applicantUrl={applicantUrl} />
-);
+const component = <HomepageSidebar header="Test" applicantUrl={applicantUrl} />;
 
 const sidebartext =
   'See all the grant updates you have signed up for. You can unsubscribe here too.';
 
 describe('HomepageSidebar component', () => {
+  afterEach(jest.clearAllMocks);
+
   it('should render heading of the sidebar', () => {
     render(component);
     expect(screen.getAllByRole('heading', { name: 'Test' })).toBeDefined();
@@ -21,8 +23,9 @@ describe('HomepageSidebar component', () => {
   });
 
   it('should render the manage notifications link with the correct href when one login flag disabled', () => {
-    const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
-    process.env.ONE_LOGIN_ENABLED = 'false';
+    getConfig.mockReturnValueOnce({
+      publicRuntimeConfig: { oneLoginEnabled: false },
+    });
     render(component);
 
     const manageNotificationsLink = screen.getByRole('link', {
@@ -32,13 +35,9 @@ describe('HomepageSidebar component', () => {
     expect(manageNotificationsLink.getAttribute('href')).toBe(
       notificationRoutes.checkEmail,
     );
-
-    process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
   });
 
   it('should render the manage notifications link with the correct href when one login flag enabled', () => {
-    const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
-    process.env.ONE_LOGIN_ENABLED = 'true';
     render(component);
 
     const manageNotificationsLink = screen.getByRole('link', {
@@ -48,8 +47,6 @@ describe('HomepageSidebar component', () => {
     expect(manageNotificationsLink.getAttribute('href')).toBe(
       notificationRoutes.manageNotifications,
     );
-
-    process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
   });
 
   it('Should render sign in and apply section', () => {

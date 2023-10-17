@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { notificationRoutes } from '../../../utils';
+import getConfig from 'next/config';
 
 export function HomepageSidebar({ header, applicantUrl }) {
-  const manageNotificationsLink =
-    process.env.ONE_LOGIN_ENABLED === 'true'
-      ? notificationRoutes.manageNotifications
-      : notificationRoutes.checkEmail;
+  const { publicRuntimeConfig } = getConfig();
+  console.log(publicRuntimeConfig);
+  const manageNotificationsLink = publicRuntimeConfig.oneLoginEnabled
+    ? notificationRoutes.manageNotifications
+    : notificationRoutes.checkEmail;
   return (
     <div className="govuk-grid-column-one-third">
       <hr className="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-2 govuk-border-colour" />
