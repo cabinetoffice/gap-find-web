@@ -83,7 +83,6 @@ const authenticateRequest = async (req: NextRequest) => {
     }
 
     const expiresAt = new Date(jwtPayload.expiresAt as string);
-
     if (isWithinNumberOfMinsOfExpiry(expiresAt, 30)) {
       return NextResponse.redirect(
         `${USER_SERVICE_HOST}/refresh-token?redirectUrl=${HOST}${req.nextUrl.pathname}`,
