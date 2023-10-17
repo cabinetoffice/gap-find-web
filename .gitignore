@@ -1,5 +1,5 @@
 .next/
-.env*
+.env
 build/
 node_modules/
 ADD-TO-ROOT-OF-BUILD/

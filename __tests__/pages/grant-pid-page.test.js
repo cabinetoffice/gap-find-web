@@ -216,7 +216,9 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'true',
           enableFAQTab: 'true',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantDetail: {
+            props: { grantDetail: 'test-grant' },
+          },
         },
       });
     });
@@ -224,6 +226,7 @@ describe('grants-pid page', () => {
     it('should return the correct props with false when both ENABLE TABS envs are set to false', async () => {
       process.env.ENABLE_AWARDS_TAB = false;
       process.env.ENABLE_FAQ_TAB = false;
+
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });

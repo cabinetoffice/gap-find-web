@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { GrantDetailsApplyButton } from '../../../src/components/grant-details-page/grant-details-apply-button/GrantDetailsApplyButton';
 
 describe('GrantDetailsApplyButton component', () => {
-  it('should render the apply button and a link if the show apply button parameter is set to true', () => {
+  it('should render the apply button and a link if the show apply button parameter is set to true ', () => {
     const grantWithApplyButtonShown = {
       label: 'test',
       grantShowApplyButton: true,
@@ -15,7 +15,7 @@ describe('GrantDetailsApplyButton component', () => {
 
     expect(link).toBeDefined();
     expect(button).toBeDefined();
-    expect(link.getAttribute('href')).toBe('/apply/test');
+    expect(link.getAttribute('href')).toBe(`/apply/test`);
     expect(button.getAttribute('class')).toBe('govuk-button');
     expect(button.getAttribute('disabled')).toBeNull();
     expect(button.getAttribute('aria-disabled')).toBe('false');
@@ -35,7 +35,7 @@ describe('GrantDetailsApplyButton component', () => {
     const button = screen.getByText('Start new application');
     expect(button).toBeDefined();
     expect(button.getAttribute('class')).toBe(
-      'govuk-button govuk-button--disabled'
+      'govuk-button govuk-button--disabled',
     );
     expect(button.getAttribute('disabled')).not.toBeNull();
     expect(button.getAttribute('aria-disabled')).toBe('true');

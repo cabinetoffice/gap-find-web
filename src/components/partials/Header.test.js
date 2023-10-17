@@ -2,13 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import Header from './Header';
 
-jest.mock('next/router', () => {
-  return {
-    useRouter: jest.fn(),
-  };
-});
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
-const headerComponent = <Header />;
+const headerComponent = <Header isBasic />;
 
 describe('Header Component that is used within the layout', () => {
   it('should render the browse grants links (js and non-js) with the correct redirect locations', () => {
