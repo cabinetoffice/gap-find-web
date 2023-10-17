@@ -1,7 +1,6 @@
 // eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { NextURL } from 'next/dist/server/web/next-url';
-import getConfig from 'next/config';
 import { v4 } from 'uuid';
 import { checkUserLoggedIn } from './src/service';
 import {
@@ -14,6 +13,7 @@ import {
 } from './src/utils';
 
 const HOST = process.env.HOST;
+const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
 const APPLICANT_HOST = process.env.APPLICANT_HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
 
@@ -96,13 +96,8 @@ const authenticateRequest = async (req: NextRequest) => {
 
 const authenticatedPaths = [notificationRoutes.manageNotifications];
 
-const checkOneLoginEnabled = () => {
-  const { publicRuntimeConfig } = getConfig();
-  return publicRuntimeConfig.oneLoginEnabled;
-};
-
 const isAuthenticatedPath = (url: NextURL) =>
-  checkOneLoginEnabled() &&
+  ONE_LOGIN_ENABLED &&
   authenticatedPaths.some((path) => url.pathname.startsWith(path));
 
 export const middleware = async (req: NextRequest) => {
