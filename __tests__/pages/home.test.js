@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import Home, { getServerSideProps } from '../../pages/index';
+import { notificationRoutes } from '../../src/utils';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -92,6 +93,8 @@ describe('Rendering the home page', () => {
   });
 
   it('Should render Manage notifications section', () => {
+    const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
+    process.env.ONE_LOGIN_ENABLED = 'false';
     render(component);
     expect(
       screen.getByRole('heading', { name: 'Manage notifications' }),
@@ -105,7 +108,7 @@ describe('Rendering the home page', () => {
       screen
         .getByRole('link', { name: 'Manage notifications and saved searches' })
         .closest('a'),
-    ).toHaveAttribute('href', '/notifications/check-email');
+    ).toHaveAttribute('href', notificationRoutes.checkEmail);
     expect(
       screen
         .getByRole('link', { name: 'through our feedback form' })
@@ -114,6 +117,8 @@ describe('Rendering the home page', () => {
       'href',
       'https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link',
     );
+
+    process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
   });
 
   it('Should render sign in and apply section', () => {

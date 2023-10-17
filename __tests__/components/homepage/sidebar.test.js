@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { HomepageSidebar } from '../../../src/components/homepage/sidebar/HomepageSidebar';
+import { notificationRoutes } from '../../../src/utils';
 const applicantUrl = 'http://localhost:3002';
 const component = (
   <HomepageSidebar header={'Test'} applicantUrl={applicantUrl} />
@@ -19,15 +20,36 @@ describe('HomepageSidebar component', () => {
     expect(screen.getByText(sidebartext)).toBeDefined();
   });
 
-  it('should render the manage notifications link with the correct href', () => {
+  it('should render the manage notifications link with the correct href when one login flag disabled', () => {
+    const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
+    process.env.ONE_LOGIN_ENABLED = 'false';
     render(component);
+
     const manageNotificationsLink = screen.getByRole('link', {
       name: 'Manage notifications and saved searches',
     });
     expect(manageNotificationsLink).toBeDefined();
     expect(manageNotificationsLink.getAttribute('href')).toBe(
-      '/notifications/check-email',
+      notificationRoutes.checkEmail,
     );
+
+    process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
+  });
+
+  it('should render the manage notifications link with the correct href when one login flag enabled', () => {
+    const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
+    process.env.ONE_LOGIN_ENABLED = 'true';
+    render(component);
+
+    const manageNotificationsLink = screen.getByRole('link', {
+      name: 'Manage notifications and saved searches',
+    });
+    expect(manageNotificationsLink).toBeDefined();
+    expect(manageNotificationsLink.getAttribute('href')).toBe(
+      notificationRoutes.manageNotifications,
+    );
+
+    process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
   });
 
   it('Should render sign in and apply section', () => {
