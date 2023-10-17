@@ -8,6 +8,7 @@ module.exports = {
   },
   publicRuntimeConfig: {
     oneLoginEnabled: process.env.ONE_LOGIN_ENABLED === 'true',
+    applicantHost: process.env.APPLICANT_HOST,
     host: process.env.HOST,
     userServiceHost: process.env.USER_SERVICE_HOST,
   },
