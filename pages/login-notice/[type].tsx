@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Layout from '../../src/components/partials/Layout';
 import { LOGIN_NOTICE_TYPES, notificationRoutes } from '../../src/utils';
 
+const HOST = process.env.HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
 
 const { MANAGE_NOTIFICATIONS } = LOGIN_NOTICE_TYPES;
@@ -15,7 +16,7 @@ const NOTICE_CONTENT = {
       'If you do not have a GOV.UK One Login, you can create one.',
       'If you want to unsubscribe from notifications without creating a GOV.UK One Login, you can use the unsubscribe link in the emails we send to you.',
     ],
-    redirectUrl: notificationRoutes.manageNotifications,
+    redirectUrl: `${HOST}${notificationRoutes.manageNotifications}`,
   },
 };
 
