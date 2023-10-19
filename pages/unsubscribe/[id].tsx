@@ -7,7 +7,11 @@ import { NewsletterSubscriptionService } from '../../src/service/newsletter/news
 import { NewsletterType } from '../../src/types/newsletter';
 import { deleteSaveSearch } from '../../src/service/saved_search_service';
 import ServiceErrorPage from '../service-error/index.page';
-import { getUnsubscribeReferenceFromId } from '../../src/service/unsubscribe.service';
+import {
+  getTypeFromNotificationIds,
+  getUnsubscribeReferenceFromId,
+  removeUnsubscribeReference,
+} from '../../src/service/unsubscribe.service';
 
 export async function getServerSideProps({ query: { id = '' } = {} }) {
   let emailAddress: string,
@@ -19,13 +23,18 @@ export async function getServerSideProps({ query: { id = '' } = {} }) {
       subscriptionId,
       newsletterId,
       savedSearchId,
-      type,
     } = await getUnsubscribeReferenceFromId(id as string);
 
-    notificationType = type;
+    notificationType = getTypeFromNotificationIds({
+      subscriptionId,
+      newsletterId,
+      savedSearchId,
+    });
     emailAddress = await decrypt(encryptedEmailAddress);
     notificationId = subscriptionId ?? newsletterId ?? savedSearchId;
-    await handleUnsubscribe(type, notificationId, emailAddress);
+
+    await handleUnsubscribe(notificationType, notificationId, emailAddress);
+    await removeUnsubscribeReference(id);
 
     return { props: { error: false } };
   } catch (error: unknown) {
@@ -69,7 +78,6 @@ const grantSubscriptionHandler = async (
   emailAddress: string,
 ) => {
   const subscriptionService = SubscriptionService.getInstance();
-
   return subscriptionService.deleteSubscriptionByEmailAndGrantId(
     emailAddress,
     id as string,
@@ -79,7 +87,6 @@ const grantSubscriptionHandler = async (
 const newsletterHandler = async (id: NotificationKey, emailAddress: string) => {
   const newsletterSubscriptionService =
     NewsletterSubscriptionService.getInstance();
-
   return newsletterSubscriptionService.unsubscribeFromNewsletter(
     emailAddress,
     id as NewsletterType,
@@ -100,15 +107,6 @@ const handleUnsubscribe = async (
   id: NotificationKey,
   emailAddress: string,
 ) => UNSUBSCRIBE_HANDLER_MAP[type](id, emailAddress);
-
-type NotificationKey = string | NewsletterType | number;
-
-type HandleServerSideErrorProps = {
-  id: string;
-  notificationId: NotificationKey;
-  notificationType: keyof typeof UNSUBSCRIBE_HANDLER_MAP;
-  emailAddress: string;
-};
 
 const Unsubscribe = (props: undefined | { error: boolean }) => {
   if (props.error) {
@@ -158,6 +156,15 @@ const Unsubscribe = (props: undefined | { error: boolean }) => {
       </Layout>
     </>
   );
+};
+
+type NotificationKey = string | NewsletterType | number;
+
+type HandleServerSideErrorProps = {
+  id: string;
+  notificationId: NotificationKey;
+  notificationType: keyof typeof UNSUBSCRIBE_HANDLER_MAP;
+  emailAddress: string;
 };
 
 export default Unsubscribe;

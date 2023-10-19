@@ -10,7 +10,7 @@ jest.mock('../../../pages/service-error/index.page', () => ({
   default: () => <p>ServiceErrorPage</p>,
 }));
 jest.mock('../../../src/utils/encryption', () => ({
-  decrypt: jest.fn().mockReturnValue('some-email'),
+  decrypt: jest.fn(),
 }));
 jest.mock(
   '../../../src/service/newsletter/newsletter-subscription-service',
@@ -25,8 +25,14 @@ jest.mock('../../../src/service/subscription-service', () => ({
     getInstance: jest.fn(),
   },
 }));
+jest.mock('../../../src/service/unsubscribe.service', () => ({
+  getUnsubscribeReferenceFromId: jest.fn(),
+  removeUnsubscribeReference: jest.fn(),
+  getTypeFromNotificationIds: jest.requireActual(
+    '../../../src/service/unsubscribe.service',
+  ).getTypeFromNotificationIds,
+}));
 jest.mock('../../../src/service/saved_search_service');
-jest.mock('../../../src/service/unsubscribe.service');
 
 const newsletterSubscriptionServiceSpy = ({ throwsError }) =>
   NewsletterSubscriptionService.getInstance.mockImplementation(() => ({
@@ -118,17 +124,17 @@ const TEST_USER_DATA_MAP = {
   NEWSLETTER: {
     newsletterId: 'some-newsletter-id',
     subscriptionId: null,
-    savedSearchid: null,
+    savedSearchId: null,
   },
   GRANT_SUBSCRIPTION: {
     newsletterId: null,
     subscriptionId: 'some-subscription-id',
-    savedSearchid: null,
+    savedSearchId: null,
   },
   SAVED_SEARCH: {
     newsletterId: null,
     subscriptionId: null,
-    savedSearchid: 'some-saved-search-id',
+    savedSearchId: 'some-saved-search-id',
   },
 };
 
@@ -137,5 +143,4 @@ const getMockUnsubscribeReferenceData = (type) => ({
     encryptedEmailAddress: 'some-email',
   },
   ...TEST_USER_DATA_MAP[type],
-  type,
 });
