@@ -5,7 +5,6 @@ import {
   RelatedLinksNames,
 } from '../../../src/utils/related-content-links';
 import { mockentry } from './accessibility.data';
-import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -37,14 +36,14 @@ describe('Rendering the accessibility page', () => {
   it('Should render a page header', () => {
     render(component);
     expect(
-      screen.getByRole('heading', { name: 'Accessibility' })
+      screen.getByRole('heading', { name: 'Accessibility' }),
     ).toBeDefined();
   });
 
   it('Should render a gov-uk body of text', () => {
     render(component);
     const text = screen.getByText(
-      'We’ve also made the website text as simple as possible to understand.'
+      'We’ve also made the website text as simple as possible to understand.',
     );
     expect(text).toBeDefined();
     expect(text).toHaveAttribute('class', 'govuk-body');
@@ -54,20 +53,20 @@ describe('Rendering the accessibility page', () => {
     render(component);
     expect(
       screen.getByText(
-        'Web Content Accessibility Guidelines version 2.1 AA standard'
-      )
+        'Web Content Accessibility Guidelines version 2.1 AA standard',
+      ),
     ).toBeDefined();
     expect(
       screen.getByText(
-        'Web Content Accessibility Guidelines version 2.1 AA standard'
-      )
+        'Web Content Accessibility Guidelines version 2.1 AA standard',
+      ),
     ).toHaveAttribute('href', 'https://www.w3.org/TR/WCAG21/');
   });
 
   it('Should render an unordered list', () => {
     render(component);
     expect(
-      screen.getByText('change colours, contrast levels and fonts')
+      screen.getByText('change colours, contrast levels and fonts'),
     ).toBeDefined();
   });
 });

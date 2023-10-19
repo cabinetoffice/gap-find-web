@@ -1,6 +1,6 @@
 import { NewsletterSubscriptionService } from './newsletter-subscription-service';
-import axios from 'axios';
 import { NewsletterType } from '../../types/newsletter';
+import { axios } from '../../../src/utils/axios';
 
 jest.mock('next/config', () => {
   return jest.fn().mockImplementation(() => {
@@ -8,7 +8,7 @@ jest.mock('next/config', () => {
   });
 });
 
-jest.mock('axios', () => {
+jest.mock('../../../src/utils/axios', () => {
   const createMock = {
     get: jest.fn().mockImplementation(() => {
       return {
@@ -19,13 +19,18 @@ jest.mock('axios', () => {
         },
       };
     }),
-
     delete: jest.fn(),
+    interceptors: {
+      request: { use: jest.fn() },
+      response: { use: jest.fn() },
+    },
   };
   return {
-    create: jest.fn().mockImplementation(() => {
-      return createMock;
-    }),
+    axios: {
+      create: jest.fn().mockImplementation(() => {
+        return createMock;
+      }),
+    },
   };
 });
 

@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-export function generateSignedApiKey(props: object) {
+export function generateSignedApiKey(props: object, expiresIn?: string) {
   return jwt.sign(props, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.VERIFICATION_JWT_EXPIRY_TIME,
+    expiresIn: expiresIn ?? process.env.VERIFICATION_JWT_EXPIRY_TIME,
   });
 }
 

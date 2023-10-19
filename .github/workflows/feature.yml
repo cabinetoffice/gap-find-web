@@ -7,6 +7,7 @@ on:
       - GAP-**
       - fix/**
       - bug/**
+      - TMI2-**
     paths-ignore:
       - '*.md'
 
@@ -44,7 +45,7 @@ jobs:
       # ==============================
 
       - name: Checkout repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
       - name: Generate .env
         run: |
@@ -84,40 +85,21 @@ jobs:
         id: nvm
 
       - name: Setup node
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v3
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
 
       - name: Snyk setup
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --fail-on=all
-          
-      - name: Install yarn
-        run: npm install -g yarn
-
-      - name: Read yarn cache directory path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-        id: yarn-cache-dir-path
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            **/node_modules
-            ~/.cache/Cypress
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: |
-          yarn install --frozen-lockfile
+          args: --strict-out-of-sync=false
           
       - name: Units Tests
         run: |
@@ -132,7 +114,7 @@ jobs:
           yarn build
 
       - name: Run cypress tests (accessibility only)
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v6
         with:
           start: yarn start
           record: false
@@ -140,7 +122,7 @@ jobs:
           wait-on-timeout: 60
           browser: chrome
           runTests: true
-          spec: cypress/integration/dev/accessibility/*
+          spec: cypress/e2e/dev/accessibility/*
         env:
           CYPRESS_CACHE_FOLDER: '~/.cache/Cypress'
 

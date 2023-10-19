@@ -1,10 +1,10 @@
-import axios, { AxiosInstance } from 'axios';
+import { axios } from '../../../src/utils';
 import { NewsletterSubscription, NewsletterType } from '../../types/newsletter';
 
 export class NewsletterSubscriptionService {
   private static instance: NewsletterSubscriptionService;
 
-  private static client: AxiosInstance = axios.create({
+  private static client = axios.create({
     baseURL: `${process.env.BACKEND_HOST}/newsletters/`,
   });
 

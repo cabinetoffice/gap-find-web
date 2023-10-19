@@ -3,7 +3,7 @@ import CookieBanner from './cookie-banner';
 import Footer from './Footer';
 import Header from './Header';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, showNavigation = true, showBetaBlock = true }) => {
   const clx = ['js-enabled', 'govuk-template__body'];
   useEffect(() => {
     document.querySelector('body').classList.add(...clx);
@@ -19,7 +19,7 @@ const Layout = ({ children }) => {
   return (
     <>
       <CookieBanner />
-      <Header />
+      <Header showNavigation={showNavigation} showBetaBlock={showBetaBlock} />
       <div className="govuk-width-container">
         <main
           className="govuk-main-wrapper govuk-main-wrapper--auto-spacing padding-top0"

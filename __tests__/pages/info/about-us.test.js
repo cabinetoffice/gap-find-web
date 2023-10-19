@@ -5,7 +5,6 @@ import {
   RelatedLinksNames,
 } from '../../../src/utils/related-content-links';
 import { mockentry } from './about-us.data';
-import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -43,7 +42,7 @@ describe('Rendering the about us page', () => {
   it('Should render a gov-uk body of text', () => {
     render(component);
     const text = screen.getByText(
-      'Our goal for this service is to modernise and revolutionise grant-making. The pilot service will be co-created and is ready to test with a small sample of grants now. As we learn and grow, it is our intention to partner with additional grant-making departments to make more schemes available via the service throughout 2022 and beyond.'
+      'Our goal for this service is to modernise and revolutionise grant-making. The pilot service will be co-created and is ready to test with a small sample of grants now. As we learn and grow, it is our intention to partner with additional grant-making departments to make more schemes available via the service throughout 2022 and beyond.',
     );
     expect(text).toBeDefined();
     expect(text).toHaveAttribute('class', 'govuk-body');
@@ -52,13 +51,13 @@ describe('Rendering the about us page', () => {
   it('Should render a link', () => {
     render(component);
     expect(
-      screen.getByText('Government Grants Management Function')
+      screen.getByText('Government Grants Management Function'),
     ).toBeDefined();
     expect(
-      screen.getByText('Government Grants Management Function')
+      screen.getByText('Government Grants Management Function'),
     ).toHaveAttribute(
       'href',
-      'https://www.gov.uk/government/collections/grants-management-function'
+      'https://www.gov.uk/government/collections/grants-management-function',
     );
   });
 });
