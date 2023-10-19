@@ -1,37 +1,19 @@
 name: Feature Workflow
 
 on:
-  push:
+  pull_request:
     branches:
-      - feature/**
-      - GAP-**
-      - fix/**
-      - bug/**
-      - TMI2-**
+      - develop
     paths-ignore:
       - '*.md'
 
-  pull_request:
-    types: [closed]
-    branches:
-      - fix/**
-      - feature/**
-      - GAP-**
-    paths-ignore:
-      - '*.md'
 env:
   DATABASE_URL: postgres://postgres:mysecretpassword@localhost:5432/notifications
 
 jobs:
   Build:
-    name: Build Feature
+    name: Test app
     runs-on: ubuntu-latest
-
-    env:
-      CF_API: 'https://api.london.cloud.service.gov.uk'
-      CF_ORG: 'cabinet-office-gap'
-      CF_SPACE: 'sandbox'
-      CF_APP: 'd_gap'
 
     permissions:
       contents: read
@@ -81,7 +63,7 @@ jobs:
           EOF
 
       - name: Read .nvmrc
-        run: echo "::set-output name=NVMRC::$(cat .nvmrc)"
+        run: echo "name=NVMRC::$(cat .nvmrc)" >> $GITHUB_OUTPUT
         id: nvm
 
       - name: Setup node
@@ -91,39 +73,34 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: |
-          yarn install --frozen-lockfile
+        run: yarn install --immutable
 
-      - name: Snyk setup
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Generate next cache name
+        id: next-cache-name
+        run: |
+          NAME=next-cache-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '') }}
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+
+      - name: Restore next cache
+        id: restore-next-cache
+        uses: actions/cache/restore@v3
         with:
-          args: --strict-out-of-sync=false
-          
-      - name: Units Tests
-        run: |
-          yarn coverage
-      
-      - name: Lint files
-        run: |
-          yarn lint
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ steps.next-cache-name.outputs.name }}
+          restore-keys: next-cache-${{ hashFiles('**/yarn.lock') }}-
 
       - name: Build application
-        run: |
-          yarn build
+        run: yarn build
 
-      - name: Run cypress tests (accessibility only)
-        uses: cypress-io/github-action@v6
+      - name: Save next cache
+        if: steps.restore-next-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v3
         with:
-          start: yarn start
-          record: false
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 60
-          browser: chrome
-          runTests: true
-          spec: cypress/e2e/dev/accessibility/*
-        env:
-          CYPRESS_CACHE_FOLDER: '~/.cache/Cypress'
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ steps.next-cache-name.outputs.name }}
 
- # =============================
+      - name: Units Tests
+        run: yarn jest --ci
+      
+      - name: Lint files
+        run: yarn lint

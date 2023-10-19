@@ -40,7 +40,6 @@ const PrivacyNotice = ({ errors, checked }) => {
               <a
                 target="_blank"
                 className="govuk-link"
-                noreferrer="true"
                 data-cy="cySignUpFormPrivacyLink"
               >
                 privacy notice
