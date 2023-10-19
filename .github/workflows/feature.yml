@@ -81,6 +81,7 @@ jobs:
           NAME=next-cache-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '') }}
           echo "name=$NAME" >> $GITHUB_OUTPUT
 
+      # Based on steps described here - https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
       - name: Restore next cache
         id: restore-next-cache
         uses: actions/cache/restore@v3
