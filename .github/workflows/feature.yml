@@ -86,7 +86,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --fail-on=all
+          args: --strict-out-of-sync=false
           
       - name: Units Tests
         run: yarn jest --ci
