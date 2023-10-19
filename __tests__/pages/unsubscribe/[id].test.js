@@ -1,20 +1,16 @@
 import '@testing-library/jest-dom';
 import { AxiosError } from 'axios';
-import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
-import { getServerSideProps } from '../../../pages/unsubscribe/[jwt]';
-import { TokenExpiredError } from 'jsonwebtoken';
+import { getServerSideProps } from '../../../pages/unsubscribe/[id]';
 import { SubscriptionService } from '../../../src/service/subscription-service';
 import { deleteSaveSearch } from '../../../src/service/saved_search_service';
+import { getUnsubscribeReferenceFromId } from '../../../src/service/unsubscribe.service';
 
 jest.mock('../../../pages/service-error/index.page', () => ({
   default: () => <p>ServiceErrorPage</p>,
 }));
-jest.mock('../../../src/service/api-key-service', () => ({
-  decryptSignedApiKey: jest.fn(),
-}));
 jest.mock('../../../src/utils/encryption', () => ({
-  decrypt: jest.fn(),
+  decrypt: jest.fn().mockReturnValue('some-email'),
 }));
 jest.mock(
   '../../../src/service/newsletter/newsletter-subscription-service',
@@ -30,6 +26,7 @@ jest.mock('../../../src/service/subscription-service', () => ({
   },
 }));
 jest.mock('../../../src/service/saved_search_service');
+jest.mock('../../../src/service/unsubscribe.service');
 
 const newsletterSubscriptionServiceSpy = ({ throwsError }) =>
   NewsletterSubscriptionService.getInstance.mockImplementation(() => ({
@@ -67,20 +64,15 @@ const mockSavedSearch = ({ throwsError }) => {
   });
 };
 
-const getContext = ({ jwt }) => ({
-  query: {
-    jwt,
-  },
-});
-
 describe('getServerSideProps()', () => {
   beforeEach(jest.clearAllMocks);
 
-  it('should return error when jwt has expired', async () => {
-    decryptSignedApiKey.mockImplementation(() => {
-      throw new TokenExpiredError();
-    });
-    const context = getContext({ jwt: 'invalid-jwt' });
+  it('should return error when the token is invalid ', async () => {
+    getUnsubscribeReferenceFromId.mockReturnValue(
+      new AxiosError('Internal server error'),
+    );
+
+    const context = getContext({ id: 'invalid-id' });
     const response = await getServerSideProps(context);
 
     expect(response).toEqual({
@@ -99,17 +91,14 @@ describe('getServerSideProps()', () => {
     ${'GRANT_SUBSCRIPTION'} | ${grantSubscriptionSpy}             | ${false}
     ${'SAVED_SEARCH'}       | ${mockSavedSearch}                  | ${false}
   `(
-    'should return correct props when jwt is valid and $type mock service is called with throwsError: $mockServiceThrowsError',
+    'should return correct props when id is valid and $type mock service is called with throwsError: $mockServiceThrowsError',
     async ({ type, mockServiceFunction, mockServiceThrowsError }) => {
-      decryptSignedApiKey.mockReturnValue({
-        id: 'some-id',
-        type,
-        emailAddress: 'some-email',
-      });
+      getUnsubscribeReferenceFromId.mockReturnValue(
+        getMockUnsubscribeReferenceData(type),
+      );
       const context = getContext({ jwt: 'valid.jwt.token' });
       mockServiceFunction({ throwsError: mockServiceThrowsError });
       const response = await getServerSideProps(context);
-
       expect(response).toEqual({
         props: {
           error: mockServiceThrowsError,
@@ -117,4 +106,36 @@ describe('getServerSideProps()', () => {
       });
     },
   );
+});
+
+const getContext = ({ id }) => ({
+  query: {
+    id,
+  },
+});
+
+const TEST_USER_DATA_MAP = {
+  NEWSLETTER: {
+    newsletterId: 'some-newsletter-id',
+    subscriptionId: null,
+    savedSearchid: null,
+  },
+  GRANT_SUBSCRIPTION: {
+    newsletterId: null,
+    subscriptionId: 'some-subscription-id',
+    savedSearchid: null,
+  },
+  SAVED_SEARCH: {
+    newsletterId: null,
+    subscriptionId: null,
+    savedSearchid: 'some-saved-search-id',
+  },
+};
+
+const getMockUnsubscribeReferenceData = (type) => ({
+  user: {
+    encryptedEmailAddress: 'some-email',
+  },
+  ...TEST_USER_DATA_MAP[type],
+  type,
 });
