@@ -84,6 +84,7 @@ const getEmail = async (ctx) => {
     return getEmailAddressFromCookies(ctx);
   }
   const { jwtPayload } = await getJwtFromCookies(ctx.req);
+
   return jwtPayload.email as string;
 };
 
