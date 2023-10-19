@@ -6,6 +6,7 @@ on:
     branches:
       - release/**
       - develop
+      - improve-cd-workflow
     paths-ignore:
       - "*.md"
 
@@ -17,7 +18,7 @@ jobs:
     name: Test app
 
     # Need to check here as create event can't be filtered by branch name...
-    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release')
+    if: github.ref == 'refs/heads/improve-cd-workflow' || startsWith(github.ref, 'refs/heads/release')
 
     runs-on: ubuntu-latest
 
@@ -149,7 +150,7 @@ jobs:
 
       - name: Login to AWS ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Determine & set BUILD_VERSION
         run: |
@@ -165,7 +166,7 @@ jobs:
       - name: Generate Docker image name
         id: docker-image-name
         run: |
-          NAME=${{ (github.ref == 'refs/heads/develop' && 'find-sandbox-image') || (startsWith(github.ref, 'refs/heads/release') && 'find-qa-image') }}
+          NAME=${{ (github.ref == 'refs/heads/improve-cd-workflow' && 'find-sandbox-image') || (startsWith(github.ref, 'refs/heads/release') && 'find-qa-image') }}
           echo "name=$NAME" >> $GITHUB_OUTPUT
         
       - name: Save Docker image
@@ -203,7 +204,7 @@ jobs:
 
       - name: Login to AWS ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Determine & set BUILD_VERSION
         run: |
@@ -228,7 +229,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          ENV_TAG=${{ (github.ref == 'refs/heads/develop' && 'develop') || (startsWith(github.ref, 'refs/heads/release') && 'test') }}
+          ENV_TAG=${{ (github.ref == 'refs/heads/improve-cd-workflow' && 'develop') || (startsWith(github.ref, 'refs/heads/release') && 'test') }}
           docker tag $ECR_REGISTRY/find-a-grant-client:${{ env.BUILD_VERSION }} $ECR_REGISTRY/find-a-grant-client:$ENV_TAG
           docker push $ECR_REGISTRY/find-a-grant-client:$ENV_TAG
 
