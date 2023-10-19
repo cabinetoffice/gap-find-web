@@ -99,7 +99,7 @@ jobs:
           key: ${{ steps.next-cache-name.outputs.name }}
 
       - name: Units Tests
-        run: yarn jest --ci ${{ matrix['**/__tests__/**/*.js'] }}
+        run: yarn jest --ci
       
       - name: Lint files
         run: yarn lint
