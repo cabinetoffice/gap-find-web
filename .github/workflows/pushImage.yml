@@ -84,6 +84,7 @@ jobs:
         with:
           path: ${{ github.workspace }}/.next/cache
           key: ${{ steps.next-cache-name.outputs.name }}
+          restore-keys: next-cache-${{ hashFiles('**/yarn.lock') }}-
 
       - name: Build application
         run: yarn build
@@ -94,7 +95,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/.next/cache
           key: ${{ steps.next-cache-name.outputs.name }}
-          restore-keys: next-cache-${{ hashFiles('**/yarn.lock') }}-
 
       - name: Lint files
         run: yarn lint
