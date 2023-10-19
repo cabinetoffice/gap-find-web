@@ -270,32 +270,32 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Wait for CodePipeline
-          run: |
+        run: |
+          sleep 10
+          TIME_TAKEN=0
+          PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name ${{ (github.ref == 'refs/heads/improve-cd-workflow' && 'Build-Find-Frontend') || (startsWith(github.ref, 'refs/heads/release') && 'Build-Find-Frontend-Test') }} --query "join(' ', stageStates[?stageName].latestExecution.status)")
+          delimiter=' ' read -ra states <<< "${PIPELINE_STATE[0]}"
+          declare -p states
+
+          while printf '%s\n' "${states[@]}" | grep -qEv "Succeeded"; do
+            TIME_TAKEN=$((TIME_TAKEN+10))
+            if (( $TIME_TAKEN > 600 )); then
+              echo "Waiting for CodePipeline timed out after 10 minutes. Exiting."
+              exit 1
+            fi
+
             sleep 10
-            TIME_TAKEN=0
+
             PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name ${{ (github.ref == 'refs/heads/improve-cd-workflow' && 'Build-Find-Frontend') || (startsWith(github.ref, 'refs/heads/release') && 'Build-Find-Frontend-Test') }} --query "join(' ', stageStates[?stageName].latestExecution.status)")
             delimiter=' ' read -ra states <<< "${PIPELINE_STATE[0]}"
             declare -p states
+          done
 
-            while printf '%s\n' "${states[@]}" | grep -qEv "Succeeded"; do
-              TIME_TAKEN=$((TIME_TAKEN+10))
-              if (( $TIME_TAKEN > 600 )); then
-                echo "Waiting for CodePipeline timed out after 10 minutes. Exiting."
-                exit 1
-              fi
-
-              sleep 10
-
-              PIPELINE_STATE=$(aws codepipeline get-pipeline-state --name ${{ (github.ref == 'refs/heads/improve-cd-workflow' && 'Build-Find-Frontend') || (startsWith(github.ref, 'refs/heads/release') && 'Build-Find-Frontend-Test') }} --query "join(' ', stageStates[?stageName].latestExecution.status)")
-              delimiter=' ' read -ra states <<< "${PIPELINE_STATE[0]}"
-              declare -p states
-            done
-
-        - name: ZAP Scan
-          uses: zaproxy/action-baseline@v0.7.0
-          with:
-            token: ${{secrets.ZAP_ACCESS_TOKEN}}
-            target: "${{env.ENV_HOST}}/"
-            rules_file_name: '.zap/rules.tsv'
-            cmd_options: '-a'
-            issue_title: '${{env.ENVIRONMENT}}: ZAP Full Scan Report'
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.7.0
+        with:
+          token: ${{secrets.ZAP_ACCESS_TOKEN}}
+          target: "${{env.ENV_HOST}}/"
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+          issue_title: '${{env.ENVIRONMENT}}: ZAP Full Scan Report'
