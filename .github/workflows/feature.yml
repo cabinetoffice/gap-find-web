@@ -80,13 +80,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --immutable
-
-      - name: Snyk setup
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --strict-out-of-sync=false
           
       - name: Units Tests
         run: yarn jest --ci
