@@ -38,7 +38,7 @@ describe('Middleware', () => {
       mockedCheckUserLoggedIn.mockResolvedValueOnce(false);
 
       const req = new NextRequest(new Request(manageNotificationsUrl));
-      req.cookies.set(process.env.USER_TOKEN_NAME, 'invalid');
+      req.cookies.set(process.env.USER_TOKEN_NAME!, 'invalid');
       const res = await middleware(req);
 
       expect(res.status).toBe(307);
@@ -48,7 +48,7 @@ describe('Middleware', () => {
     it('redirects to refresh URL if JWT is close to expiration', async () => {
       const expiresAt = new Date();
       expiresAt.setMinutes(expiresAt.getMinutes() + 10); // Expiring in 10 minutes
-      mockedGetJwt.mockResolvedValueOnce({
+      mockedGetJwt.mockReturnValue({
         jwtPayload: {
           valid: true,
           expiresAt: expiresAt.toISOString(),
