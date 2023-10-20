@@ -25,38 +25,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@master
 
-      - name: Generate .env
+      - name: Generate .env files
         run: |
-          cat << EOF > .env
-          CONTENTFUL_SPACE_ID=${{ secrets.QA_CONTENTFUL_SPACE_ID }}
-          CONTENTFUL_ACCESS_TOKEN=${{ secrets.QA_CONTENTFUL_ACCESS_TOKEN }}
-          CONTENTFUL_PREVIEW_ACCESS_TOKEN=${{ secrets.QA_CONTENTFUL_PREVIEW_ACCESS_TOKEN }}
-          CONTENTFUL_ENVIRONMENT=${{ secrets.QA_CONTENTFUL_ENVIRONMENT }}
-          ELASTIC_INDEX=${{ secrets.QA_ELASTIC_INDEX }}
-          ELASTIC_URL=${{ secrets.QA_ELASTIC_URL }}
-          ELASTIC_USERNAME=${{ secrets.QA_ELASTIC_USERNAME }}
-          ELASTIC_PASSWORD=${{ secrets.QA_ELASTIC_PASSWORD }}
-          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-          GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE=${{ secrets.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE }}
-          GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE=${{ secrets.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE }}
-          GOV_NOTIFY_API_KEY=${{ secrets.GOV_NOTIFY_API_KEY }}
-          DATABASE_URL=${{ secrets.DATABASE_URL }}
-          DATABASE_SSL=true
-          ENCRYPTION_KEY_NAME=${{ secrets.QA_ENCRYPTION_KEY_NAME }}
-          ENCRYPTION_KEY_NAMESPACE=${{ secrets.QA_ENCRYPTION_KEY_NAMESPACE }}
-          ENCRYPTION_ORIGIN=${{ secrets.QA_ENCRYPTION_ORIGIN }}
-          ENCRYPTION_STAGE=${{ secrets.QA_ENCRYPTION_STAGE }}
-          ENCRYPTION_WRAPPING_KEY=${{ secrets.QA_ENCRYPTION_WRAPPING_KEY }}
-          GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE=${{ secrets.QA_GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE }}
-          APPLY_FOR_A_GRANT_APPLICANT_URL=${{ secrets.QA_APPLY_FOR_A_GRANT_APPLICANT_URL}}
-          ENABLE_FAQ_TAB=false
-          ENABLE_AWARDS_TAB=false
-          HOST=${{ secrets.QA_ENVIRONMENT_URL }}
-          BACKEND_HOST=${{ secrets.QA_BACKEND_HOST }}
-          BASIC_AUTH_USERNAME=${{ secrets.BASIC_AUTH_USERNAME }}
-          BASIC_AUTH_PASSWORD=${{ secrets.BASIC_AUTH_PASSWORD }}
-          VERIFICATION_JWT_EXPIRY_TIME=${{ secrets.VERIFICATION_JWT_EXPIRY_TIME }}
-          EOF
+          cp .env.example .env
 
       - name: Read .nvmrc
         run: echo "name=NVMRC::$(cat .nvmrc)" >> $GITHUB_OUTPUT
@@ -107,39 +78,6 @@ jobs:
         with:
           # Fetch all commits since we use the total commit count to determine the build version
           fetch-depth: 0
-
-      - name: Generate .env
-        run: |
-          cat << EOF > .env
-          CONTENTFUL_SPACE_ID=${{ secrets.QA_CONTENTFUL_SPACE_ID }}
-          CONTENTFUL_ACCESS_TOKEN=${{ secrets.QA_CONTENTFUL_ACCESS_TOKEN }}
-          CONTENTFUL_PREVIEW_ACCESS_TOKEN=${{ secrets.QA_CONTENTFUL_PREVIEW_ACCESS_TOKEN }}
-          CONTENTFUL_ENVIRONMENT=${{ secrets.QA_CONTENTFUL_ENVIRONMENT }}
-          ELASTIC_INDEX=${{ secrets.QA_ELASTIC_INDEX }}
-          ELASTIC_URL=${{ secrets.QA_ELASTIC_URL }}
-          ELASTIC_USERNAME=${{ secrets.QA_ELASTIC_USERNAME }}
-          ELASTIC_PASSWORD=${{ secrets.QA_ELASTIC_PASSWORD }}
-          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-          GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE=${{ secrets.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE }}
-          GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE=${{ secrets.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE }}
-          GOV_NOTIFY_API_KEY=${{ secrets.GOV_NOTIFY_API_KEY }}
-          DATABASE_URL=${{ secrets.DATABASE_URL }}
-          DATABASE_SSL=true
-          ENCRYPTION_KEY_NAME=${{ secrets.QA_ENCRYPTION_KEY_NAME }}
-          ENCRYPTION_KEY_NAMESPACE=${{ secrets.QA_ENCRYPTION_KEY_NAMESPACE }}
-          ENCRYPTION_ORIGIN=${{ secrets.QA_ENCRYPTION_ORIGIN }}
-          ENCRYPTION_STAGE=${{ secrets.QA_ENCRYPTION_STAGE }}
-          ENCRYPTION_WRAPPING_KEY=${{ secrets.QA_ENCRYPTION_WRAPPING_KEY }}
-          GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE=${{ secrets.QA_GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE }}
-          APPLY_FOR_A_GRANT_APPLICANT_URL=${{ secrets.QA_APPLY_FOR_A_GRANT_APPLICANT_URL}}
-          ENABLE_FAQ_TAB=false
-          ENABLE_AWARDS_TAB=false
-          HOST=${{ secrets.QA_ENVIRONMENT_URL }}
-          BACKEND_HOST=${{ secrets.QA_BACKEND_HOST }}
-          BASIC_AUTH_USERNAME=${{ secrets.BASIC_AUTH_USERNAME }}
-          BASIC_AUTH_PASSWORD=${{ secrets.BASIC_AUTH_PASSWORD }}
-          VERIFICATION_JWT_EXPIRY_TIME=${{ secrets.VERIFICATION_JWT_EXPIRY_TIME }}
-          EOF
 
       - name: Setup AWS credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
