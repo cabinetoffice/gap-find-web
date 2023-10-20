@@ -96,6 +96,10 @@ jobs:
           echo "BUILD_VERSION=b_$GIT_COUNT" >> $GITHUB_ENV
           echo BUILD_VERSION is ${{ env.BUILD_VERSION }}
 
+      - name: Generate .env files
+        run: |
+          cp .env.example .env
+
       - name: Build Docker image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
