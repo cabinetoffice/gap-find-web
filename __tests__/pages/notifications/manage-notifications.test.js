@@ -30,7 +30,6 @@ import {
   testResultSuccess,
   testSubscriptionArray,
 } from './manage-notifications.data';
-import getConfig from 'next/config';
 
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/utils/hash');
@@ -131,8 +130,6 @@ describe('Testing manage-notifications component', () => {
 });
 
 describe('get server side props for manage notifications page', () => {
-  const getConfigReturnVal = getConfig();
-
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -147,12 +144,8 @@ describe('get server side props for manage notifications page', () => {
 
     jest.useFakeTimers('modern');
     jest.setSystemTime(new Date(2022, 2, 16));
-    getConfig.mockReturnValue({
-      publicRuntimeConfig: { oneLoginEnabled: false },
-    });
+    process.env.ONE_LOGIN_ENABLED = 'false';
   });
-
-  afterAll(() => getConfig.mockReturnValue(getConfigReturnVal));
 
   it('should proceed when a cookie is detected and no errors are thrown', async () => {
     cookieExistsAndContainsValidJwt.mockReturnValue(true);

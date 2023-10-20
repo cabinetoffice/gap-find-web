@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import { ConfirmationMessage } from '../../../src/components/confirmation-message/ConfirmationMessage';
 import { ManageNewsletter } from '../../../src/components/manage-newsletter/ManageNewsletter';
@@ -74,13 +73,8 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
   });
 };
 
-const checkOneLoginEnabled = () => {
-  const { publicRuntimeConfig } = getConfig();
-  return publicRuntimeConfig.oneLoginEnabled;
-};
-
 const getEmail = async (ctx) => {
-  if (!checkOneLoginEnabled()) {
+  if (process.env.ONE_LOGIN_ENABLED !== 'true') {
     return getEmailAddressFromCookies(ctx);
   }
   const { jwtPayload } = await getJwtFromCookies(ctx.req);
@@ -90,7 +84,7 @@ const getEmail = async (ctx) => {
 
 export const getServerSideProps = async (ctx) => {
   if (
-    !checkOneLoginEnabled() &&
+    process.env.ONE_LOGIN_ENABLED !== 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
   ) {
     return {
