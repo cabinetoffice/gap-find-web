@@ -1,6 +1,5 @@
 // eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
-import { NextURL } from 'next/dist/server/web/next-url';
 import { v4 } from 'uuid';
 import { checkUserLoggedIn } from './src/service';
 import {
@@ -75,7 +74,7 @@ const logRequest = (req: NextRequest) => {
 
 const authenticateRequest = async (req: NextRequest) => {
   try {
-    const { jwt, jwtPayload } = await getJwtFromCookies(req);
+    const { jwt, jwtPayload } = getJwtFromCookies(req);
     const validJwtResponse = await checkUserLoggedIn(jwt);
 
     if (!validJwtResponse) {
@@ -94,14 +93,17 @@ const authenticateRequest = async (req: NextRequest) => {
   }
 };
 
-const authenticatedPaths = [notificationRoutes.manageNotifications];
+const authenticatedPaths = [
+  notificationRoutes.manageNotifications,
+  '/api/user/migrate',
+];
 
-const isAuthenticatedPath = (url: NextURL) =>
-  ONE_LOGIN_ENABLED &&
-  authenticatedPaths.some((path) => url.pathname.startsWith(path));
+const isAuthenticatedPath = (url: string) =>
+  ONE_LOGIN_ENABLED && authenticatedPaths.some((path) => url.startsWith(path));
 
 export const middleware = async (req: NextRequest) => {
   const userAgentHeader = req.headers.get('user-agent') || '';
   if (!userAgentHeader.startsWith('ELB-HealthChecker')) logRequest(req);
-  if (isAuthenticatedPath(req.nextUrl)) return authenticateRequest(req);
+  const nextUrl = req.nextUrl.pathname;
+  if (isAuthenticatedPath(nextUrl)) return authenticateRequest(req);
 };

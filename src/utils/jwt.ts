@@ -7,7 +7,7 @@ import { decodeJwt } from 'jose';
 const USER_TOKEN_NAME = process.env.USER_TOKEN_NAME;
 const USER_TOKEN_SECRET = process.env.USER_TOKEN_SECRET;
 
-export const getJwtFromCookies = async (req: NextRequest | NextApiRequest) => {
+export const getJwtFromCookies = (req: NextRequest | NextApiRequest) => {
   const cookieValue =
     req instanceof NextRequest
       ? req.cookies.get(USER_TOKEN_NAME)
@@ -21,5 +21,5 @@ export const getJwtFromCookies = async (req: NextRequest | NextApiRequest) => {
       `Failed to verify signature for ${USER_TOKEN_NAME} cookie: ${cookieValue}`,
     );
 
-  return { jwtPayload: await decodeJwt(jwt), jwt };
+  return { jwtPayload: decodeJwt(jwt), jwt };
 };
