@@ -20,13 +20,17 @@ const HOST = process.env.HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
 
 describe('Middleware', () => {
-  beforeEach(jest.clearAllMocks);
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   describe('authentication', () => {
     const manageNotificationsUrl = `${HOST}${notificationRoutes.manageNotifications}`;
     const loginNoticeUrl = `${HOST}${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS}`;
 
     it('redirects to login notice if no JWT in cookies ', async () => {
+      process.env.ONE_LOGIN_ENABLED = 'true';
+
       const req = new NextRequest(new Request(manageNotificationsUrl));
       const res = await middleware(req);
 
@@ -35,6 +39,8 @@ describe('Middleware', () => {
     });
 
     it('redirects to login notice if JWT is not valid', async () => {
+      process.env.ONE_LOGIN_ENABLED = 'true';
+
       mockedCheckUserLoggedIn.mockResolvedValueOnce(false);
 
       const req = new NextRequest(new Request(manageNotificationsUrl));
@@ -46,6 +52,8 @@ describe('Middleware', () => {
     });
 
     it('redirects to refresh URL if JWT is close to expiration', async () => {
+      process.env.ONE_LOGIN_ENABLED = 'true';
+
       const expiresAt = new Date();
       expiresAt.setMinutes(expiresAt.getMinutes() + 10); // Expiring in 10 minutes
       mockedGetJwt.mockReturnValue({

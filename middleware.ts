@@ -99,7 +99,8 @@ const authenticatedPaths = [
 ];
 
 const isAuthenticatedPath = (url: string) =>
-  ONE_LOGIN_ENABLED && authenticatedPaths.some((path) => url.startsWith(path));
+  ONE_LOGIN_ENABLED == 'true' &&
+  authenticatedPaths.some((path) => url.startsWith(path));
 
 export const middleware = async (req: NextRequest) => {
   const userAgentHeader = req.headers.get('user-agent') || '';

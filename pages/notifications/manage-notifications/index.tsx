@@ -74,7 +74,7 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
 };
 
 const getEmail = async (ctx) => {
-  if (process.env.ONE_LOGIN_ENABLED !== 'true') {
+  if (process.env.ONE_LOGIN_ENABLED != 'true') {
     return getEmailAddressFromCookies(ctx);
   }
   const { jwtPayload } = await getJwtFromCookies(ctx.req);
@@ -84,7 +84,7 @@ const getEmail = async (ctx) => {
 
 export const getServerSideProps = async (ctx) => {
   if (
-    process.env.ONE_LOGIN_ENABLED !== 'true' &&
+    process.env.ONE_LOGIN_ENABLED != 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
   ) {
     return {

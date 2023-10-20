@@ -158,7 +158,9 @@ describe('getServerSideProps', () => {
   });
   it('should return empty search params if no query params exist', () => {
     const result = getServerSideProps({ query: {} });
-    expect(result).toStrictEqual({ props: { searchTerm: '', applicantUrl } });
+    expect(result).toStrictEqual({
+      props: { searchTerm: '', applicantUrl, oneLoginEnabled: 'true' },
+    });
   });
 
   it('should return a search term if a search term exists as a query param', () => {
