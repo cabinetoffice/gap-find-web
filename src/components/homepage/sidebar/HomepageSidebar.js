@@ -1,5 +1,13 @@
 import Link from 'next/link';
+import { notificationRoutes } from '../../../utils';
+import getConfig from 'next/config';
+
 export function HomepageSidebar({ header, applicantUrl }) {
+  const { publicRuntimeConfig } = getConfig();
+  console.log(publicRuntimeConfig);
+  const manageNotificationsLink = publicRuntimeConfig.oneLoginEnabled
+    ? notificationRoutes.manageNotifications
+    : notificationRoutes.checkEmail;
   return (
     <div className="govuk-grid-column-one-third">
       <hr className="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-2 govuk-border-colour" />
@@ -9,7 +17,7 @@ export function HomepageSidebar({ header, applicantUrl }) {
         here too.
       </p>
       <p>
-        <Link href="/notifications/check-email">
+        <Link href={manageNotificationsLink}>
           <a
             className="govuk-link govuk-body"
             data-cy="cyManageNotificationsHomeLink"

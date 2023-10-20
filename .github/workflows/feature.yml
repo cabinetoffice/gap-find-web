@@ -60,6 +60,11 @@ jobs:
           ENCRYPTION_WRAPPING_KEY=${{ secrets.QA_ENCRYPTION_WRAPPING_KEY }}
           GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE=${{ secrets.QA_GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE }}
           APPLY_FOR_A_GRANT_APPLICANT_URL=${{ secrets.QA_APPLY_FOR_A_GRANT_APPLICANT_URL}}
+          APPLICANT_HOST=http://localhost:3001/apply/applicant
+          USER_TOKEN_NAME=user-token-name
+          USER_TOKEN_SECRET=${{ secrets.USER_TOKEN_SECRET }}
+          USER_SERVICE_HOST=http://localhost:8082
+          ONE_LOGIN_ENABLED=true
           EOF
 
       - name: Read .nvmrc

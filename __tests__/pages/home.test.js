@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import Home, { getServerSideProps } from '../../pages/index';
+import { notificationRoutes } from '../../src/utils';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -105,7 +106,7 @@ describe('Rendering the home page', () => {
       screen
         .getByRole('link', { name: 'Manage notifications and saved searches' })
         .closest('a'),
-    ).toHaveAttribute('href', '/notifications/check-email');
+    ).toHaveAttribute('href', notificationRoutes.manageNotifications);
     expect(
       screen
         .getByRole('link', { name: 'through our feedback form' })

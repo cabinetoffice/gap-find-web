@@ -7,7 +7,7 @@ const ServiceErrorPage = () => {
       <Head>
         <title>Service error</title>
       </Head>
-      <Layout showBetaBlock={false} showNavigation={false}>
+      <Layout isBasicHeader>
         <div className="govuk-width-container">
           <main
             className="govuk-main-wrapper govuk-main-wrapper--l"

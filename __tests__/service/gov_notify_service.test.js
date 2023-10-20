@@ -4,7 +4,7 @@ const setClient = require('../../src/service/gov_notify_service').setClient;
 
 jest.mock('notifications-node-client');
 
-const flushPromises = () => new Promise(setImmediate);
+const flushPromises = () => new Promise((res) => setTimeout(res, 0));
 
 describe('sendEmail', () => {
   it('should send an email', async () => {

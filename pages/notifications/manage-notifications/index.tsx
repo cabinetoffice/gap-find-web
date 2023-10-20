@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import getConfig from 'next/config';
 import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import { ConfirmationMessage } from '../../../src/components/confirmation-message/ConfirmationMessage';
 import { ManageNewsletter } from '../../../src/components/manage-newsletter/ManageNewsletter';
@@ -23,9 +24,11 @@ import {
   fetchByGrantIds,
 } from '../../../src/utils/contentFulPage';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
+
 import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
+import { getJwtFromCookies } from '../../../src/utils';
 
 //TODO GAP-560 / GAP-592
 const breadcrumbsRoutes = [
@@ -50,7 +53,7 @@ const breadcrumbsRoutes = [
  * @param {*} subscriptions
  * @returns a merged list of Grant titles with the user's subscriptions to those grants.
  */
-async function mergeGrantNameIntoSubscriptions(subscriptions) {
+const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
   // Fetch grants that the user is subscribed to from Contentful
   const subscribedGrants = await fetchByGrantIds(
     subscriptions.map(
@@ -69,10 +72,25 @@ async function mergeGrantNameIntoSubscriptions(subscriptions) {
 
     return subscription;
   });
-}
+};
 
-export async function getServerSideProps(ctx) {
+const checkOneLoginEnabled = () => {
+  const { publicRuntimeConfig } = getConfig();
+  return publicRuntimeConfig.oneLoginEnabled;
+};
+
+const getEmail = async (ctx) => {
+  if (!checkOneLoginEnabled()) {
+    return getEmailAddressFromCookies(ctx);
+  }
+  const { jwtPayload } = await getJwtFromCookies(ctx.req);
+
+  return jwtPayload.email as string;
+};
+
+export const getServerSideProps = async (ctx) => {
   if (
+    !checkOneLoginEnabled() &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
   ) {
     return {
@@ -82,7 +100,6 @@ export async function getServerSideProps(ctx) {
       },
     };
   }
-
   // Fetch individual grant details if required for things like success messages
   const grantDetails = ctx.query.grantId
     ? await fetchByGrantId(ctx.query.grantId)
@@ -90,7 +107,8 @@ export async function getServerSideProps(ctx) {
 
   // Fetch the user's grant subscriptions
   const subscriptionService = SubscriptionService.getInstance();
-  const plainTextEmailAddress = await getEmailAddressFromCookies(ctx);
+  const plainTextEmailAddress = await getEmail(ctx);
+
   let subscriptions = await subscriptionService.getSubscriptionsByEmail(
     plainTextEmailAddress,
   );
@@ -124,7 +142,7 @@ export async function getServerSideProps(ctx) {
       savedSearches,
     },
   };
-}
+};
 
 async function getEmailAddressFromCookies(ctx) {
   const decodedEmailCookie = decryptSignedApiKey(
@@ -133,11 +151,14 @@ async function getEmailAddressFromCookies(ctx) {
   return decrypt(decodedEmailCookie.email);
 }
 
-function addGrantDetailsToMessage(message, grantDetails) {
-  return `${message} "${grantDetails.fields.grantName}".`;
-}
+const addGrantDetailsToMessage = (message, grantDetails) =>
+  `${message} "${grantDetails.fields.grantName}".`;
 
-function generateSuccessMessage(action, grantDetails, deletedSavedSearchName) {
+const generateSuccessMessage = (
+  action,
+  grantDetails,
+  deletedSavedSearchName,
+) => {
   let message = URL_ACTION_MESSAGES.get(action);
 
   if (action === URL_ACTIONS.SUBSCRIBE || action === URL_ACTIONS.UNSUBSCRIBE) {
@@ -149,23 +170,24 @@ function generateSuccessMessage(action, grantDetails, deletedSavedSearchName) {
   }
 
   return message;
-}
-function buildQueryString(filters) {
-  const filterArray = [];
-  filters.forEach((filter) =>
-    filterArray.push(`${filter.name}=${filter.subFilterid}`),
-  );
+};
 
-  return filterArray.join('&');
-}
-function ManageNotifications(props) {
+const buildQueryString = (filters) =>
+  filters.map((filter) => `${filter.name}=${filter.subFilterid}`).join('&');
+
+const ManageNotifications = (props) => {
   const sortedSubscribedGrantUpdateList = JSON.parse(
     props.currentNotificationList,
-  ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  ).sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
   const { grantDetails, urlAction, savedSearches, deletedSavedSearchName } =
     props;
   const sortedSavedSearchList = savedSearches
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
     .filter((savedSearch) => savedSearch.status === 'CONFIRMED');
 
   const notificationAndSavedSearchList = [
@@ -237,7 +259,7 @@ function ManageNotifications(props) {
       <Head>
         <title>{gloss.title}</title>
       </Head>
-      <Layout description="Notifications">
+      <Layout>
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
           <BreadCrumbs routes={breadcrumbsRoutes} />
         </div>
@@ -296,6 +318,6 @@ function ManageNotifications(props) {
       </Layout>
     </>
   );
-}
+};
 
 export default ManageNotifications;

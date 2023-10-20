@@ -1,14 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import { HomepageSidebar } from '../../../src/components/homepage/sidebar/HomepageSidebar';
+import { notificationRoutes } from '../../../src/utils';
+import getConfig from 'next/config';
+
 const applicantUrl = 'http://localhost:3002';
-const component = (
-  <HomepageSidebar header={'Test'} applicantUrl={applicantUrl} />
-);
+const component = <HomepageSidebar header="Test" applicantUrl={applicantUrl} />;
 
 const sidebartext =
   'See all the grant updates you have signed up for. You can unsubscribe here too.';
 
 describe('HomepageSidebar component', () => {
+  afterEach(jest.clearAllMocks);
+
   it('should render heading of the sidebar', () => {
     render(component);
     expect(screen.getAllByRole('heading', { name: 'Test' })).toBeDefined();
@@ -19,14 +22,30 @@ describe('HomepageSidebar component', () => {
     expect(screen.getByText(sidebartext)).toBeDefined();
   });
 
-  it('should render the manage notifications link with the correct href', () => {
+  it('should render the manage notifications link with the correct href when one login flag disabled', () => {
+    getConfig.mockReturnValueOnce({
+      publicRuntimeConfig: { oneLoginEnabled: false },
+    });
     render(component);
+
     const manageNotificationsLink = screen.getByRole('link', {
       name: 'Manage notifications and saved searches',
     });
     expect(manageNotificationsLink).toBeDefined();
     expect(manageNotificationsLink.getAttribute('href')).toBe(
-      '/notifications/check-email',
+      notificationRoutes.checkEmail,
+    );
+  });
+
+  it('should render the manage notifications link with the correct href when one login flag enabled', () => {
+    render(component);
+
+    const manageNotificationsLink = screen.getByRole('link', {
+      name: 'Manage notifications and saved searches',
+    });
+    expect(manageNotificationsLink).toBeDefined();
+    expect(manageNotificationsLink.getAttribute('href')).toBe(
+      notificationRoutes.manageNotifications,
     );
   });
 
