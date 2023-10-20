@@ -13,7 +13,7 @@ export function getServerSideProps({ query }) {
   const applicantUrl = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
   const oneLoginEnabled = process.env.ONE_LOGIN_ENABLED;
   if (!query || !query.searchTerm) {
-    return { props: { searchTerm: '', applicantUrl } };
+    return { props: { searchTerm: '', applicantUrl, oneLoginEnabled } };
   }
 
   console.log(typeof oneLoginEnabled);
