@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { notificationRoutes } from '../../../utils';
 
-export function HomepageSidebar({ header, applicantUrl }) {
+export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
   const manageNotificationsLink =
-    process.env.ONE_LOGIN_ENABLED === 'true'
+    oneLoginEnabled === 'true'
       ? notificationRoutes.manageNotifications
       : notificationRoutes.checkEmail;
 

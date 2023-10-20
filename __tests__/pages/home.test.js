@@ -10,7 +10,11 @@ jest.mock('next/router', () => ({
 
 const applicantUrl = 'http://localhost:3002';
 const component = (
-  <Home searchTerm="specific search term" applicantUrl={applicantUrl} />
+  <Home
+    searchTerm="specific search term"
+    applicantUrl={applicantUrl}
+    oneLoginEnabled={'true'}
+  />
 );
 
 describe('Rendering the home page', () => {
@@ -160,7 +164,7 @@ describe('getServerSideProps', () => {
   it('should return a search term if a search term exists as a query param', () => {
     const result = getServerSideProps({ query: { searchTerm: 'search' } });
     expect(result).toStrictEqual({
-      props: { searchTerm: 'search', applicantUrl },
+      props: { searchTerm: 'search', applicantUrl, oneLoginEnabled: 'true' },
     });
   });
 });
