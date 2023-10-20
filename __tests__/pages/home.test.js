@@ -162,9 +162,10 @@ describe('getServerSideProps', () => {
   });
 
   it('should return a search term if a search term exists as a query param', () => {
+    process.env.ONE_LOGIN_ENABLED = 'false';
     const result = getServerSideProps({ query: { searchTerm: 'search' } });
     expect(result).toStrictEqual({
-      props: { searchTerm: 'search', applicantUrl, oneLoginEnabled: 'true' },
+      props: { searchTerm: 'search', applicantUrl, oneLoginEnabled: 'false' },
     });
   });
 });
