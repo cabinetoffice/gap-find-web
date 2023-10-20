@@ -3,9 +3,12 @@ import { notificationRoutes } from '../../../utils';
 
 export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
   const manageNotificationsLink =
-    oneLoginEnabled === 'true'
+    oneLoginEnabled == 'true'
       ? notificationRoutes.manageNotifications
       : notificationRoutes.checkEmail;
+
+  console.log(typeof oneLoginEnabled);
+  console.log(oneLoginEnabled);
 
   return (
     <div className="govuk-grid-column-one-third">

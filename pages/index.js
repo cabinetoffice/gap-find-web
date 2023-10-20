@@ -15,6 +15,10 @@ export function getServerSideProps({ query }) {
   if (!query || !query.searchTerm) {
     return { props: { searchTerm: '', applicantUrl } };
   }
+
+  console.log(typeof oneLoginEnabled);
+  console.log(oneLoginEnabled);
+
   const { searchTerm } = query;
   return {
     props: {
