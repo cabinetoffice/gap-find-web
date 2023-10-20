@@ -1,10 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import { HomepageSidebar } from '../../../src/components/homepage/sidebar/HomepageSidebar';
 import { notificationRoutes } from '../../../src/utils';
-import getConfig from 'next/config';
 
 const applicantUrl = 'http://localhost:3002';
-const component = <HomepageSidebar header="Test" applicantUrl={applicantUrl} />;
+const component = (
+  <HomepageSidebar
+    header="Test"
+    applicantUrl={applicantUrl}
+    oneLoginEnabled={'true'}
+  />
+);
 
 const sidebartext =
   'See all the grant updates you have signed up for. You can unsubscribe here too.';
@@ -23,10 +28,13 @@ describe('HomepageSidebar component', () => {
   });
 
   it('should render the manage notifications link with the correct href when one login flag disabled', () => {
-    getConfig.mockReturnValueOnce({
-      publicRuntimeConfig: { oneLoginEnabled: false },
-    });
-    render(component);
+    render(
+      <HomepageSidebar
+        header="Test"
+        applicantUrl={applicantUrl}
+        oneLoginEnabled={'false'}
+      />,
+    );
 
     const manageNotificationsLink = screen.getByRole('link', {
       name: 'Manage notifications and saved searches',
@@ -38,6 +46,8 @@ describe('HomepageSidebar component', () => {
   });
 
   it('should render the manage notifications link with the correct href when one login flag enabled', () => {
+    process.env.ONE_LOGIN_ENABLED = 'false';
+
     render(component);
 
     const manageNotificationsLink = screen.getByRole('link', {
