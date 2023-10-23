@@ -111,9 +111,9 @@ describe('subscription manager get Subscription By Email', () => {
     expect(result).toEqual(example);
 
     expect(instance.get).toHaveBeenNthCalledWith(1, 'users/test%40test.com', {
+      withCredentials: true,
       headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer jwt',
+        Cookie: `user-service-token=jwt;`,
       },
     });
   });
@@ -128,9 +128,9 @@ describe('subscription manager get Subscription By Email', () => {
       await subscriptionService.getSubscriptionsByEmail('test@test.com', 'jwt'),
     ).toEqual({});
     expect(instance.get).toHaveBeenNthCalledWith(1, 'users/test%40test.com', {
+      withCredentials: true,
       headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer jwt',
+        Cookie: `user-service-token=jwt;`,
       },
     });
   });

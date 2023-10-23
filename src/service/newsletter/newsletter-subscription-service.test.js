@@ -65,9 +65,9 @@ describe('newsletter-subscription-service', () => {
       expect(axiosInstance.get).toHaveBeenCalledWith(
         `/users/${encodedEmail}/types/${newsletterType}`,
         {
+          withCredentials: true,
           headers: {
-            Accept: 'application/json',
-            Authorization: 'Bearer jwt',
+            Cookie: `user-service-token=jwt;`,
           },
         },
       );
