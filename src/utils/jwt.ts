@@ -28,11 +28,11 @@ export const getJwtFromCookies = (req: NextRequest | NextApiRequest) => {
   return { jwtPayload: decodeJwt(jwt), jwt };
 };
 
-export const axiosConfig = (token: string) => {
+export const axiosConfig = (jwt: string) => {
   return {
+    withCredentials: true,
     headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
+      Cookie: `user-service-token=${jwt};`,
     },
   };
 };
