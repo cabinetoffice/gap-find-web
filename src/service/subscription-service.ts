@@ -1,4 +1,4 @@
-import { axios } from '../../src/utils';
+import { axios, axiosConfig } from '../../src/utils';
 
 export class SubscriptionService {
   private static endpoint = {
@@ -34,11 +34,17 @@ export class SubscriptionService {
     return result.data;
   }
 
-  async getSubscriptionsByEmail(emailAddress: string): Promise<Response> {
+  async getSubscriptionsByEmail(
+    emailAddress: string,
+    jwt: string,
+  ): Promise<Response> {
     const endpoint: string =
       SubscriptionService.endpoint.emailParam +
       encodeURIComponent(emailAddress);
-    const result = await SubscriptionService.client.get(endpoint);
+    const result = await SubscriptionService.client.get(
+      endpoint,
+      axiosConfig(jwt),
+    );
     return result.data;
   }
 
