@@ -1,4 +1,4 @@
-import { axios } from '../../../src/utils';
+import { axios, axiosConfig } from '../../../src/utils';
 import { NewsletterSubscription, NewsletterType } from '../../types/newsletter';
 
 export class NewsletterSubscriptionService {
@@ -21,10 +21,12 @@ export class NewsletterSubscriptionService {
   async getByEmailAndNewsletterType(
     email: string,
     newsletterType: NewsletterType,
+    jwt: string,
   ): Promise<NewsletterSubscription> {
     const encodedemail = encodeURIComponent(email);
     const response = await NewsletterSubscriptionService.client.get(
       `/users/${encodedemail}/types/${newsletterType}`,
+      axiosConfig(jwt),
     );
 
     return response.data;

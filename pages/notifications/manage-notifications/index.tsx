@@ -74,22 +74,16 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
 };
 
 const getEmail = async (ctx) => {
-  const USER_TOKEN_NAME = process.env.USER_TOKEN_NAME;
-  const USER_TOKEN_SECRET = process.env.USER_TOKEN_SECRET;
-
   if (process.env.ONE_LOGIN_ENABLED != 'true') {
     return getEmailAddressFromCookies(ctx);
   }
-  const { jwtPayload } = await getJwtFromCookies(
-    ctx.req,
-    USER_TOKEN_NAME,
-    USER_TOKEN_SECRET,
-  );
+  const { jwtPayload } = getJwtFromCookies(ctx.req);
 
   return jwtPayload.email as string;
 };
 
 export const getServerSideProps = async (ctx) => {
+  const { jwt } = getJwtFromCookies(ctx.req);
   if (
     process.env.ONE_LOGIN_ENABLED != 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
@@ -112,6 +106,7 @@ export const getServerSideProps = async (ctx) => {
 
   let subscriptions = await subscriptionService.getSubscriptionsByEmail(
     plainTextEmailAddress,
+    jwt,
   );
   if (subscriptions) {
     subscriptions = await mergeGrantNameIntoSubscriptions(subscriptions);
@@ -123,10 +118,11 @@ export const getServerSideProps = async (ctx) => {
     await newsletterSubsService.getByEmailAndNewsletterType(
       plainTextEmailAddress,
       NewsletterType.NEW_GRANTS,
+      jwt,
     );
 
   const newGrantsParams = generateWeeklyNewsletterParams();
-  const savedSearches = await getAllSavedSearches(plainTextEmailAddress);
+  const savedSearches = await getAllSavedSearches(plainTextEmailAddress, jwt);
 
   return {
     props: {
@@ -137,8 +133,7 @@ export const getServerSideProps = async (ctx) => {
         ctx.query.savedSearchName !== undefined
           ? ctx.query.savedSearchName
           : null,
-      newsletterSubscription:
-        newsletterSubscription !== undefined ? newsletterSubscription : null,
+      newsletterSubscription: newsletterSubscription ?? null,
       newGrantsParams,
       savedSearches,
     },
@@ -198,10 +193,7 @@ const ManageNotifications = (props) => {
 
   const notificationAndSavedSearchTableContent =
     notificationAndSavedSearchList.map((item) => {
-      const isGrant = Object.prototype.hasOwnProperty.call(
-        item,
-        'contentfulGrantSubscriptionId',
-      );
+      const isGrant = Object.hasOwn(item, 'contentfulGrantSubscriptionId');
 
       const cells = [
         {
