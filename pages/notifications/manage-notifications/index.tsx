@@ -74,10 +74,17 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
 };
 
 const getEmail = async (ctx) => {
+  const USER_TOKEN_NAME = process.env.USER_TOKEN_NAME;
+  const USER_TOKEN_SECRET = process.env.USER_TOKEN_SECRET;
+
   if (process.env.ONE_LOGIN_ENABLED != 'true') {
     return getEmailAddressFromCookies(ctx);
   }
-  const { jwtPayload } = await getJwtFromCookies(ctx.req);
+  const { jwtPayload } = await getJwtFromCookies(
+    ctx.req,
+    USER_TOKEN_NAME,
+    USER_TOKEN_SECRET,
+  );
 
   return jwtPayload.email as string;
 };
