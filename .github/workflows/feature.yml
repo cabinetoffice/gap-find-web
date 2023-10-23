@@ -29,9 +29,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Generate .env files
+      - name: Generate source files hash
+        id: source-file-hash
         run: |
-          cp .env.example .env
+          NAME=${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+
+      - name: Generate yarn lock hash
+        id: yarn-lock-hash
+        run: |
+          NAME=${{ hashFiles('**/yarn.lock') }}
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+
+      - name: Generate .env files
+        run: cp .env.example .env
 
       - name: Read .nvmrc
         run: echo "name=NVMRC::$(cat .nvmrc)" >> $GITHUB_OUTPUT
@@ -46,30 +57,16 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Generate next cache name
-        id: next-cache-name
-        run: |
-          NAME=next-cache-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '') }}
-          echo "name=$NAME" >> $GITHUB_OUTPUT
-
       # Based on steps described here - https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
-      - name: Restore next cache
-        id: restore-next-cache
-        uses: actions/cache/restore@v3
+      - name: Next cache
+        uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/.next/cache
-          key: ${{ steps.next-cache-name.outputs.name }}
-          restore-keys: next-cache-${{ hashFiles('**/yarn.lock') }}-
+          key: next-cache-${{ steps.yarn-lock-hash.outputs.name }}-${{ steps.source-file-hash.outputs.name  }}
+          restore-keys: next-cache-${{ steps.yarn-lock-hash.outputs.name }}-
 
       - name: Build application
         run: yarn build
-
-      - name: Save next cache
-        if: steps.restore-next-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v3
-        with:
-          path: ${{ github.workspace }}/.next/cache
-          key: ${{ steps.next-cache-name.outputs.name }}
 
       - name: Units Tests
         run: yarn jest --ci
