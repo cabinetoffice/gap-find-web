@@ -15,6 +15,8 @@ const HOST = process.env.HOST;
 const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
 const APPLICANT_HOST = process.env.APPLICANT_HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
+const USER_TOKEN_NAME = process.env.USER_TOKEN_NAME;
+const USER_TOKEN_SECRET = process.env.USER_TOKEN_SECRET;
 
 const asObject = (entries: IterableIterator<[string, string]>) =>
   Array.from(entries)
@@ -74,7 +76,11 @@ const logRequest = (req: NextRequest) => {
 
 const authenticateRequest = async (req: NextRequest) => {
   try {
-    const { jwt, jwtPayload } = getJwtFromCookies(req);
+    const { jwt, jwtPayload } = getJwtFromCookies(
+      req,
+      USER_TOKEN_NAME,
+      USER_TOKEN_SECRET,
+    );
     const validJwtResponse = await checkUserLoggedIn(jwt);
 
     if (!validJwtResponse) {
@@ -88,6 +94,7 @@ const authenticateRequest = async (req: NextRequest) => {
       );
     }
   } catch (err) {
+    logger.error(err.message);
     logger.error('failed to authenticate request', addErrorInfo(err, req));
     return buildMiddlewareResponse(req, APPLICANT_HOST);
   }
