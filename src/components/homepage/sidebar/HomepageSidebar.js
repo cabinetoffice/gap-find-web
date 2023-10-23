@@ -3,12 +3,9 @@ import { notificationRoutes } from '../../../utils';
 
 export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
   const manageNotificationsLink =
-    oneLoginEnabled == 'true'
+    oneLoginEnabled === 'true'
       ? notificationRoutes.manageNotifications
       : notificationRoutes.checkEmail;
-
-  console.log(typeof oneLoginEnabled);
-  console.log(oneLoginEnabled);
 
   return (
     <div className="govuk-grid-column-one-third">
@@ -19,14 +16,13 @@ export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
         here too.
       </p>
       <p>
-        <Link href={manageNotificationsLink}>
-          <a
-            className="govuk-link govuk-body"
-            data-cy="cyManageNotificationsHomeLink"
-          >
-            Manage notifications and saved searches
-          </a>
-        </Link>
+        <a
+          className="govuk-link govuk-body"
+          data-cy="cyManageNotificationsHomeLink"
+          href={manageNotificationsLink}
+        >
+          Manage notifications and saved searches
+        </a>
       </p>
       <hr className="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-2 govuk-border-colour" />
       <h2 className="govuk-heading-m" data-cy="cySignInAndApply-header">
