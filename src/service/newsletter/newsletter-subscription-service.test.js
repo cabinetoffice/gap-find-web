@@ -77,7 +77,7 @@ describe('newsletter-subscription-service', () => {
       );
 
       expect(axiosInstance.delete).toHaveBeenCalledWith(
-        `/users/${email}/types/${NewsletterType.NEW_GRANTS}`,
+        `/users/${email}/types/${NewsletterType.NEW_GRANTS}?unsubscribeReference=undefined`,
       );
     });
   });
