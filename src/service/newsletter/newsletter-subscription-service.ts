@@ -33,7 +33,7 @@ export class NewsletterSubscriptionService {
   async unsubscribeFromNewsletter(
     plaintextEmail: string,
     type: NewsletterType,
-    unsubscribeReferenceId: string,
+    unsubscribeReferenceId?: string,
   ): Promise<void> {
     return await NewsletterSubscriptionService.client.delete(
       `/users/${plaintextEmail}/types/${type}?unsubscribeReference=${unsubscribeReferenceId}`,
