@@ -10,7 +10,6 @@ import ServiceErrorPage from '../service-error/index.page';
 import {
   getTypeFromNotificationIds,
   getUnsubscribeReferenceFromId,
-  removeUnsubscribeReference,
 } from '../../src/service/unsubscribe.service';
 
 export async function getServerSideProps({ query: { id = '' } = {} }) {
@@ -33,8 +32,7 @@ export async function getServerSideProps({ query: { id = '' } = {} }) {
     emailAddress = await decrypt(encryptedEmailAddress);
     notificationId = subscriptionId ?? newsletterId ?? savedSearchId;
 
-    await handleUnsubscribe(notificationType, notificationId, emailAddress);
-    await removeUnsubscribeReference(id);
+    await handleUnsubscribe(notificationType, notificationId, emailAddress, id);
 
     return { props: { error: false } };
   } catch (error: unknown) {
@@ -76,25 +74,35 @@ const handleServerSideError = (
 const grantSubscriptionHandler = async (
   id: NotificationKey,
   emailAddress: string,
+  unsubscribeReferenceId: string,
 ) => {
   const subscriptionService = SubscriptionService.getInstance();
   return subscriptionService.deleteSubscriptionByEmailAndGrantId(
     emailAddress,
     id as string,
+    unsubscribeReferenceId,
   );
 };
 
-const newsletterHandler = async (id: NotificationKey, emailAddress: string) => {
+const newsletterHandler = async (
+  id: NotificationKey,
+  emailAddress: string,
+  unsubscribeReferenceId: string,
+) => {
   const newsletterSubscriptionService =
     NewsletterSubscriptionService.getInstance();
   return newsletterSubscriptionService.unsubscribeFromNewsletter(
     emailAddress,
     id as NewsletterType,
+    unsubscribeReferenceId,
   );
 };
 
-const savedSearchHandler = async (id: NotificationKey, emailAddress: string) =>
-  deleteSaveSearch(id as number, emailAddress);
+const savedSearchHandler = async (
+  id: NotificationKey,
+  emailAddress: string,
+  unsubscribeReferenceId: string,
+) => deleteSaveSearch(id as number, emailAddress, unsubscribeReferenceId);
 
 const UNSUBSCRIBE_HANDLER_MAP = {
   GRANT_SUBSCRIPTION: grantSubscriptionHandler,
@@ -104,9 +112,15 @@ const UNSUBSCRIBE_HANDLER_MAP = {
 
 const handleUnsubscribe = async (
   type: keyof typeof UNSUBSCRIBE_HANDLER_MAP,
-  id: NotificationKey,
+  notificationKey: NotificationKey,
   emailAddress: string,
-) => UNSUBSCRIBE_HANDLER_MAP[type](id, emailAddress);
+  unsubscribeReferenceId: string,
+) =>
+  UNSUBSCRIBE_HANDLER_MAP[type](
+    notificationKey,
+    emailAddress,
+    unsubscribeReferenceId,
+  );
 
 const Unsubscribe = (props: undefined | { error: boolean }) => {
   if (props.error) {
