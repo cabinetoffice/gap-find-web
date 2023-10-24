@@ -103,12 +103,19 @@ describe('subscription manager get Subscription By Email', () => {
       },
     ];
 
-    const result =
-      await subscriptionService.getSubscriptionsByEmail('test@test.com');
+    const result = await subscriptionService.getSubscriptionsByEmail(
+      'test@test.com',
+      'jwt',
+    );
 
     expect(result).toEqual(example);
 
-    expect(instance.get).toHaveBeenNthCalledWith(1, 'users/test%40test.com');
+    expect(instance.get).toHaveBeenNthCalledWith(1, 'users/test%40test.com', {
+      withCredentials: true,
+      headers: {
+        Cookie: `user-service-token=jwt;`,
+      },
+    });
   });
 
   it('should return an empty object if no records are found', async () => {
@@ -118,9 +125,14 @@ describe('subscription manager get Subscription By Email', () => {
       };
     });
     expect(
-      await subscriptionService.getSubscriptionsByEmail('test@test.com'),
+      await subscriptionService.getSubscriptionsByEmail('test@test.com', 'jwt'),
     ).toEqual({});
-    expect(instance.get).toHaveBeenNthCalledWith(1, 'users/test%40test.com');
+    expect(instance.get).toHaveBeenNthCalledWith(1, 'users/test%40test.com', {
+      withCredentials: true,
+      headers: {
+        Cookie: `user-service-token=jwt;`,
+      },
+    });
   });
 });
 

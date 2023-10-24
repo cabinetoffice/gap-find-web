@@ -11,19 +11,25 @@ import { SearchBar } from '../src/components/search-bar/SearchBar';
 
 export function getServerSideProps({ query }) {
   const applicantUrl = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
+  const oneLoginEnabled = process.env.ONE_LOGIN_ENABLED;
   if (!query || !query.searchTerm) {
-    return { props: { searchTerm: '', applicantUrl } };
+    return { props: { searchTerm: '', applicantUrl, oneLoginEnabled } };
   }
+
+  console.log(typeof oneLoginEnabled);
+  console.log(oneLoginEnabled);
+
   const { searchTerm } = query;
   return {
     props: {
       searchTerm,
       applicantUrl,
+      oneLoginEnabled,
     },
   };
 }
 
-const Home = ({ searchTerm, applicantUrl }) => {
+const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
   return (
     <>
       <Head>
@@ -80,6 +86,7 @@ const Home = ({ searchTerm, applicantUrl }) => {
             <HomepageSidebar
               header={'Manage notifications'}
               applicantUrl={applicantUrl}
+              oneLoginEnabled={oneLoginEnabled}
             />
           </div>
 

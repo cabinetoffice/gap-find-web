@@ -131,7 +131,7 @@ const Unsubscribe = (props: undefined | { error: boolean }) => {
       <Head>
         <title>Unsubscribe Confirmation</title>
       </Head>
-      <Layout showBetaBlock={false} showNavigation={false}>
+      <Layout isBasicHeader>
         <div className="govuk-grid-row govuk-body govuk-!-margin-top-8">
           <div className="govuk-grid-column-full">
             <h1

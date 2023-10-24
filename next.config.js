@@ -3,9 +3,6 @@
 const path = require('path');
 
 module.exports = {
-  serverRuntimeConfig: {
-    databaseUrl: process.env.DATABASE_URL,
-  },
   i18n: {
     locales: ['en'],
     defaultLocale: 'en',
@@ -18,5 +15,5 @@ module.exports = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
-  output: 'standalone'
+  output: 'standalone',
 };

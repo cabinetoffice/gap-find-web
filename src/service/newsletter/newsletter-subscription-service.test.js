@@ -58,11 +58,18 @@ describe('newsletter-subscription-service', () => {
         await newsletterSubscriptionService.getByEmailAndNewsletterType(
           email,
           newsletterType,
+          'jwt',
         );
 
       expect(spy).toHaveBeenCalledWith(email);
       expect(axiosInstance.get).toHaveBeenCalledWith(
         `/users/${encodedEmail}/types/${newsletterType}`,
+        {
+          withCredentials: true,
+          headers: {
+            Cookie: `user-service-token=jwt;`,
+          },
+        },
       );
       expect(result).toEqual(expectedResult);
     });

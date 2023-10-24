@@ -1,37 +1,19 @@
 name: Feature Workflow
 
 on:
-  push:
+  pull_request:
     branches:
-      - feature/**
-      - GAP-**
-      - fix/**
-      - bug/**
-      - TMI2-**
+      - develop
     paths-ignore:
       - '*.md'
 
-  pull_request:
-    types: [closed]
-    branches:
-      - fix/**
-      - feature/**
-      - GAP-**
-    paths-ignore:
-      - '*.md'
 env:
   DATABASE_URL: postgres://postgres:mysecretpassword@localhost:5432/notifications
 
 jobs:
   Build:
-    name: Build Feature
+    name: Test app
     runs-on: ubuntu-latest
-
-    env:
-      CF_API: 'https://api.london.cloud.service.gov.uk'
-      CF_ORG: 'cabinet-office-gap'
-      CF_SPACE: 'sandbox'
-      CF_APP: 'd_gap'
 
     permissions:
       contents: read
@@ -47,41 +29,23 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Generate .env
+      - name: Generate source files hash
+        id: source-file-hash
         run: |
-          cat << EOF > .env
-          CONTENTFUL_SPACE_ID=${{ secrets.QA_CONTENTFUL_SPACE_ID }}
-          CONTENTFUL_ACCESS_TOKEN=${{ secrets.QA_CONTENTFUL_ACCESS_TOKEN }}
-          CONTENTFUL_PREVIEW_ACCESS_TOKEN=${{ secrets.QA_CONTENTFUL_PREVIEW_ACCESS_TOKEN }}
-          CONTENTFUL_ENVIRONMENT=${{ secrets.QA_CONTENTFUL_ENVIRONMENT }}
-          ELASTIC_INDEX=${{ secrets.QA_ELASTIC_INDEX }}
-          ELASTIC_URL=${{ secrets.QA_ELASTIC_URL }}
-          ELASTIC_USERNAME=${{ secrets.QA_ELASTIC_USERNAME }}
-          ELASTIC_PASSWORD=${{ secrets.QA_ELASTIC_PASSWORD }}
-          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-          GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE=${{ secrets.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE }}
-          GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE=${{ secrets.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE }}
-          GOV_NOTIFY_API_KEY=${{ secrets.GOV_NOTIFY_API_KEY }}
-          DATABASE_URL=${{ secrets.DATABASE_URL }}
-          DATABASE_SSL=true
-          ENABLE_FAQ_TAB=false
-          ENABLE_AWARDS_TAB=false
-          HOST=${{ secrets.QA_ENVIRONMENT_URL }}
-          BACKEND_HOST=${{ secrets.QA_BACKEND_HOST }}
-          BASIC_AUTH_USERNAME=${{ secrets.BASIC_AUTH_USERNAME }}
-          BASIC_AUTH_PASSWORD=${{ secrets.BASIC_AUTH_PASSWORD }}
-          VERIFICATION_JWT_EXPIRY_TIME=${{ secrets.VERIFICATION_JWT_EXPIRY_TIME }}
-          ENCRYPTION_KEY_NAME=${{ secrets.QA_ENCRYPTION_KEY_NAME }}
-          ENCRYPTION_KEY_NAMESPACE=${{ secrets.QA_ENCRYPTION_KEY_NAMESPACE }}
-          ENCRYPTION_ORIGIN=${{ secrets.QA_ENCRYPTION_ORIGIN }}
-          ENCRYPTION_STAGE=${{ secrets.QA_ENCRYPTION_STAGE }}
-          ENCRYPTION_WRAPPING_KEY=${{ secrets.QA_ENCRYPTION_WRAPPING_KEY }}
-          GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE=${{ secrets.QA_GOV_NOTIFY_SAVED_SEARCH_CONFIRMATION_TEMPLATE }}
-          APPLY_FOR_A_GRANT_APPLICANT_URL=${{ secrets.QA_APPLY_FOR_A_GRANT_APPLICANT_URL}}
-          EOF
+          NAME=${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+
+      - name: Generate yarn lock hash
+        id: yarn-lock-hash
+        run: |
+          NAME=${{ hashFiles('**/yarn.lock') }}
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+
+      - name: Generate .env files
+        run: cp .env.example .env
 
       - name: Read .nvmrc
-        run: echo "::set-output name=NVMRC::$(cat .nvmrc)"
+        run: echo "name=NVMRC::$(cat .nvmrc)" >> $GITHUB_OUTPUT
         id: nvm
 
       - name: Setup node
@@ -91,39 +55,21 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: |
-          yarn install --frozen-lockfile
+        run: yarn install --immutable
 
-      - name: Snyk setup
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      # Based on steps described here - https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
+      - name: Next cache
+        uses: actions/cache@v3
         with:
-          args: --strict-out-of-sync=false
-          
-      - name: Units Tests
-        run: |
-          yarn coverage
-      
-      - name: Lint files
-        run: |
-          yarn lint
+          path: ${{ github.workspace }}/.next/cache
+          key: next-cache-${{ steps.yarn-lock-hash.outputs.name }}-${{ steps.source-file-hash.outputs.name  }}
+          restore-keys: next-cache-${{ steps.yarn-lock-hash.outputs.name }}-
 
       - name: Build application
-        run: |
-          yarn build
+        run: yarn build
 
-      - name: Run cypress tests (accessibility only)
-        uses: cypress-io/github-action@v6
-        with:
-          start: yarn start
-          record: false
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 60
-          browser: chrome
-          runTests: true
-          spec: cypress/e2e/dev/accessibility/*
-        env:
-          CYPRESS_CACHE_FOLDER: '~/.cache/Cypress'
-
- # =============================
+      - name: Units Tests
+        run: yarn jest --ci
+      
+      - name: Lint files
+        run: yarn lint

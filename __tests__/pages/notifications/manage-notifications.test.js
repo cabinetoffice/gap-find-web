@@ -34,32 +34,32 @@ import {
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/utils/hash');
 jest.mock('../../../src/service/saved_search_service');
-const encryptedEmail = 'test-encrypted-email-string';
-const decryptedEmail = 'test-decrypted-email-string';
-const hashedEmail = 'test-hashed-email-string';
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
+jest.mock('../../../src/utils/jwt', () => ({
+  getJwtFromCookies: jest.fn(() => ({
+    jwtPayload: {
+      email: 'fake@email.com',
+    },
+    jwt: 'a.b.c',
+  })),
+}));
 
-jest.mock('next/router', () => {
-  return {
-    useRouter: jest.fn(),
-  };
-});
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
-jest.mock('nookies', () => {
-  return {
-    get: jest.fn(),
-    set: jest.fn(),
-  };
-});
+jest.mock('nookies', () => ({
+  get: jest.fn(),
+  set: jest.fn(),
+}));
 
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/cookieAndJwtChecker');
+
+const encryptedEmail = 'test-encrypted-email-string';
+const decryptedEmail = 'test-decrypted-email-string';
+const hashedEmail = 'test-hashed-email-string';
 
 describe('Testing manage-notifications component', () => {
   const pushMock = jest.fn();
@@ -144,6 +144,7 @@ describe('get server side props for manage notifications page', () => {
 
     jest.useFakeTimers('modern');
     jest.setSystemTime(new Date(2022, 2, 16));
+    process.env.ONE_LOGIN_ENABLED = 'false';
   });
 
   it('should proceed when a cookie is detected and no errors are thrown', async () => {

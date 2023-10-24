@@ -6,7 +6,7 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-const headerComponent = <Header showBetaBlock={true} showNavigation={true} />;
+const headerComponent = <Header />;
 
 describe('Header Component that is used within the layout', () => {
   it('should render the browse grants links (js and non-js) with the correct redirect locations', () => {

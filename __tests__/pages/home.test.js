@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import Home, { getServerSideProps } from '../../pages/index';
+import { notificationRoutes } from '../../src/utils';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -9,7 +10,11 @@ jest.mock('next/router', () => ({
 
 const applicantUrl = 'http://localhost:3002';
 const component = (
-  <Home searchTerm="specific search term" applicantUrl={applicantUrl} />
+  <Home
+    searchTerm="specific search term"
+    applicantUrl={applicantUrl}
+    oneLoginEnabled={'true'}
+  />
 );
 
 describe('Rendering the home page', () => {
@@ -105,7 +110,7 @@ describe('Rendering the home page', () => {
       screen
         .getByRole('link', { name: 'Manage notifications and saved searches' })
         .closest('a'),
-    ).toHaveAttribute('href', '/notifications/check-email');
+    ).toHaveAttribute('href', notificationRoutes.manageNotifications);
     expect(
       screen
         .getByRole('link', { name: 'through our feedback form' })
@@ -153,13 +158,16 @@ describe('getServerSideProps', () => {
   });
   it('should return empty search params if no query params exist', () => {
     const result = getServerSideProps({ query: {} });
-    expect(result).toStrictEqual({ props: { searchTerm: '', applicantUrl } });
+    expect(result).toStrictEqual({
+      props: { searchTerm: '', applicantUrl, oneLoginEnabled: 'true' },
+    });
   });
 
   it('should return a search term if a search term exists as a query param', () => {
+    process.env.ONE_LOGIN_ENABLED = 'false';
     const result = getServerSideProps({ query: { searchTerm: 'search' } });
     expect(result).toStrictEqual({
-      props: { searchTerm: 'search', applicantUrl },
+      props: { searchTerm: 'search', applicantUrl, oneLoginEnabled: 'false' },
     });
   });
 });
