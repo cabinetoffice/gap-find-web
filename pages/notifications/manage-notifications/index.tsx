@@ -15,8 +15,9 @@ import {
   cookieName,
   notificationRoutes,
   tableHeadArr,
-  URL_ACTIONS,
   URL_ACTION_MESSAGES,
+  URL_ACTION_SUBHEADINGS,
+  URL_ACTIONS,
 } from '../../../src/utils/constants';
 import {
   fetchByGrantId,
@@ -82,6 +83,15 @@ const getEmail = async (ctx) => {
   return jwtPayload.email as string;
 };
 
+const getSub = async (ctx) => {
+  if (process.env.ONE_LOGIN_ENABLED != 'true') {
+    return getEmailAddressFromCookies(ctx);
+  }
+  const { jwtPayload } = getJwtFromCookies(ctx.req);
+
+  return jwtPayload.sub as string;
+};
+
 export const getServerSideProps = async (ctx) => {
   const { jwt } = getJwtFromCookies(ctx.req);
   if (
@@ -95,6 +105,12 @@ export const getServerSideProps = async (ctx) => {
       },
     };
   }
+
+  let action = ctx.query.action;
+
+  const plainTextEmailAddress = await getEmail(ctx);
+  const sub = await getSub(ctx);
+
   // Fetch individual grant details if required for things like success messages
   const grantDetails = ctx.query.grantId
     ? await fetchByGrantId(ctx.query.grantId)
@@ -102,7 +118,6 @@ export const getServerSideProps = async (ctx) => {
 
   // Fetch the user's grant subscriptions
   const subscriptionService = SubscriptionService.getInstance();
-  const plainTextEmailAddress = await getEmail(ctx);
 
   let subscriptions = await subscriptionService.getSubscriptionsByEmail(
     plainTextEmailAddress,
@@ -112,14 +127,29 @@ export const getServerSideProps = async (ctx) => {
     subscriptions = await mergeGrantNameIntoSubscriptions(subscriptions);
   }
 
-  // Fetch the user's newsletter subscription
   const newsletterSubsService = NewsletterSubscriptionService.getInstance();
-  const newsletterSubscription =
+
+  // Fetch the user's newsletter subscription
+  let newsletterSubscription =
     await newsletterSubsService.getByEmailAndNewsletterType(
       plainTextEmailAddress,
       NewsletterType.NEW_GRANTS,
       jwt,
     );
+  // Creates new subscription if required
+  if (ctx.query.action === URL_ACTIONS.NEWSLETTER_SUBSCRIBE) {
+    if (!newsletterSubscription) {
+      newsletterSubscription =
+        await newsletterSubsService.subscribeToNewsletter(
+          plainTextEmailAddress,
+          sub,
+          NewsletterType.NEW_GRANTS,
+          jwt,
+        );
+    } else {
+      action = null;
+    }
+  }
 
   const newGrantsParams = generateWeeklyNewsletterParams();
   const savedSearches = await getAllSavedSearches(plainTextEmailAddress, jwt);
@@ -128,7 +158,7 @@ export const getServerSideProps = async (ctx) => {
     props: {
       currentNotificationList: JSON.stringify(subscriptions),
       grantDetails,
-      urlAction: ctx.query.action !== undefined ? ctx.query.action : null,
+      urlAction: action !== undefined ? action : null,
       deletedSavedSearchName:
         ctx.query.savedSearchName !== undefined
           ? ctx.query.savedSearchName
@@ -155,17 +185,21 @@ const generateSuccessMessage = (
   grantDetails,
   deletedSavedSearchName,
 ) => {
-  let message = URL_ACTION_MESSAGES.get(action);
+  const { NEWSLETTER_SUBSCRIBE, SUBSCRIBE, UNSUBSCRIBE, DELETE_SAVED_SEARCH } =
+    URL_ACTIONS;
+  let heading = URL_ACTION_MESSAGES.get(action);
+  let subheading = null;
 
-  if (action === URL_ACTIONS.SUBSCRIBE || action === URL_ACTIONS.UNSUBSCRIBE) {
-    message = addGrantDetailsToMessage(message, grantDetails);
+  if ([NEWSLETTER_SUBSCRIBE].includes(action)) {
+    heading = URL_ACTION_MESSAGES.get(action);
+    subheading = URL_ACTION_SUBHEADINGS.get(action);
+  } else if ([SUBSCRIBE, UNSUBSCRIBE].includes(action)) {
+    heading = addGrantDetailsToMessage(heading, grantDetails);
+  } else if (action === DELETE_SAVED_SEARCH) {
+    heading = `${URL_ACTION_MESSAGES.get(action)} ${deletedSavedSearchName}`;
   }
 
-  if (action === URL_ACTIONS.DELETE_SAVED_SEARCH) {
-    message = `${URL_ACTION_MESSAGES.get(action)} ${deletedSavedSearchName}`;
-  }
-
-  return message;
+  return { heading, subheading };
 };
 
 const buildQueryString = (filters) =>
@@ -260,7 +294,7 @@ const ManageNotifications = (props) => {
         <div className="govuk-grid-row govuk-body">
           {!!urlAction && (
             <ConfirmationMessage
-              message={generateSuccessMessage(
+              {...generateSuccessMessage(
                 urlAction,
                 grantDetails,
                 deletedSavedSearchName,

@@ -1,20 +1,31 @@
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { InferGetServerSidePropsType } from 'next';
 import Layout from '../../src/components/partials/Layout';
 import gloss from '../../src/utils/glossary.json';
+import { newsletterRoutes, URL_ACTIONS } from '../../src/utils';
 
+const HOST = process.env.HOST;
+const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
 export async function getServerSideProps({ query }) {
-  return { props: { returnParams: query } };
+  const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED === 'true';
+  return {
+    props: {
+      returnParams: query,
+      ONE_LOGIN_ENABLED,
+      userServiceHost: USER_SERVICE_HOST,
+      host: HOST,
+    },
+  };
 }
-
-type NewsletterLandingPageProps = {
-  returnParams: any;
-};
 
 const NewsletterLandingPage = ({
   returnParams,
-}: NewsletterLandingPageProps) => {
+  ONE_LOGIN_ENABLED,
+  userServiceHost,
+  host,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
       <Head>
@@ -40,28 +51,31 @@ const NewsletterLandingPage = ({
               We will only ever email you once a week. We will not email you if
               no new grants have been added.
             </p>
-            <ul className="govuk-list govuk-!-margin-top-5">
-              <li>
-                <Link href="/newsletter/signup">
-                  <a
-                    className="govuk-button"
-                    data-module="govuk-button"
-                    data-cy="cyContinueToNewsletterSignup"
-                  >
-                    Sign up for updates
-                  </a>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={{ pathname: returnParams.href, query: returnParams }}
-                >
-                  <a className="govuk-link" data-cy="cyCancelNewsletterSignup">
-                    Cancel
-                  </a>
-                </Link>
-              </li>
-            </ul>
+            {ONE_LOGIN_ENABLED ? (
+              <p className="govuk-body">
+                To sign up you need a GOV.UK One Login. If you do not have a
+                GOV.UK One Login you can create one.
+              </p>
+            ) : null}
+            <div className="govuk-button-group">
+              <a
+                className="govuk-button"
+                data-module="govuk-button"
+                data-cy="cyContinueToNewsletterSignup"
+                href={
+                  ONE_LOGIN_ENABLED
+                    ? `${userServiceHost}/v2/login?redirectUrl=${host}/notifications/manage-notifications?action=${URL_ACTIONS.NEWSLETTER_SUBSCRIBE}`
+                    : newsletterRoutes.signup
+                }
+              >
+                Sign up for updates
+              </a>
+              <Link href={{ pathname: returnParams.href, query: returnParams }}>
+                <a className="govuk-link" data-cy="cyCancelNewsletterSignup">
+                  Cancel
+                </a>
+              </Link>
+            </div>
           </div>
         </div>
       </Layout>

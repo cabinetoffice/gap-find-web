@@ -56,7 +56,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const confirmationUrl = generateConfirmationUrl(apiKey);
 
   try {
-    console.log('hello');
     await sendEmail(
       signedUpEmail,
       {
@@ -69,9 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       'error sending newsletter signup confirmation email',
       addErrorInfo(e, req),
     );
-    console.log('world');
   }
-  console.log('returning...');
   return {
     props: {
       signedUpEmail,

@@ -2,10 +2,17 @@ import { axios, axiosConfig } from '../../../src/utils';
 import { NewsletterSubscription, NewsletterType } from '../../types/newsletter';
 
 export class NewsletterSubscriptionService {
+  private static endpoint = {
+    addSubscription: ' ',
+    emailParam: 'users/',
+    typesParam: 'types/',
+    newslettersParam: 'newsletters/',
+  };
+
   private static instance: NewsletterSubscriptionService;
 
   private static client = axios.create({
-    baseURL: `${process.env.BACKEND_HOST}/newsletters/`,
+    baseURL: `${process.env.BACKEND_HOST}/${NewsletterSubscriptionService.endpoint.newslettersParam}`,
   });
 
   constructor() {}
@@ -23,12 +30,26 @@ export class NewsletterSubscriptionService {
     newsletterType: NewsletterType,
     jwt: string,
   ): Promise<NewsletterSubscription> {
-    const encodedemail = encodeURIComponent(email);
+    const encodedEmail = encodeURIComponent(email);
     const response = await NewsletterSubscriptionService.client.get(
-      `/users/${encodedemail}/types/${newsletterType}`,
+      `/${NewsletterSubscriptionService.endpoint.emailParam}${encodedEmail}/${NewsletterSubscriptionService.endpoint.typesParam}${newsletterType}`,
       axiosConfig(jwt),
     );
 
+    return response.data;
+  }
+
+  async subscribeToNewsletter(
+    email: string,
+    sub: string,
+    newsletterType: NewsletterType,
+    jwt: string,
+  ): Promise<NewsletterSubscription> {
+    const response = await NewsletterSubscriptionService.client.post(
+      NewsletterSubscriptionService.endpoint.addSubscription,
+      { email, sub, newsletterType },
+      axiosConfig(jwt),
+    );
     return response.data;
   }
 
@@ -37,7 +58,7 @@ export class NewsletterSubscriptionService {
     type: NewsletterType,
   ): Promise<void> {
     return await NewsletterSubscriptionService.client.delete(
-      `/users/${plaintextEmail}/types/${type}`,
+      `/${NewsletterSubscriptionService.endpoint.emailParam}${plaintextEmail}/${NewsletterSubscriptionService.endpoint.typesParam}${type}`,
     );
   }
 }
