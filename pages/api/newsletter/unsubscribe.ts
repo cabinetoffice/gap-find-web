@@ -16,11 +16,11 @@ export default async function handler(
 ) {
   const newsletterService = NewsletterSubscriptionService.getInstance();
   let decryptedEmailAddress;
-  // let sub;
+  let sub = null;
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload } = getJwtFromCookies(req);
     decryptedEmailAddress = jwtPayload.email;
-    // sub = jwtPayload.sub;
+    sub = jwtPayload.sub;
   } else {
     if (!req.cookies[cookieName.currentEmailAddress]) {
       return {
@@ -41,6 +41,7 @@ export default async function handler(
     await newsletterService.unsubscribeFromNewsletter(
       decryptedEmailAddress,
       NewsletterType.NEW_GRANTS,
+      sub,
     );
   } catch (e) {
     logger.error('error unsubscribing from newsletter', addErrorInfo(e, req));

@@ -4,7 +4,7 @@ import { NewsletterSubscription, NewsletterType } from '../../types/newsletter';
 export class NewsletterSubscriptionService {
   private static endpoint = {
     addSubscription: ' ',
-    emailParam: 'users/',
+    usersParam: 'users/',
     typesParam: 'types/',
     newslettersParam: 'newsletters/',
   };
@@ -32,7 +32,20 @@ export class NewsletterSubscriptionService {
   ): Promise<NewsletterSubscription> {
     const encodedEmail = encodeURIComponent(email);
     const response = await NewsletterSubscriptionService.client.get(
-      `/${NewsletterSubscriptionService.endpoint.emailParam}${encodedEmail}/${NewsletterSubscriptionService.endpoint.typesParam}${newsletterType}`,
+      `/${NewsletterSubscriptionService.endpoint.usersParam}${encodedEmail}/${NewsletterSubscriptionService.endpoint.typesParam}${newsletterType}`,
+      axiosConfig(jwt),
+    );
+
+    return response.data;
+  }
+
+  async getBySubAndNewsletterType(
+    sub: string,
+    newsletterType: NewsletterType,
+    jwt: string,
+  ): Promise<NewsletterSubscription> {
+    const response = await NewsletterSubscriptionService.client.get(
+      `/${NewsletterSubscriptionService.endpoint.usersParam}${sub}/${NewsletterSubscriptionService.endpoint.typesParam}${newsletterType}`,
       axiosConfig(jwt),
     );
 
@@ -41,9 +54,9 @@ export class NewsletterSubscriptionService {
 
   async subscribeToNewsletter(
     email: string,
-    sub: string,
     newsletterType: NewsletterType,
     jwt: string,
+    sub?: string,
   ): Promise<NewsletterSubscription> {
     const response = await NewsletterSubscriptionService.client.post(
       NewsletterSubscriptionService.endpoint.addSubscription,
@@ -56,9 +69,11 @@ export class NewsletterSubscriptionService {
   async unsubscribeFromNewsletter(
     plaintextEmail: string,
     type: NewsletterType,
+    sub?: string,
   ): Promise<void> {
+    const id = sub ?? plaintextEmail;
     return await NewsletterSubscriptionService.client.delete(
-      `/${NewsletterSubscriptionService.endpoint.emailParam}${plaintextEmail}/${NewsletterSubscriptionService.endpoint.typesParam}${type}`,
+      `/${NewsletterSubscriptionService.endpoint.usersParam}${id}/${NewsletterSubscriptionService.endpoint.typesParam}${type}`,
     );
   }
 }

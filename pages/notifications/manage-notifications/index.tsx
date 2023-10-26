@@ -130,21 +130,26 @@ export const getServerSideProps = async (ctx) => {
   const newsletterSubsService = NewsletterSubscriptionService.getInstance();
 
   // Fetch the user's newsletter subscription
-  let newsletterSubscription =
-    await newsletterSubsService.getByEmailAndNewsletterType(
-      plainTextEmailAddress,
-      NewsletterType.NEW_GRANTS,
-      jwt,
-    );
+  let newsletterSubscription = sub
+    ? await newsletterSubsService.getBySubAndNewsletterType(
+        sub,
+        NewsletterType.NEW_GRANTS,
+        jwt,
+      )
+    : await newsletterSubsService.getByEmailAndNewsletterType(
+        plainTextEmailAddress,
+        NewsletterType.NEW_GRANTS,
+        jwt,
+      );
   // Creates new subscription if required
   if (ctx.query.action === URL_ACTIONS.NEWSLETTER_SUBSCRIBE) {
     if (!newsletterSubscription) {
       newsletterSubscription =
         await newsletterSubsService.subscribeToNewsletter(
           plainTextEmailAddress,
-          sub,
           NewsletterType.NEW_GRANTS,
           jwt,
+          sub,
         );
     } else {
       action = null;
