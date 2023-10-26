@@ -27,7 +27,7 @@ import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChec
 import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
-import { axios, getJwtFromCookies } from '../../../src/utils';
+import { client as axios, getJwtFromCookies } from '../../../src/utils';
 import nookies from 'nookies';
 
 //TODO GAP-560 / GAP-592
@@ -111,15 +111,14 @@ export const getServerSideProps = async (ctx) => {
       grantId = grantIdCookieValue ?? ctx.query.grantId;
 
       if (ctx.query.action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
-        await axios({
-          method: 'post',
-          url: `${process.env.HOST}/api/subscription`,
-          data: {
+        await axios.post(
+          new URL(`${process.env.HOST}/api/subscription`).toString(),
+          {
             contentfulGrantSubscriptionId: grantId,
             emailAddress: jwtPayload.email,
             sub: jwtPayload.sub,
           },
-        });
+        );
       }
     }
   }

@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
+import { client } from '../../../src/utils';
 import * as management from '../../../pages/notifications/manage-notifications';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
@@ -34,6 +35,13 @@ import {
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/utils/hash');
 jest.mock('../../../src/service/saved_search_service');
+jest.mock('nookies', () => {
+  return {
+    get: jest.fn(),
+    set: jest.fn(),
+    destroy: jest.fn(),
+  };
+});
 
 jest.mock('../../../src/utils/jwt', () => ({
   getJwtFromCookies: jest.fn(() => ({
@@ -133,7 +141,6 @@ describe('get server side props for manage notifications page', () => {
   beforeEach(() => {
     process.env.ONE_LOGIN_ENABLED = 'false';
     jest.clearAllMocks();
-
     decryptSignedApiKey.mockReturnValue({
       email: encryptedEmail,
     });
@@ -172,6 +179,55 @@ describe('get server side props for manage notifications page', () => {
     expect(subscriptionServiceMock).toBeCalledTimes(1);
     expect(getAllSavedSearches).toBeCalledTimes(1);
     expect(newsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
+    expect(result).toStrictEqual(testResultSuccess);
+  });
+
+  it('should proceed when one login is enabled', async () => {
+    process.env.ONE_LOGIN_ENABLED = 'true';
+    cookieExistsAndContainsValidJwt.mockReturnValue(false);
+
+    const context = {
+      res: {
+        setHeader: jest.fn(),
+      },
+      req: {
+        cookies: {
+          grantIdCookieValue: '12345678',
+        },
+      },
+      query: {
+        grantId: '12345678',
+        action: 'subscribe',
+      },
+    };
+
+    nookies.get.mockReturnValue({
+      grantIdCookieValue: 'blah',
+    });
+
+    client.post = jest.fn();
+
+    const subscriptionServiceMock = jest
+      .spyOn(SubscriptionService.prototype, 'getSubscriptionsByEmail')
+      .mockImplementationOnce(() => {
+        return testSubscriptionArray;
+      });
+
+    getAllSavedSearches.mockReturnValue(savedSearches);
+    const newsletterSubscriptionServiceMock = jest
+      .spyOn(
+        NewsletterSubscriptionService.prototype,
+        'getByEmailAndNewsletterType',
+      )
+      .mockImplementation(() => newsletterSubscription);
+
+    fetchByGrantId.mockReturnValue(null);
+    const result = await management.getServerSideProps(context);
+
+    expect(subscriptionServiceMock).toBeCalledTimes(1);
+    expect(client.post).toHaveBeenCalledTimes(1);
+    expect(newsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
+    testResultSuccess.props.urlAction = 'subscribe';
     expect(result).toStrictEqual(testResultSuccess);
   });
 

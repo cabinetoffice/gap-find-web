@@ -6,21 +6,20 @@ import gloss from '../../src/utils/glossary.json';
 import { getJwtFromCookies } from '../../src/utils/jwt';
 import { URL_ACTIONS, notificationRoutes } from '../../src/utils/constants';
 import { fetchGrantDetail } from '../../src/utils/grantDetails';
-import { axios } from '../../src/utils/axios';
+import { client as axios } from '../../src/utils';
 
 export async function getServerSideProps(ctx) {
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload } = getJwtFromCookies(ctx.req);
 
-    const response = await axios({
-      method: 'post',
-      url: `${process.env.HOST}/api/subscription`,
-      data: {
+    const response = await axios.post(
+      new URL(`${process.env.HOST}/api/subscription`).toString(),
+      {
         contentfulGrantSubscriptionId: ctx.query.id,
         emailAddress: jwtPayload.email,
         sub: jwtPayload.sub,
       },
-    });
+    );
 
     if (response.errors) {
       return {

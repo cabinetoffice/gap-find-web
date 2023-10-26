@@ -3,6 +3,7 @@ import Signup, {
   getServerSideProps,
 } from '../../../pages/subscriptions/signup';
 import { fetchEntry } from '../../../src/utils/contentFulPage';
+import { client } from '../../../src/utils';
 
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('next/router', () => ({
@@ -12,6 +13,11 @@ jest.mock('next/router', () => ({
 }));
 jest.mock('../../../src/utils/jwt', () => ({
   getJwtFromCookies: jest.fn(() => ({ jwtPayload: {}, jwt: 'a.b.c' })),
+}));
+jest.mock('../../../src/utils/axios', () => ({
+  client: {
+    post: jest.fn(),
+  },
 }));
 
 describe('Signing up with email and accepting privacy policy', () => {
@@ -203,6 +209,28 @@ describe('getServerSideProps', () => {
     const props = await getServerSideProps(request);
 
     expect(props).toEqual(grantDetail);
+  });
+
+  it('should call subscription api and redirect to manage notifications when one login is enabled', async () => {
+    process.env.ONE_LOGIN_ENABLED = 'true';
+    const request = {
+      query: {
+        id: 'a-grant-id',
+        grantLabel: 'a-grant-label',
+      },
+    };
+    client.post.mockResolvedValue({});
+
+    const props = await getServerSideProps(request);
+
+    expect(client.post).toHaveBeenCalledTimes(1);
+    expect(props).toEqual({
+      redirect: {
+        destination:
+          '/notifications/manage-notifications?action=subscribe&grantId=a-grant-id',
+        permanent: false,
+      },
+    });
   });
 
   it('should return errors in the props with previous form values if validation failed', async () => {
