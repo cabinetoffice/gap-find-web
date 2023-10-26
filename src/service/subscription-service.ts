@@ -62,11 +62,14 @@ export class SubscriptionService {
   async getSubscriptionBySubAndGrantId(
     sub: string,
     grantId: string,
+    unsubscribeReference?: string,
   ): Promise<Response> {
     const endpoint: string = `${
       SubscriptionService.endpoint.userParam + encodeURIComponent(sub)
     }/${SubscriptionService.endpoint.grantIdParam + grantId}`;
-    const result = await SubscriptionService.client.get(endpoint);
+    const result = await SubscriptionService.client.get(
+      endpoint + '?unsubscribeReference=' + unsubscribeReference,
+    );
     return result.data;
   }
 
@@ -78,7 +81,9 @@ export class SubscriptionService {
     const endpoint: string = `${
       SubscriptionService.endpoint.userParam + encodeURIComponent(id)
     }/${SubscriptionService.endpoint.grantIdParam + dto.grantId}`;
-    const result = await SubscriptionService.client.delete(endpoint);
+    const result = await SubscriptionService.client.delete(
+      endpoint + '?unsubscribeReference=' + dto.unsubscribeReferenceId,
+    );
     return result.data;
   }
 }

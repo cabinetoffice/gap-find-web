@@ -82,10 +82,14 @@ export async function updateStatus(
   return response.data;
 }
 
-export async function deleteSaveSearch(savedSearchId: number, email: string) {
+export async function deleteSaveSearch(
+  savedSearchId: number,
+  email: string,
+  unsubscribeReferenceId: string,
+) {
   const response = await axios({
     method: 'post',
-    url: `${process.env.BACKEND_HOST}/saved-searches/${savedSearchId}/delete`,
+    url: `${process.env.BACKEND_HOST}/saved-searches/${savedSearchId}/delete?unsubscribeReference=${unsubscribeReferenceId}`,
     data: {
       email,
     },

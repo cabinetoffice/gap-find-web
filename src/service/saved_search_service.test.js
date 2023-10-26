@@ -142,7 +142,7 @@ describe('delete', () => {
 
     expect(axios).toHaveBeenCalledWith({
       method: 'post',
-      url: `${process.env.BACKEND_HOST}/saved-searches/${saveSearchId}/delete`,
+      url: `${process.env.BACKEND_HOST}/saved-searches/${saveSearchId}/delete?unsubscribeReference=undefined`,
       data: {
         email,
       },

@@ -22,6 +22,7 @@ const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
 describe('Middleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env.ONE_LOGIN_ENABLED = 'true';
   });
 
   describe('authentication', () => {
