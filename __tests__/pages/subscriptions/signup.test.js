@@ -196,6 +196,7 @@ describe('getServerSideProps', () => {
     const request = {
       query: {
         id: 'a-grant-id',
+        grantLabel: 'a-grant-label',
       },
     };
 
@@ -219,6 +220,7 @@ describe('getServerSideProps', () => {
     const request = {
       query: {
         id: 'a-grant-id',
+        grantLabel: 'a-grant-label',
         previousFormValues,
         'errors[]': errors,
       },
@@ -248,6 +250,7 @@ describe('getServerSideProps', () => {
     const request = {
       query: {
         id: 'a-grant-id',
+        grantLabel: 'a-grant-label',
         previousFormValues,
         'errors[]': errors,
       },

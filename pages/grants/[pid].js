@@ -24,6 +24,7 @@ export async function getServerSideProps({ params }) {
       },
     };
   }
+  const grantId = grantDetail.props.grantDetail.sys.id;
 
   return {
     props: {
@@ -35,6 +36,7 @@ export async function getServerSideProps({ params }) {
         ? process.env.ENABLE_AWARDS_TAB
         : true,
       oneLoginEnabled,
+      grantId,
     },
   };
 }
@@ -44,7 +46,9 @@ const Grants = ({
   enableFAQTab,
   enableAwardsTab,
   oneLoginEnabled,
+  grantId,
 }) => {
+  console.log(grantId);
   const router = useRouter();
   const grant = grantDetail.props.grantDetail.fields;
 
@@ -77,6 +81,7 @@ const Grants = ({
             <GrantDetailsHeader grant={grant} />
             <GrantDetailsSidebar
               grantLabel={grant.label}
+              grantId={grantId}
               oneLoginEnabled={oneLoginEnabled}
             />
           </div>

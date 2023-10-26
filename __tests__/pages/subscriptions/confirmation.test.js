@@ -8,9 +8,11 @@ import { sendEmail } from '../../../src/service/gov_notify_service';
 import { notificationRoutes } from '../../../src/utils/constants';
 import { encrypt } from '../../../src/utils/encryption';
 import { hash } from '../../../src/utils/hash';
+import { parseBody } from 'next/dist/server/api-utils/node';
 
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/utils/hash');
+jest.mock('next/dist/server/api-utils/node');
 
 const encryptedEmail = 'test-encrypted-email-string';
 const hashedEmail = 'test-hashed-email-string';
@@ -120,6 +122,8 @@ describe('Server Side Props', () => {
       process.env.HOST,
     ).toString();
 
+    parseBody.mockResolvedValue(req.body);
+
     const expectedEmailBody = {
       'name of grant': 'grant-title',
       'Confirmation link for updates': url,
@@ -167,6 +171,8 @@ describe('Server Side Props', () => {
       contentful_grant_subscription_id: 'a-grant-id',
       encrypted_email_address: encryptedEmail,
     };
+
+    parseBody.mockResolvedValue(req.body);
 
     generateSignedApiKey.mockReturnValue(tokenValue);
 

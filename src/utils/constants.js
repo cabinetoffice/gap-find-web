@@ -2,6 +2,7 @@ export const cookieName = {
   currentEmailAddress: 'currentEmailAddress',
   notificationList: 'notificationList',
   grantLabel: 'grantLabel',
+  grantId: 'grantIdCookieValue',
 };
 
 export const NOTIFICATION_TYPES = {

@@ -142,6 +142,7 @@ describe('get server side props', () => {
     const request = {
       query: {
         id: 'a-grant-id',
+        grantLabel: 'a-grant-label',
         email,
         'errors[]': errors,
       },

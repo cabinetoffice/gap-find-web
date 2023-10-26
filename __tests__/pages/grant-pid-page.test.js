@@ -171,10 +171,9 @@ describe('grants-pid page', () => {
 
     const props = {
       props: {
-        grantDetail: 'test-grant',
+        grantDetail: { sys: { id: '123' } },
       },
     };
-
     beforeEach(() => {
       jest.clearAllMocks();
     });
@@ -208,7 +207,7 @@ describe('grants-pid page', () => {
 
       fetchEntry.mockResolvedValue({
         props: {
-          grantDetail: 'test-grant',
+          grantDetail: { sys: { id: '123' } },
         },
       });
 
@@ -219,8 +218,11 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'true',
           enableFAQTab: 'true',
           oneLoginEnabled: 'false',
+          grantId: '123',
           grantDetail: {
-            props: { grantDetail: 'test-grant' },
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
           },
         },
       });
@@ -240,7 +242,12 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'false',
           enableFAQTab: 'false',
           oneLoginEnabled: 'false',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });
@@ -258,7 +265,12 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'false',
           enableFAQTab: 'true',
           oneLoginEnabled: 'false',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });
@@ -276,7 +288,12 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'true',
           enableFAQTab: 'false',
           oneLoginEnabled: 'false',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });

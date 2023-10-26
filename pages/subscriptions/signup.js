@@ -2,23 +2,21 @@ import Head from 'next/head';
 import React from 'react';
 import Layout from '../../src/components/partials/Layout';
 import SignupForm from '../../src/components/sign-up/SignupForm';
-import { fetchEntry } from '../../src/utils/contentFulPage';
 import gloss from '../../src/utils/glossary.json';
-import { getValidationErrorsFromQuery } from '../../src/utils/request';
 import { getJwtFromCookies } from '../../src/utils/jwt';
 import { URL_ACTIONS, notificationRoutes } from '../../src/utils/constants';
+import { fetchGrantDetail } from '../../src/utils/grantDetails';
 import { axios } from '../../src/utils/axios';
 
 export async function getServerSideProps(ctx) {
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload } = getJwtFromCookies(ctx.req);
-    const grantDetail = await fetchGrantDetail(ctx.query);
 
     const response = await axios({
       method: 'post',
       url: `${process.env.HOST}/api/subscription`,
       data: {
-        contentfulGrantSubscriptionId: grantDetail.props.grantDetail.sys.id,
+        contentfulGrantSubscriptionId: ctx.query.id,
         emailAddress: jwtPayload.email,
         sub: jwtPayload.sub,
       },
@@ -36,36 +34,12 @@ export async function getServerSideProps(ctx) {
     return {
       redirect: {
         permanent: false,
-        destination: `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.SUBSCRIBE}&grantId=${grantDetail.props.grantDetail.sys.id}`,
+        destination: `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.SUBSCRIBE}&grantId=${ctx.query.id}`,
       },
     };
   }
 
   return await fetchGrantDetail(ctx.query);
-}
-
-export async function fetchGrantDetail(query) {
-  let path = query.id;
-
-  if (path === undefined) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/static/page-not-found',
-      },
-    };
-  }
-
-  const grantDetail = await fetchEntry(path);
-
-  if (grantDetail.props.grantDetail) {
-    grantDetail.props.grantDetail.previousFormValues = query;
-    grantDetail.props.grantDetail.errors = query['errors[]']
-      ? getValidationErrorsFromQuery(query['errors[]'])
-      : [];
-  }
-
-  return grantDetail;
 }
 
 const Signup = ({ grantDetail }) => {

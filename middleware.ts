@@ -68,13 +68,13 @@ export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
   }
 
   if (subscriptionSignUpPattern.test({ pathname: req.nextUrl.pathname })) {
-    const grantLabel = new URLSearchParams(req.nextUrl.search).get('id');
+    const grantId = new URLSearchParams(req.nextUrl.search).get('id');
 
     const res = NextResponse.redirect(
       `${HOST}${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS}`,
     );
 
-    res.cookies.set('grantLabel', grantLabel, {
+    res.cookies.set('grantIdCookieValue', grantId, {
       path: '/',
       secure: true,
       httpOnly: true,

@@ -11,7 +11,6 @@ import { NewsletterSubscriptionService } from '../../../src/service/newsletter/n
 import { getAllSavedSearches } from '../../../src/service/saved_search_service';
 import { SubscriptionService } from '../../../src/service/subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
-import { fetchGrantDetail } from '../../subscriptions/signup';
 import {
   cookieName,
   notificationRoutes,
@@ -85,7 +84,6 @@ const getEmail = async (ctx) => {
 };
 
 export const getServerSideProps = async (ctx) => {
-  const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
   if (
     process.env.ONE_LOGIN_ENABLED != 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
@@ -97,32 +95,34 @@ export const getServerSideProps = async (ctx) => {
       },
     };
   }
-
   let grantId = ctx.query.grantId;
+  let jwtValue;
 
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
-    const { grantLabel } = nookies.get(ctx);
-    ctx.res.setHeader(
-      'Set-Cookie',
-      `${cookieName.grantLabel}=deleted; Path=/; Max-Age=0`,
-    );
+    const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
+    jwtValue = jwt;
+    if (process.env.ONE_LOGIN_ENABLED === 'true') {
+      const { grantIdCookieValue } = nookies.get(ctx);
+      ctx.res.setHeader(
+        'Set-Cookie',
+        `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
+      );
 
-    const grantDetail = await fetchGrantDetail({ id: grantLabel });
-    grantId = grantDetail['props']?.grantDetail.sys.id ?? ctx.query.grantId;
+      grantId = grantIdCookieValue ?? ctx.query.grantId;
 
-    if (ctx.query.action === URL_ACTIONS.SUBSCRIBE && grantLabel) {
-      await axios({
-        method: 'post',
-        url: `${process.env.HOST}/api/subscription`,
-        data: {
-          contentfulGrantSubscriptionId: grantId,
-          emailAddress: jwtPayload.email,
-          sub: jwtPayload.sub,
-        },
-      });
+      if (ctx.query.action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
+        await axios({
+          method: 'post',
+          url: `${process.env.HOST}/api/subscription`,
+          data: {
+            contentfulGrantSubscriptionId: grantId,
+            emailAddress: jwtPayload.email,
+            sub: jwtPayload.sub,
+          },
+        });
+      }
     }
   }
-
   // Fetch individual grant details if required for things like success messages
   const grantDetails = grantId ? await fetchByGrantId(grantId) : null;
 
@@ -132,7 +132,7 @@ export const getServerSideProps = async (ctx) => {
 
   let subscriptions = await subscriptionService.getSubscriptionsByEmail(
     plainTextEmailAddress,
-    jwt,
+    jwtValue,
   );
   if (subscriptions) {
     subscriptions = await mergeGrantNameIntoSubscriptions(subscriptions);
@@ -144,11 +144,14 @@ export const getServerSideProps = async (ctx) => {
     await newsletterSubsService.getByEmailAndNewsletterType(
       plainTextEmailAddress,
       NewsletterType.NEW_GRANTS,
-      jwt,
+      jwtValue,
     );
 
   const newGrantsParams = generateWeeklyNewsletterParams();
-  const savedSearches = await getAllSavedSearches(plainTextEmailAddress, jwt);
+  const savedSearches = await getAllSavedSearches(
+    plainTextEmailAddress,
+    jwtValue,
+  );
 
   return {
     props: {
