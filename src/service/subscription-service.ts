@@ -62,11 +62,14 @@ export class SubscriptionService {
   async deleteSubscriptionByEmailAndGrantId(
     emailAddress: string,
     grantId: string,
-  ): Promise<Response> {
-    const endpoint: string = `${
+    unsubscribeReference?: string,
+  ) {
+    const endpoint = `${
       SubscriptionService.endpoint.emailParam + encodeURIComponent(emailAddress)
     }/${SubscriptionService.endpoint.grantIdParam + grantId}`;
-    const result = await SubscriptionService.client.delete(endpoint);
+    const result = await SubscriptionService.client.delete(
+      endpoint + '?unsubscribeReference=' + unsubscribeReference,
+    );
     return result.data;
   }
 }
