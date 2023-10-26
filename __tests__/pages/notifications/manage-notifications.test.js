@@ -131,6 +131,7 @@ describe('Testing manage-notifications component', () => {
 
 describe('get server side props for manage notifications page', () => {
   beforeEach(() => {
+    process.env.ONE_LOGIN_ENABLED = 'false';
     jest.clearAllMocks();
 
     decryptSignedApiKey.mockReturnValue({

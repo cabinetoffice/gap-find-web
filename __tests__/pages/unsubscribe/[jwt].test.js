@@ -48,7 +48,7 @@ const grantSubscriptionSpy = ({ throwsError }) =>
     addSubscription: null,
     getSubscriptionByEmailAndGrantId: null,
     getSubscriptionsByEmail: null,
-    deleteSubscriptionByEmailAndGrantId: async () => {
+    deleteSubscriptionByEmailOrSubAndGrantId: async () => {
       if (throwsError) {
         throw new AxiosError();
       } else {
@@ -75,6 +75,7 @@ const getContext = ({ jwt }) => ({
 
 describe('getServerSideProps()', () => {
   beforeEach(jest.clearAllMocks);
+  process.env.ONE_LOGIN_ENABLED = 'false';
 
   it('should return error when jwt has expired', async () => {
     decryptSignedApiKey.mockImplementation(() => {

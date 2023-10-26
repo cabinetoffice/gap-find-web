@@ -10,6 +10,7 @@ import { fetchByGrantId } from '../../../src/utils/contentFulPage';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
+import { getJwtFromCookies } from '../../../src/utils/jwt';
 
 //TODO GAP-560 / GAP-592
 const breadcrumbsRoutes = [
@@ -31,6 +32,28 @@ export async function getServerSideProps(ctx) {
   const {
     query: { slug = '' },
   } = ctx;
+
+  if (process.env.ONE_LOGIN_ENABLED === 'true') {
+    const { jwtPayload } = getJwtFromCookies(ctx.req);
+
+    const subscriptionService = SubscriptionService.getInstance();
+
+    const subscription =
+      await subscriptionService.getSubscriptionBySubAndGrantId(
+        jwtPayload.sub,
+        slug,
+      );
+    const grantDetails = await fetchByGrantId(
+      subscription.contentfulGrantSubscriptionId,
+    );
+    return {
+      props: {
+        unsubscribeGrant: JSON.stringify(subscription),
+        email: jwtPayload.email,
+        grantDetails: grantDetails.fields,
+      },
+    };
+  }
 
   if (
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])

@@ -10,6 +10,9 @@ jest.mock('next/router', () => ({
     return jest.fn();
   },
 }));
+jest.mock('../../../src/utils/jwt', () => ({
+  getJwtFromCookies: jest.fn(() => ({ jwtPayload: {}, jwt: 'a.b.c' })),
+}));
 
 describe('Signing up with email and accepting privacy policy', () => {
   const grantDetail = {
@@ -169,6 +172,7 @@ describe('getServerSideProps', () => {
 
   beforeEach(() => {
     fetchEntry.mockReturnValue(grantDetail);
+    process.env.ONE_LOGIN_ENABLED = 'false';
   });
 
   it('should redirect to the 404 page if no grant ID is provided', async () => {

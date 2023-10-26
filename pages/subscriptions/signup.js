@@ -5,8 +5,46 @@ import SignupForm from '../../src/components/sign-up/SignupForm';
 import { fetchEntry } from '../../src/utils/contentFulPage';
 import gloss from '../../src/utils/glossary.json';
 import { getValidationErrorsFromQuery } from '../../src/utils/request';
+import { getJwtFromCookies } from '../../src/utils/jwt';
+import { URL_ACTIONS, notificationRoutes } from '../../src/utils/constants';
+import { axios } from '../../src/utils/axios';
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps(ctx) {
+  if (process.env.ONE_LOGIN_ENABLED === 'true') {
+    const { jwtPayload } = getJwtFromCookies(ctx.req);
+    const grantDetail = await fetchGrantDetail(ctx.query);
+
+    const response = await axios({
+      method: 'post',
+      url: `${process.env.HOST}/api/subscription`,
+      data: {
+        contentfulGrantSubscriptionId: grantDetail.props.grantDetail.sys.id,
+        emailAddress: jwtPayload.email,
+        sub: jwtPayload.sub,
+      },
+    });
+
+    if (response.errors) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/static/page-not-found',
+        },
+      };
+    }
+
+    return {
+      redirect: {
+        permanent: false,
+        destination: `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.SUBSCRIBE}&grantId=${grantDetail.props.grantDetail.sys.id}`,
+      },
+    };
+  }
+
+  return await fetchGrantDetail(ctx.query);
+}
+
+export async function fetchGrantDetail(query) {
   let path = query.id;
 
   if (path === undefined) {

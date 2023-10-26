@@ -8,6 +8,7 @@ import { NewsletterSubscriptionService } from '../../src/service/newsletter/news
 import { NewsletterType } from '../../src/types/newsletter';
 import { deleteSaveSearch } from '../../src/service/saved_search_service';
 import ServiceErrorPage from '../service-error/index.page';
+import { UnsubscribeSubscriptionRequest } from '../../src/types/subscription';
 
 export async function getServerSideProps({ query: { jwt = '' } = {} }) {
   let emailAddress: string,
@@ -55,10 +56,10 @@ const grantSubscriptionHandler = async (
 ) => {
   const subscriptionService = SubscriptionService.getInstance();
 
-  return subscriptionService.deleteSubscriptionByEmailAndGrantId(
+  return subscriptionService.deleteSubscriptionByEmailOrSubAndGrantId({
     emailAddress,
-    id as string,
-  );
+    grantId: id,
+  } as UnsubscribeSubscriptionRequest);
 };
 
 const newsletterHandler = async (id: NotificationKey, emailAddress: string) => {

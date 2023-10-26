@@ -1,9 +1,10 @@
 import { axios, axiosConfig } from '../../src/utils';
+import { UnsubscribeSubscriptionRequest } from '../types/subscription';
 
 export class SubscriptionService {
   private static endpoint = {
     addSubscription: ' ',
-    emailParam: 'users/',
+    userParam: 'users/',
     grantIdParam: 'grants/',
   };
 
@@ -39,8 +40,7 @@ export class SubscriptionService {
     jwt: string,
   ): Promise<Response> {
     const endpoint: string =
-      SubscriptionService.endpoint.emailParam +
-      encodeURIComponent(emailAddress);
+      SubscriptionService.endpoint.userParam + encodeURIComponent(emailAddress);
     const result = await SubscriptionService.client.get(
       endpoint,
       axiosConfig(jwt),
@@ -53,19 +53,31 @@ export class SubscriptionService {
     grantId: string,
   ): Promise<Response> {
     const endpoint: string = `${
-      SubscriptionService.endpoint.emailParam + encodeURIComponent(emailAddress)
+      SubscriptionService.endpoint.userParam + encodeURIComponent(emailAddress)
     }/${SubscriptionService.endpoint.grantIdParam + grantId}`;
     const result = await SubscriptionService.client.get(endpoint);
     return result.data;
   }
 
-  async deleteSubscriptionByEmailAndGrantId(
-    emailAddress: string,
+  async getSubscriptionBySubAndGrantId(
+    sub: string,
     grantId: string,
   ): Promise<Response> {
     const endpoint: string = `${
-      SubscriptionService.endpoint.emailParam + encodeURIComponent(emailAddress)
+      SubscriptionService.endpoint.userParam + encodeURIComponent(sub)
     }/${SubscriptionService.endpoint.grantIdParam + grantId}`;
+    const result = await SubscriptionService.client.get(endpoint);
+    return result.data;
+  }
+
+  async deleteSubscriptionByEmailOrSubAndGrantId(
+    dto: UnsubscribeSubscriptionRequest,
+  ): Promise<Response> {
+    const id = dto.sub ? dto.sub : dto.emailAddress;
+
+    const endpoint: string = `${
+      SubscriptionService.endpoint.userParam + encodeURIComponent(id)
+    }/${SubscriptionService.endpoint.grantIdParam + dto.grantId}`;
     const result = await SubscriptionService.client.delete(endpoint);
     return result.data;
   }

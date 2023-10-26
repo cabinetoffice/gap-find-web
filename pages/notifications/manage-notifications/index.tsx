@@ -11,6 +11,7 @@ import { NewsletterSubscriptionService } from '../../../src/service/newsletter/n
 import { getAllSavedSearches } from '../../../src/service/saved_search_service';
 import { SubscriptionService } from '../../../src/service/subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
+import { fetchGrantDetail } from '../../subscriptions/signup';
 import {
   cookieName,
   notificationRoutes,
@@ -27,7 +28,8 @@ import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChec
 import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
-import { getJwtFromCookies } from '../../../src/utils';
+import { axios, getJwtFromCookies } from '../../../src/utils';
+import nookies from 'nookies';
 
 //TODO GAP-560 / GAP-592
 const breadcrumbsRoutes = [
@@ -83,7 +85,7 @@ const getEmail = async (ctx) => {
 };
 
 export const getServerSideProps = async (ctx) => {
-  const { jwt } = getJwtFromCookies(ctx.req);
+  const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
   if (
     process.env.ONE_LOGIN_ENABLED != 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
@@ -95,10 +97,34 @@ export const getServerSideProps = async (ctx) => {
       },
     };
   }
+
+  let grantId = ctx.query.grantId;
+
+  if (process.env.ONE_LOGIN_ENABLED === 'true') {
+    const { grantLabel } = nookies.get(ctx);
+    ctx.res.setHeader(
+      'Set-Cookie',
+      `${cookieName.grantLabel}=deleted; Path=/; Max-Age=0`,
+    );
+
+    const grantDetail = await fetchGrantDetail({ id: grantLabel });
+    grantId = grantDetail['props']?.grantDetail.sys.id ?? ctx.query.grantId;
+
+    if (ctx.query.action === URL_ACTIONS.SUBSCRIBE && grantLabel) {
+      await axios({
+        method: 'post',
+        url: `${process.env.HOST}/api/subscription`,
+        data: {
+          contentfulGrantSubscriptionId: grantId,
+          emailAddress: jwtPayload.email,
+          sub: jwtPayload.sub,
+        },
+      });
+    }
+  }
+
   // Fetch individual grant details if required for things like success messages
-  const grantDetails = ctx.query.grantId
-    ? await fetchByGrantId(ctx.query.grantId)
-    : null;
+  const grantDetails = grantId ? await fetchByGrantId(grantId) : null;
 
   // Fetch the user's grant subscriptions
   const subscriptionService = SubscriptionService.getInstance();

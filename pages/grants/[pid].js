@@ -9,6 +9,7 @@ import { fetchEntry } from '../../src/utils/contentFulPage';
 import gloss from '../../src/utils/glossary.json';
 
 export async function getServerSideProps({ params }) {
+  const oneLoginEnabled = process.env.ONE_LOGIN_ENABLED;
   let path = params.pid;
 
   const grantDetail = await fetchEntry(path);
@@ -33,11 +34,17 @@ export async function getServerSideProps({ params }) {
       enableAwardsTab: process.env.ENABLE_AWARDS_TAB
         ? process.env.ENABLE_AWARDS_TAB
         : true,
+      oneLoginEnabled,
     },
   };
 }
 
-const Grants = ({ grantDetail, enableFAQTab, enableAwardsTab }) => {
+const Grants = ({
+  grantDetail,
+  enableFAQTab,
+  enableAwardsTab,
+  oneLoginEnabled,
+}) => {
   const router = useRouter();
   const grant = grantDetail.props.grantDetail.fields;
 
@@ -68,7 +75,10 @@ const Grants = ({ grantDetail, enableFAQTab, enableAwardsTab }) => {
 
           <div className="govuk-grid-row govuk-body">
             <GrantDetailsHeader grant={grant} />
-            <GrantDetailsSidebar grantLabel={grant.label} />
+            <GrantDetailsSidebar
+              grantLabel={grant.label}
+              oneLoginEnabled={oneLoginEnabled}
+            />
           </div>
 
           <GrantDetailsApplyButton grant={grant} />
