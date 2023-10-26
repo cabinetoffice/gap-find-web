@@ -1,78 +1,116 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '../../src/components/partials/Layout';
-import { decryptSignedApiKey } from '../../src/service/api-key-service';
 import { SubscriptionService } from '../../src/service/subscription-service';
 import { decrypt } from '../../src/utils/encryption';
 import { NewsletterSubscriptionService } from '../../src/service/newsletter/newsletter-subscription-service';
 import { NewsletterType } from '../../src/types/newsletter';
 import { deleteSaveSearch } from '../../src/service/saved_search_service';
 import ServiceErrorPage from '../service-error/index.page';
+import {
+  getTypeFromNotificationIds,
+  getUnsubscribeReferenceFromId,
+} from '../../src/service/unsubscribe.service';
 
-export async function getServerSideProps({ query: { jwt = '' } = {} }) {
+export async function getServerSideProps({ query: { id = '' } = {} }) {
   let emailAddress: string,
-    type: keyof typeof UNSUBSCRIBE_HANDLER_MAP,
-    id: NotificationKey;
+    notificationId: NotificationKey,
+    notificationType: keyof typeof UNSUBSCRIBE_HANDLER_MAP;
   try {
-    const decodedJwt = decryptSignedApiKey(jwt);
-    type = decodedJwt.type;
-    id = decodedJwt.id;
-    emailAddress = await decrypt(decodedJwt.emailAddress);
-    await handleUnsubscribe(type, id, emailAddress);
+    const {
+      user: { encryptedEmailAddress },
+      subscriptionId,
+      newsletterId,
+      savedSearchId,
+    } = await getUnsubscribeReferenceFromId(id as string);
+
+    notificationType = getTypeFromNotificationIds({
+      subscriptionId,
+      newsletterId,
+      savedSearchId,
+    });
+    emailAddress = await decrypt(encryptedEmailAddress);
+    notificationId = subscriptionId ?? newsletterId ?? savedSearchId;
+
+    console.log({
+      encryptedEmailAddress,
+      emailAddress,
+      notificationType,
+      notificationId,
+    });
+
+    await handleUnsubscribe(notificationType, notificationId, emailAddress, id);
+
     return { props: { error: false } };
   } catch (error: unknown) {
-    return handleServerSideError(error, { type, emailAddress, id });
+    return handleServerSideError(error, {
+      id,
+      emailAddress,
+      notificationId,
+      notificationType,
+    });
   }
 }
 
 const handleServerSideError = (
   error: unknown,
   {
-    type,
     id,
+    notificationId,
     emailAddress,
-  }: {
-    type: keyof typeof UNSUBSCRIBE_HANDLER_MAP;
-    id: NotificationKey;
-    emailAddress: string;
-  },
+    notificationType,
+  }: HandleServerSideErrorProps,
 ) => {
-  if (!type || !id || !emailAddress) {
-    console.error('Failed to decrypt jwt. Error: ' + JSON.stringify(error));
+  if (!notificationId || !emailAddress) {
+    console.error(
+      `Failed to get user from notification with type: ${notificationType}, id: ${id}. Error: ${JSON.stringify(
+        error,
+      )}`,
+    );
   } else {
     console.error(
-      `Failed to unsubscribe from notification type: ${type}, id: ${id}, with email: ${emailAddress}. Error: ${JSON.stringify(
+      `Failed to unsubscribe from notification id: ${notificationId}, with email: ${emailAddress}. Error: ${JSON.stringify(
         error,
       )}`,
     );
   }
+
   return { props: { error: true } };
 };
 
 const grantSubscriptionHandler = async (
   id: NotificationKey,
   emailAddress: string,
+  unsubscribeReferenceId: string,
 ) => {
   const subscriptionService = SubscriptionService.getInstance();
-
   return subscriptionService.deleteSubscriptionByEmailAndGrantId(
     emailAddress,
     id as string,
+    unsubscribeReferenceId,
   );
 };
 
-const newsletterHandler = async (id: NotificationKey, emailAddress: string) => {
+const newsletterHandler = async (
+  id: NotificationKey,
+  emailAddress: string,
+  unsubscribeReferenceId: string,
+) => {
   const newsletterSubscriptionService =
     NewsletterSubscriptionService.getInstance();
-
+  console.log('handler', id, emailAddress, unsubscribeReferenceId);
   return newsletterSubscriptionService.unsubscribeFromNewsletter(
     emailAddress,
     id as NewsletterType,
+    unsubscribeReferenceId,
   );
 };
 
-const savedSearchHandler = async (id: NotificationKey, emailAddress: string) =>
-  deleteSaveSearch(id as number, emailAddress);
+const savedSearchHandler = async (
+  id: NotificationKey,
+  emailAddress: string,
+  unsubscribeReferenceId: string,
+) => deleteSaveSearch(id as number, emailAddress, unsubscribeReferenceId);
 
 const UNSUBSCRIBE_HANDLER_MAP = {
   GRANT_SUBSCRIPTION: grantSubscriptionHandler,
@@ -82,11 +120,17 @@ const UNSUBSCRIBE_HANDLER_MAP = {
 
 const handleUnsubscribe = async (
   type: keyof typeof UNSUBSCRIBE_HANDLER_MAP,
-  id: NotificationKey,
+  notificationKey: NotificationKey,
   emailAddress: string,
-) => UNSUBSCRIBE_HANDLER_MAP[type](id, emailAddress);
-
-type NotificationKey = string | NewsletterType | number;
+  unsubscribeReferenceId: string,
+) => {
+  console.log({ type, notificationKey, emailAddress, unsubscribeReferenceId });
+  return UNSUBSCRIBE_HANDLER_MAP[type](
+    notificationKey,
+    emailAddress,
+    unsubscribeReferenceId,
+  );
+};
 
 const Unsubscribe = (props: undefined | { error: boolean }) => {
   if (props.error) {
@@ -136,6 +180,15 @@ const Unsubscribe = (props: undefined | { error: boolean }) => {
       </Layout>
     </>
   );
+};
+
+type NotificationKey = string | NewsletterType | number;
+
+type HandleServerSideErrorProps = {
+  id: string;
+  notificationId: NotificationKey;
+  notificationType: keyof typeof UNSUBSCRIBE_HANDLER_MAP;
+  emailAddress: string;
 };
 
 export default Unsubscribe;

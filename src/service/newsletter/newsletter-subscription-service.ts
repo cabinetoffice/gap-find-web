@@ -69,11 +69,16 @@ export class NewsletterSubscriptionService {
   async unsubscribeFromNewsletter(
     plaintextEmail: string,
     type: NewsletterType,
+    unsubscribeReferenceId?: string,
     sub?: string,
   ): Promise<void> {
     const id = sub ?? plaintextEmail;
+    console.log(id);
+    const queryParam = unsubscribeReferenceId
+      ? `?unsubscribeReference=${unsubscribeReferenceId}`
+      : '';
     return await NewsletterSubscriptionService.client.delete(
-      `/${NewsletterSubscriptionService.endpoint.usersParam}${id}/${NewsletterSubscriptionService.endpoint.typesParam}${type}`,
+      `/${NewsletterSubscriptionService.endpoint.usersParam}${id}/${NewsletterSubscriptionService.endpoint.typesParam}${type}${queryParam}`,
     );
   }
 }

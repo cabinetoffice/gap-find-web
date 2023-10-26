@@ -159,14 +159,14 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType',
+        'getBySubAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 
     fetchByGrantIds.mockReturnValue([]);
     const result = await management.getServerSideProps(context);
 
-    expect(decrypt).toHaveBeenCalledTimes(1);
+    expect(decrypt).toHaveBeenCalledTimes(2);
     expect(decrypt).toHaveBeenCalledWith(encryptedEmail);
     expect(subscriptionServiceMock).toBeCalledTimes(1);
     expect(getAllSavedSearches).toBeCalledTimes(1);
@@ -185,7 +185,7 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType',
+        'getBySubAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 
@@ -193,7 +193,7 @@ describe('get server side props for manage notifications page', () => {
     fetchByGrantId.mockReturnValue(testGrants[0]);
     let result = await management.getServerSideProps(deleteContext);
 
-    expect(decrypt).toHaveBeenCalledTimes(1);
+    expect(decrypt).toHaveBeenCalledTimes(2);
     expect(decrypt).toHaveBeenCalledWith(encryptedEmail);
     expect(subscriptionServiceMock).toBeCalledTimes(1);
     expect(newsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
@@ -211,7 +211,7 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType',
+        'getBySubAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 

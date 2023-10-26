@@ -34,6 +34,8 @@ describe('newsletter unsubscribe api', () => {
   const mockDecrypt = decrypt as jest.Mock;
   const mockNewsletterService = {
     getByEmailAndNewsletterType: jest.fn(),
+    getBySubAndNewsletterType: jest.fn(),
+    subscribeToNewsletter: jest.fn(),
     unsubscribeFromNewsletter: jest.fn(),
   };
   const encryptedEmail = 'encrypted-email-address';
