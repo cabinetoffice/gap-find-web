@@ -217,7 +217,6 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'true',
           enableFAQTab: 'true',
-          oneLoginEnabled: 'false',
           grantId: '123',
           grantDetail: {
             props: {
@@ -241,7 +240,6 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'false',
           enableFAQTab: 'false',
-          oneLoginEnabled: 'false',
           grantId: '123',
           grantDetail: {
             props: {
@@ -264,7 +262,6 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'false',
           enableFAQTab: 'true',
-          oneLoginEnabled: 'false',
           grantId: '123',
           grantDetail: {
             props: {
@@ -287,7 +284,6 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'true',
           enableFAQTab: 'false',
-          oneLoginEnabled: 'false',
           grantId: '123',
           grantDetail: {
             props: {
