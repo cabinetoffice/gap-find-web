@@ -32,13 +32,6 @@ export async function getServerSideProps({ query: { id = '' } = {} }) {
     emailAddress = await decrypt(encryptedEmailAddress);
     notificationId = subscriptionId ?? newsletterId ?? savedSearchId;
 
-    console.log({
-      encryptedEmailAddress,
-      emailAddress,
-      notificationType,
-      notificationId,
-    });
-
     await handleUnsubscribe(notificationType, notificationId, emailAddress, id);
 
     return { props: { error: false } };
