@@ -36,7 +36,7 @@ const grantDetail = {
 
 const component = <Grant grantDetail={grantDetail} />;
 
-global.window = Object.create(window);
+global.window ??= Object.create(window);
 Object.defineProperty(window, 'GOVUKFrontend', {
   value: {
     initAll: jest.fn(),

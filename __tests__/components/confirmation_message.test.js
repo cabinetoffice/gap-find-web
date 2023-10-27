@@ -3,7 +3,7 @@ import { ConfirmationMessage } from '../../src/components/confirmation-message/C
 
 describe('confirmation message component', () => {
   it('should display the success message when a message is passed in', () => {
-    render(<ConfirmationMessage message={'This is a test'} />);
+    render(<ConfirmationMessage heading={'This is a test'} />);
     expect(screen.getByText('This is a test')).toBeDefined();
     expect(screen.getByText('Success')).toBeDefined();
   });
