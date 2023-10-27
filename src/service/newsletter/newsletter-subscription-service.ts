@@ -73,7 +73,6 @@ export class NewsletterSubscriptionService {
     sub?: string,
   ): Promise<void> {
     const id = sub ?? plaintextEmail;
-    console.log(id);
     const queryParam = unsubscribeReferenceId
       ? `?unsubscribeReference=${unsubscribeReferenceId}`
       : '';
