@@ -64,7 +64,7 @@ export class SubscriptionService {
     grantId: string,
     unsubscribeReference?: string,
   ): Promise<Response> {
-    const endpoint: string = `${
+    const endpoint = `${
       SubscriptionService.endpoint.userParam + encodeURIComponent(sub)
     }/${SubscriptionService.endpoint.grantIdParam + grantId}`;
     const result = await SubscriptionService.client.get(
@@ -78,7 +78,7 @@ export class SubscriptionService {
   ): Promise<Response> {
     const id = dto.sub ? dto.sub : dto.emailAddress;
 
-    const endpoint: string = `${
+    const endpoint = `${
       SubscriptionService.endpoint.userParam + encodeURIComponent(id)
     }/${SubscriptionService.endpoint.grantIdParam + dto.grantId}`;
     const result = await SubscriptionService.client.delete(

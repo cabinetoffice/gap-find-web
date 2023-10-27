@@ -101,25 +101,23 @@ export const getServerSideProps = async (ctx) => {
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
     jwtValue = jwt;
-    if (process.env.ONE_LOGIN_ENABLED === 'true') {
-      const { grantIdCookieValue } = nookies.get(ctx);
-      ctx.res.setHeader(
-        'Set-Cookie',
-        `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
+    const { grantIdCookieValue } = nookies.get(ctx);
+    ctx.res.setHeader(
+      'Set-Cookie',
+      `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
+    );
+
+    grantId = grantIdCookieValue ?? ctx.query.grantId;
+
+    if (ctx.query.action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
+      await axios.post(
+        new URL(`${process.env.HOST}/api/subscription`).toString(),
+        {
+          contentfulGrantSubscriptionId: grantId,
+          emailAddress: jwtPayload.email,
+          sub: jwtPayload.sub,
+        },
       );
-
-      grantId = grantIdCookieValue ?? ctx.query.grantId;
-
-      if (ctx.query.action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
-        await axios.post(
-          new URL(`${process.env.HOST}/api/subscription`).toString(),
-          {
-            contentfulGrantSubscriptionId: grantId,
-            emailAddress: jwtPayload.email,
-            sub: jwtPayload.sub,
-          },
-        );
-      }
     }
   }
   // Fetch individual grant details if required for things like success messages

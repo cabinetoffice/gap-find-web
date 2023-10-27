@@ -40,7 +40,6 @@ export async function getServerSideProps({ params }) {
 }
 
 const Grants = ({ grantDetail, enableFAQTab, enableAwardsTab, grantId }) => {
-  console.log(grantId);
   const router = useRouter();
   const grant = grantDetail.props.grantDetail.fields;
 

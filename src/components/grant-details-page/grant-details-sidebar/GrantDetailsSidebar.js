@@ -8,7 +8,7 @@ export function GrantDetailsSidebar({ grantLabel, grantId }) {
       <Link
         href={{
           pathname: '/subscriptions/signup',
-          query: { id: grantId, grantLabel: grantLabel },
+          query: { id: grantId, grantLabel },
         }}
       >
         <a className="govuk-link" data-cy="cySignupUpdatesLink">

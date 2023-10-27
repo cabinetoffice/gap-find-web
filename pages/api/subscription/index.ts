@@ -1,6 +1,16 @@
 import { axios } from '../../../src/utils';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req, res) {
+type CreateNewSubscriptionBody = {
+  emailAddress: string;
+  contentfulGrantSubscriptionId: string;
+  sub: string;
+};
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   switch (req.method) {
     case 'POST': {
       const response = await createNewSubscription(req.body);
@@ -11,7 +21,7 @@ export default async function handler(req, res) {
   }
 }
 
-const createNewSubscription = async (body) => {
+const createNewSubscription = async (body: CreateNewSubscriptionBody) => {
   const { emailAddress, contentfulGrantSubscriptionId, sub } = body;
   const response = await axios({
     method: 'post',
