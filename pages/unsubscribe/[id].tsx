@@ -124,7 +124,6 @@ const handleUnsubscribe = async (
   emailAddress: string,
   unsubscribeReferenceId: string,
 ) => {
-  console.log({ type, notificationKey, emailAddress, unsubscribeReferenceId });
   return UNSUBSCRIBE_HANDLER_MAP[type](
     notificationKey,
     emailAddress,
