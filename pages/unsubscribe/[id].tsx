@@ -91,7 +91,6 @@ const newsletterHandler = async (
 ) => {
   const newsletterSubscriptionService =
     NewsletterSubscriptionService.getInstance();
-  console.log('handler', id, emailAddress, unsubscribeReferenceId);
   return newsletterSubscriptionService.unsubscribeFromNewsletter(
     emailAddress,
     id as NewsletterType,
