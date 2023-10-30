@@ -1,8 +1,6 @@
-type MigrationBannerProps = {
+export type MigrationBannerProps = {
   applyMigrationStatus: string;
+  grantIdCookieValue?: string;
   findMigrationStatus: string;
   migrationType: string;
-  grantIdCookieValue?: string;
 };
-
-export type { MigrationBannerProps };
