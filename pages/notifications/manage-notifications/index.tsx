@@ -28,7 +28,6 @@ import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
 import { client as axios, getJwtFromCookies } from '../../../src/utils';
-import nookies from 'nookies';
 
 //TODO GAP-560 / GAP-592
 const breadcrumbsRoutes = [
@@ -101,7 +100,7 @@ export const getServerSideProps = async (ctx) => {
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
     jwtValue = jwt;
-    const { grantIdCookieValue } = nookies.get(ctx);
+    const grantIdCookieValue = ctx.req.cookies.grantIdCookieValue;
     ctx.res.setHeader(
       'Set-Cookie',
       `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
