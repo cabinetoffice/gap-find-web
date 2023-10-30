@@ -75,10 +75,10 @@ describe('subscription manager add subscription', () => {
 describe('subscription manager delete Subscription By ID', () => {
   it('should delete a subscription when correct values are passed into the function', async () => {
     const result =
-      await subscriptionService.deleteSubscriptionByEmailAndGrantId(
-        body.encrypted_email_address,
-        body.contentful_grant_subscription_id,
-      );
+      await subscriptionService.deleteSubscriptionByEmailOrSubAndGrantId({
+        emailAddress: body.encrypted_email_address,
+        grantId: body.contentful_grant_subscription_id,
+      });
 
     expect(instance.delete).toHaveBeenNthCalledWith(
       1,

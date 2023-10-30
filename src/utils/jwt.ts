@@ -18,8 +18,6 @@ export const getJwtFromCookies = (req: NextRequest | NextApiRequest) => {
   // If the cookie is not a signed cookie, the parser will return the provided value
   const jwt = cookieParser.signedCookie(cookieValue, USER_TOKEN_SECRET);
 
-  console.log(jwt);
-
   if (!jwt)
     throw new Error(
       `Failed to verify signature for ${USER_TOKEN_NAME} cookie: ${cookieValue}`,

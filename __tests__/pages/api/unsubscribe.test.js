@@ -8,6 +8,12 @@ import { hash } from '../../../src/utils/hash';
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/hash');
+jest.mock('../../../src/utils/jwt', () => ({
+  getJwtFromCookies: jest.fn(() => ({
+    jwtPayload: { sub: '1234' },
+    jwt: 'a.b.c',
+  })),
+}));
 
 jest.mock('next/config', () => {
   return jest.fn().mockImplementation(() => {
@@ -27,6 +33,7 @@ describe('handler function for the deletion or subscriptions', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     res.redirect = jest.fn();
+    process.env.ONE_LOGIN_ENABLED = 'false';
   });
   it('should redirect to the manage notifications page when a record is deleted', async () => {
     const encryptedEmail = 'test-encrypted-email-string';
@@ -36,7 +43,7 @@ describe('handler function for the deletion or subscriptions', () => {
     const subscriptionServiceMock = jest
       .spyOn(
         SubscriptionService.prototype,
-        'deleteSubscriptionByEmailAndGrantId'
+        'deleteSubscriptionByEmailOrSubAndGrantId',
       )
       .mockImplementationOnce(() => {
         return 'success';
@@ -53,16 +60,16 @@ describe('handler function for the deletion or subscriptions', () => {
     expect(decrypt).toHaveBeenCalledTimes(1);
     expect(decrypt).toHaveBeenCalledWith(encryptedEmail);
     expect(subscriptionServiceMock).toHaveBeenCalledTimes(1);
-    expect(subscriptionServiceMock).toHaveBeenCalledWith(
-      decryptedEmail,
-      '12345678'
-    );
+    expect(subscriptionServiceMock).toHaveBeenCalledWith({
+      emailAddress: decryptedEmail,
+      grantId: '12345678',
+    });
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(
       new URL(
         `${notificationRoutes['manageNotifications']}?grantId=${req.body.grantId}&action=unsubscribe`,
-        process.env.HOST
-      ).toString()
+        process.env.HOST,
+      ).toString(),
     );
   });
 

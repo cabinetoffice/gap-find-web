@@ -15,8 +15,9 @@ import {
   NewsletterType,
 } from '../../src/types/newsletter';
 import gloss from '../../src/utils/glossary.json';
-import { getBody, getPreviousFormValues } from '../../src/utils/request';
+import { getPreviousFormValues } from '../../src/utils/request';
 import { addErrorInfo, logger } from '../../src/utils';
+import { parseBody } from 'next/dist/server/api-utils/node';
 
 const generateConfirmationUrl = (apiKey: string) => {
   return new URL(
@@ -27,14 +28,12 @@ const generateConfirmationUrl = (apiKey: string) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const req: any = context.req;
-  const res: any = context.res;
 
-  await getBody(req, res);
-
-  const validationErrors = validateSignupForm(req.body);
+  const body = await parseBody(req, '1mb');
+  const validationErrors = validateSignupForm(body);
   if (validationErrors.length > 0) {
     const errorParam = generateSignupErrorsRedirectParam(validationErrors);
-    const previousFormValues = getPreviousFormValues(req.body);
+    const previousFormValues = getPreviousFormValues(body);
     const redirectPath = `/newsletter/signup?${errorParam}&${previousFormValues}`;
     return {
       props: {},
@@ -56,7 +55,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const confirmationUrl = generateConfirmationUrl(apiKey);
 
   try {
-    console.log('hello');
     await sendEmail(
       signedUpEmail,
       {
@@ -69,9 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       'error sending newsletter signup confirmation email',
       addErrorInfo(e, req),
     );
-    console.log('world');
   }
-  console.log('returning...');
   return {
     props: {
       signedUpEmail,

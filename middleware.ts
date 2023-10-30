@@ -51,16 +51,32 @@ const manageNotificationsPattern = new URLPattern({
   pathname: notificationRoutes.manageNotifications,
 });
 
+const subscriptionSignUpPattern = new URLPattern({
+  pathname: notificationRoutes.subscriptionSignUp,
+});
+
 export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
-  // @TODO: check if user is saving notification here -
-  // if so, set data to be saved in cookie in response
-  // note that if we get here, the user either isn't logged in
-  // or needs to refresh their session, and will be redirected
-  // away from the app before returning
   if (manageNotificationsPattern.test({ pathname: req.nextUrl.pathname })) {
     return NextResponse.redirect(
       `${HOST}${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS}`,
     );
+  }
+
+  if (subscriptionSignUpPattern.test({ pathname: req.nextUrl.pathname })) {
+    const grantId = new URLSearchParams(req.nextUrl.search).get('id');
+
+    const res = NextResponse.redirect(
+      `${HOST}${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS}`,
+    );
+
+    res.cookies.set('grantIdCookieValue', grantId, {
+      path: '/',
+      secure: true,
+      httpOnly: true,
+      maxAge: 900,
+    });
+
+    return res;
   }
   return NextResponse.redirect(redirectUri);
 }
@@ -97,6 +113,7 @@ const authenticateRequest = async (req: NextRequest) => {
 const authenticatedPaths = [
   notificationRoutes.manageNotifications,
   '/api/user/migrate',
+  '/subscriptions/signup',
 ];
 
 const isAuthenticatedPath = (url: string) =>

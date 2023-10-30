@@ -6,6 +6,9 @@ import NewsletterConfirmation, {
 import { validateSignupForm } from '../../../src/manager/signup_manager';
 import { generateSignedApiKey } from '../../../src/service/api-key-service';
 import { sendEmail } from '../../../src/service/gov_notify_service';
+import { parseBody } from 'next/dist/server/api-utils/node';
+
+jest.mock('next/dist/server/api-utils/node');
 
 jest.mock('next/router', () => {
   return {
@@ -73,6 +76,7 @@ describe('getServerSideProps', () => {
   });
 
   it('should validate the request', async () => {
+    parseBody.mockResolvedValue(req.body);
     await getServerSideProps({ req, res });
     expect(validateSignupForm).toHaveBeenCalledTimes(1);
   });
@@ -84,6 +88,7 @@ describe('getServerSideProps', () => {
         error: 'This is a test error.',
       },
     ]);
+    parseBody.mockResolvedValue(req.body);
     const result = await getServerSideProps({ req, res });
 
     expect(result).toHaveProperty('redirect');
@@ -92,6 +97,7 @@ describe('getServerSideProps', () => {
   it('should send a verification email', async () => {
     const keyValue = 'an-encrypted-jwt';
     generateSignedApiKey.mockReturnValue(keyValue);
+    parseBody.mockResolvedValue(req.body);
 
     await getServerSideProps({ req, res });
     expect(sendEmail).toHaveBeenCalledTimes(1);
@@ -110,6 +116,7 @@ describe('getServerSideProps', () => {
   it('should handle any errors and continue', async () => {
     const keyValue = 'an-encrypted-jwt';
     generateSignedApiKey.mockReturnValue(keyValue);
+    parseBody.mockResolvedValue(req.body);
 
     sendEmail.mockReturnValue(
       Promise.reject(new Error('something went wrong')),
@@ -126,6 +133,7 @@ describe('getServerSideProps', () => {
   });
 
   it('should return correct props to frontend', async () => {
+    parseBody.mockResolvedValue(req.body);
     const result = await getServerSideProps({ req, res });
     expect(result).toStrictEqual({
       props: { signedUpEmail: 'test@email.com' },

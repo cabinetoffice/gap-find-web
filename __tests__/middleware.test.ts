@@ -22,11 +22,14 @@ const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
 describe('Middleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env.ONE_LOGIN_ENABLED = 'true';
   });
 
   describe('authentication', () => {
     const manageNotificationsUrl = `${HOST}${notificationRoutes.manageNotifications}`;
+    const subscriptionUrl = `${HOST}${notificationRoutes.subscriptionSignUp}`;
     const loginNoticeUrl = `${HOST}${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS}`;
+    const subscriptionLoginNoticeUrl = `${HOST}${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS}`;
 
     it('redirects to login notice if no JWT in cookies ', async () => {
       process.env.ONE_LOGIN_ENABLED = 'true';
@@ -73,6 +76,16 @@ describe('Middleware', () => {
       expect(res.headers.get('Location')).toBe(
         `${USER_SERVICE_HOST}/refresh-token?redirectUrl=${manageNotificationsUrl}`,
       );
+    });
+
+    it('redirects to subscription login notice if no JWT in cookies and url is subscription pattern ', async () => {
+      process.env.ONE_LOGIN_ENABLED = 'true';
+
+      const req = new NextRequest(new Request(subscriptionUrl));
+      const res = await middleware(req);
+
+      expect(res.status).toBe(307);
+      expect(res.headers.get('Location')).toBe(subscriptionLoginNoticeUrl);
     });
   });
 });

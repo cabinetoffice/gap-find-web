@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export function GrantDetailsSidebar({ grantLabel }) {
+export function GrantDetailsSidebar({ grantLabel, grantId }) {
   return (
     <div className="govuk-grid-column-one-quarter">
       <hr className="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-2 govuk-border-colour"></hr>
@@ -8,7 +8,7 @@ export function GrantDetailsSidebar({ grantLabel }) {
       <Link
         href={{
           pathname: '/subscriptions/signup',
-          query: { id: grantLabel },
+          query: { id: grantId, grantLabel },
         }}
       >
         <a className="govuk-link" data-cy="cySignupUpdatesLink">

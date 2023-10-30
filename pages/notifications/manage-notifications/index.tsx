@@ -27,7 +27,8 @@ import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChec
 import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
-import { getJwtFromCookies } from '../../../src/utils';
+import { client as axios, getJwtFromCookies } from '../../../src/utils';
+import nookies from 'nookies';
 
 //TODO GAP-560 / GAP-592
 const breadcrumbsRoutes = [
@@ -83,7 +84,6 @@ const getEmail = async (ctx) => {
 };
 
 export const getServerSideProps = async (ctx) => {
-  const { jwt } = getJwtFromCookies(ctx.req);
   if (
     process.env.ONE_LOGIN_ENABLED != 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
@@ -95,10 +95,33 @@ export const getServerSideProps = async (ctx) => {
       },
     };
   }
+  let grantId = ctx.query.grantId;
+  let jwtValue;
+
+  if (process.env.ONE_LOGIN_ENABLED === 'true') {
+    const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
+    jwtValue = jwt;
+    const { grantIdCookieValue } = nookies.get(ctx);
+    ctx.res.setHeader(
+      'Set-Cookie',
+      `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
+    );
+
+    grantId = grantIdCookieValue ?? ctx.query.grantId;
+
+    if (ctx.query.action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
+      await axios.post(
+        new URL(`${process.env.HOST}/api/subscription`).toString(),
+        {
+          contentfulGrantSubscriptionId: grantId,
+          emailAddress: jwtPayload.email,
+          sub: jwtPayload.sub,
+        },
+      );
+    }
+  }
   // Fetch individual grant details if required for things like success messages
-  const grantDetails = ctx.query.grantId
-    ? await fetchByGrantId(ctx.query.grantId)
-    : null;
+  const grantDetails = grantId ? await fetchByGrantId(grantId) : null;
 
   // Fetch the user's grant subscriptions
   const subscriptionService = SubscriptionService.getInstance();
@@ -106,7 +129,7 @@ export const getServerSideProps = async (ctx) => {
 
   let subscriptions = await subscriptionService.getSubscriptionsByEmail(
     plainTextEmailAddress,
-    jwt,
+    jwtValue,
   );
   if (subscriptions) {
     subscriptions = await mergeGrantNameIntoSubscriptions(subscriptions);
@@ -118,11 +141,14 @@ export const getServerSideProps = async (ctx) => {
     await newsletterSubsService.getByEmailAndNewsletterType(
       plainTextEmailAddress,
       NewsletterType.NEW_GRANTS,
-      jwt,
+      jwtValue,
     );
 
   const newGrantsParams = generateWeeklyNewsletterParams();
-  const savedSearches = await getAllSavedSearches(plainTextEmailAddress, jwt);
+  const savedSearches = await getAllSavedSearches(
+    plainTextEmailAddress,
+    jwtValue,
+  );
 
   return {
     props: {

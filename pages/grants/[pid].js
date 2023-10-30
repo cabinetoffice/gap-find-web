@@ -23,6 +23,7 @@ export async function getServerSideProps({ params }) {
       },
     };
   }
+  const grantId = grantDetail.props.grantDetail.sys.id;
 
   return {
     props: {
@@ -33,11 +34,12 @@ export async function getServerSideProps({ params }) {
       enableAwardsTab: process.env.ENABLE_AWARDS_TAB
         ? process.env.ENABLE_AWARDS_TAB
         : true,
+      grantId,
     },
   };
 }
 
-const Grants = ({ grantDetail, enableFAQTab, enableAwardsTab }) => {
+const Grants = ({ grantDetail, enableFAQTab, enableAwardsTab, grantId }) => {
   const router = useRouter();
   const grant = grantDetail.props.grantDetail.fields;
 
@@ -68,7 +70,7 @@ const Grants = ({ grantDetail, enableFAQTab, enableAwardsTab }) => {
 
           <div className="govuk-grid-row govuk-body">
             <GrantDetailsHeader grant={grant} />
-            <GrantDetailsSidebar grantLabel={grant.label} />
+            <GrantDetailsSidebar grantLabel={grant.label} grantId={grantId} />
           </div>
 
           <GrantDetailsApplyButton grant={grant} />

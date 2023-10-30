@@ -157,6 +157,8 @@ describe('getServerSideProps', () => {
     process.env = originalEnv;
   });
   it('should return empty search params if no query params exist', () => {
+    process.env.ONE_LOGIN_ENABLED = 'true';
+
     const result = getServerSideProps({ query: {} });
     expect(result).toStrictEqual({
       props: { searchTerm: '', applicantUrl, oneLoginEnabled: 'true' },
