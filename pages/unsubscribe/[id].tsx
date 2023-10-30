@@ -7,6 +7,7 @@ import { NewsletterSubscriptionService } from '../../src/service/newsletter/news
 import { NewsletterType } from '../../src/types/newsletter';
 import { deleteSaveSearch } from '../../src/service/saved_search_service';
 import ServiceErrorPage from '../service-error/index.page';
+import { UnsubscribeSubscriptionRequest } from '../../src/types/subscription';
 import {
   getTypeFromNotificationIds,
   getUnsubscribeReferenceFromId,
@@ -77,11 +78,12 @@ const grantSubscriptionHandler = async (
   unsubscribeReferenceId: string,
 ) => {
   const subscriptionService = SubscriptionService.getInstance();
-  return subscriptionService.deleteSubscriptionByEmailAndGrantId(
+
+  return subscriptionService.deleteSubscriptionByEmailOrSubAndGrantId({
     emailAddress,
-    id as string,
+    grantId: id,
     unsubscribeReferenceId,
-  );
+  } as UnsubscribeSubscriptionRequest);
 };
 
 const newsletterHandler = async (

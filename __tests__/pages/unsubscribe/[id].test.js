@@ -52,7 +52,7 @@ const grantSubscriptionSpy = ({ throwsError }) =>
     addSubscription: null,
     getSubscriptionByEmailAndGrantId: null,
     getSubscriptionsByEmail: null,
-    deleteSubscriptionByEmailAndGrantId: async () => {
+    deleteSubscriptionByEmailOrSubAndGrantId: async () => {
       if (throwsError) {
         throw new AxiosError();
       } else {
@@ -73,6 +73,7 @@ const mockSavedSearch = ({ throwsError }) => {
 
 describe('getServerSideProps()', () => {
   beforeEach(jest.clearAllMocks);
+  process.env.ONE_LOGIN_ENABLED = 'false';
 
   it('should return error when the token is invalid ', async () => {
     getUnsubscribeReferenceFromId.mockReturnValue(

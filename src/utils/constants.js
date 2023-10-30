@@ -1,6 +1,8 @@
 export const cookieName = {
   currentEmailAddress: 'currentEmailAddress',
   notificationList: 'notificationList',
+  grantLabel: 'grantLabel',
+  grantId: 'grantIdCookieValue',
 };
 
 export const NOTIFICATION_TYPES = {
@@ -12,6 +14,7 @@ export const NOTIFICATION_TYPES = {
 export const LOGIN_NOTICE_TYPES = {
   ...NOTIFICATION_TYPES,
   MANAGE_NOTIFICATIONS: 'manage-notifications',
+  SUBSCRIPTION_NOTIFICATIONS: 'subscription-notifications',
 };
 
 export const notificationRoutes = {
@@ -26,6 +29,7 @@ export const notificationRoutes = {
   notificationsHome: '/notifications',
   deleteSaveSearch: '/notifications/delete-saved-search',
   home: '/',
+  subscriptionSignUp: '/subscriptions/signup',
 };
 
 export const newsletterRoutes = {

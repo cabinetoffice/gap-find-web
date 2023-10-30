@@ -171,10 +171,9 @@ describe('grants-pid page', () => {
 
     const props = {
       props: {
-        grantDetail: 'test-grant',
+        grantDetail: { sys: { id: '123' } },
       },
     };
-
     beforeEach(() => {
       jest.clearAllMocks();
     });
@@ -204,9 +203,11 @@ describe('grants-pid page', () => {
     it('should return the correct props with true when both ENABLE TABS envs are set to true', async () => {
       process.env.ENABLE_AWARDS_TAB = true;
       process.env.ENABLE_FAQ_TAB = true;
+      process.env.ONE_LOGIN_ENABLED = false;
+
       fetchEntry.mockResolvedValue({
         props: {
-          grantDetail: 'test-grant',
+          grantDetail: { sys: { id: '123' } },
         },
       });
 
@@ -216,8 +217,11 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'true',
           enableFAQTab: 'true',
+          grantId: '123',
           grantDetail: {
-            props: { grantDetail: 'test-grant' },
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
           },
         },
       });
@@ -226,6 +230,7 @@ describe('grants-pid page', () => {
     it('should return the correct props with false when both ENABLE TABS envs are set to false', async () => {
       process.env.ENABLE_AWARDS_TAB = false;
       process.env.ENABLE_FAQ_TAB = false;
+      process.env.ONE_LOGIN_ENABLED = false;
 
       fetchEntry.mockResolvedValue(props);
 
@@ -235,7 +240,12 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'false',
           enableFAQTab: 'false',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });
@@ -243,6 +253,7 @@ describe('grants-pid page', () => {
     it('should return the correct props when Awards is set to false in the env and faq is set to true respectively', async () => {
       process.env.ENABLE_AWARDS_TAB = false;
       process.env.ENABLE_FAQ_TAB = true;
+      process.env.ONE_LOGIN_ENABLED = false;
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -251,7 +262,12 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'false',
           enableFAQTab: 'true',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });
@@ -259,6 +275,7 @@ describe('grants-pid page', () => {
     it('should return the correct props when faq is set to false in the env and awards is set to true respectively', async () => {
       process.env.ENABLE_AWARDS_TAB = true;
       process.env.ENABLE_FAQ_TAB = false;
+      process.env.ONE_LOGIN_ENABLED = false;
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -267,7 +284,12 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'true',
           enableFAQTab: 'false',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });

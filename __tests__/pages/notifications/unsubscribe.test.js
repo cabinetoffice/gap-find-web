@@ -56,6 +56,7 @@ const props = {
 const pushMock = jest.fn();
 
 beforeAll(async () => {
+  process.env.ONE_LOGIN_ENABLED = 'false';
   nookies.get.mockReturnValue({
     currentEmailAddress: { email: encryptedEmail },
   });
