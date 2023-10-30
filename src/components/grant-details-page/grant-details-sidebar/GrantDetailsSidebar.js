@@ -1,20 +1,15 @@
-import Link from 'next/link';
-
 export function GrantDetailsSidebar({ grantLabel, grantId }) {
   return (
     <div className="govuk-grid-column-one-quarter">
       <hr className="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-2 govuk-border-colour"></hr>
       <h2 className="govuk-heading-m">Get updates about this grant</h2>
-      <Link
-        href={{
-          pathname: '/subscriptions/signup',
-          query: { id: grantId, grantLabel },
-        }}
+      <a
+        href={`/subscriptions/signup?id=${grantId}&grantLabel=${grantLabel}`}
+        className="govuk-link"
+        data-cy="cySignupUpdatesLink"
       >
-        <a className="govuk-link" data-cy="cySignupUpdatesLink">
-          Sign up for updates
-        </a>
-      </Link>
+        Sign up for updates
+      </a>
     </div>
   );
 }
