@@ -168,6 +168,24 @@ export const subscribeContext = {
   },
 };
 
+export const newsletterSubscribeContext = {
+  req: {
+    jwtPayload: 'jwt',
+  },
+  query: {
+    action: 'newsletter-subscribe',
+  },
+};
+
+export const notNewsletterSubscribeContext = {
+  req: {
+    jwtPayload: 'jwt',
+  },
+  query: {
+    action: 'not-newsletter-subscribe',
+  },
+};
+
 export const props = {
   currentNotificationList: JSON.stringify(testSubscriptionArray),
   grantDetails: null,
