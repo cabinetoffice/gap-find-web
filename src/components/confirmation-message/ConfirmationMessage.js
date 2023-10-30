@@ -22,7 +22,7 @@ function ConfirmationMessage({ heading, subheading }) {
           >
             {heading}
           </h3>
-          {subheading ? <p className="gov-body">{subheading}</p> : null}
+          {subheading && <p className="gov-body">{subheading}</p>}
         </div>
       </div>
     </div>

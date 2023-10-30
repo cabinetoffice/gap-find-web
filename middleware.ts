@@ -112,9 +112,9 @@ const authenticateRequest = async (req: NextRequest) => {
 };
 
 const authenticatedPaths = [
-  notificationRoutes.manageNotifications,
   '/api/user/migrate',
-  '/subscriptions/signup',
+  notificationRoutes.manageNotifications,
+  notificationRoutes.subscriptionSignUp,
   newsletterRoutes.signup,
   newsletterRoutes.confirmation,
   newsletterRoutes.unsubscribe,

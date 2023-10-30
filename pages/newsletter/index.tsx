@@ -4,16 +4,19 @@ import Link from 'next/link';
 import { InferGetServerSidePropsType } from 'next';
 import Layout from '../../src/components/partials/Layout';
 import gloss from '../../src/utils/glossary.json';
-import { newsletterRoutes, URL_ACTIONS } from '../../src/utils';
+import {
+  newsletterRoutes,
+  notificationRoutes,
+  URL_ACTIONS,
+} from '../../src/utils';
 
 const HOST = process.env.HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
 export async function getServerSideProps({ query }) {
-  const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED === 'true';
   return {
     props: {
       returnParams: query,
-      ONE_LOGIN_ENABLED,
+      oneLoginEnabled: process.env.ONE_LOGIN_ENABLED === 'true',
       userServiceHost: USER_SERVICE_HOST,
       host: HOST,
     },
@@ -22,7 +25,7 @@ export async function getServerSideProps({ query }) {
 
 const NewsletterLandingPage = ({
   returnParams,
-  ONE_LOGIN_ENABLED,
+  oneLoginEnabled,
   userServiceHost,
   host,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -51,7 +54,7 @@ const NewsletterLandingPage = ({
               We will only ever email you once a week. We will not email you if
               no new grants have been added.
             </p>
-            {ONE_LOGIN_ENABLED ? (
+            {oneLoginEnabled ? (
               <p className="govuk-body">
                 To sign up you need a GOV.UK One Login. If you do not have a
                 GOV.UK One Login you can create one.
@@ -63,8 +66,8 @@ const NewsletterLandingPage = ({
                 data-module="govuk-button"
                 data-cy="cyContinueToNewsletterSignup"
                 href={
-                  ONE_LOGIN_ENABLED
-                    ? `${userServiceHost}/v2/login?redirectUrl=${host}/notifications/manage-notifications?action=${URL_ACTIONS.NEWSLETTER_SUBSCRIBE}`
+                  oneLoginEnabled
+                    ? `${userServiceHost}/v2/login?redirectUrl=${host}${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.NEWSLETTER_SUBSCRIBE}`
                     : newsletterRoutes.signup
                 }
               >
