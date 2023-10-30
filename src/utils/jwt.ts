@@ -13,8 +13,6 @@ export const getJwtFromCookies = (req: NextRequest | NextApiRequest) => {
       ? req.cookies.get(USER_TOKEN_NAME)
       : req.cookies[USER_TOKEN_NAME];
 
-  console.log(cookieValue);
-
   // If the cookie is not a signed cookie, the parser will return the provided value
   const jwt = cookieParser.signedCookie(cookieValue, USER_TOKEN_SECRET);
 

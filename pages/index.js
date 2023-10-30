@@ -16,9 +16,6 @@ export function getServerSideProps({ query }) {
     return { props: { searchTerm: '', applicantUrl, oneLoginEnabled } };
   }
 
-  console.log(typeof oneLoginEnabled);
-  console.log(oneLoginEnabled);
-
   const { searchTerm } = query;
   return {
     props: {
