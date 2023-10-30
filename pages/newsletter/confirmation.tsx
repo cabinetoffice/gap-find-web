@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const signedUpEmail: string = req.body.user_email;
+  const signedUpEmail: string = body.user_email;
 
   const newsletterSubscription: NewsletterSubscription = {
     email: signedUpEmail,
