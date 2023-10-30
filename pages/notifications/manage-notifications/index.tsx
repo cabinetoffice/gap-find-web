@@ -101,7 +101,6 @@ export const getServerSideProps = async (ctx) => {
     const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
     jwtValue = jwt;
     const grantIdCookieValue = ctx.req.cookies.grantIdCookieValue;
-    console.log('grantIdCookieValue', grantIdCookieValue);
     ctx.res.setHeader(
       'Set-Cookie',
       `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
@@ -109,10 +108,7 @@ export const getServerSideProps = async (ctx) => {
 
     grantId = grantIdCookieValue ?? ctx.query.grantId;
 
-    console.log('grantId', grantId);
-
     if (ctx.query.action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
-      console.log('sending POST request to /api/subscription');
       await axios.post(
         new URL(`${process.env.HOST}/api/subscription`).toString(),
         {
@@ -125,7 +121,6 @@ export const getServerSideProps = async (ctx) => {
   }
   // Fetch individual grant details if required for things like success messages
   const grantDetails = grantId ? await fetchByGrantId(grantId) : null;
-  console.log('grantDetails', grantDetails);
   // Fetch the user's grant subscriptions
   const subscriptionService = SubscriptionService.getInstance();
   const plainTextEmailAddress = await getEmail(ctx);
