@@ -12,8 +12,8 @@ export const getJwtFromCookies = (
 ) => {
   const cookieValue =
     req instanceof NextRequest
-      ? req.cookies.get(USER_TOKEN_NAME)
-      : req.cookies[USER_TOKEN_NAME];
+      ? req.cookies.get(USER_TOKEN_NAME as string)
+      : req.cookies[USER_TOKEN_NAME as string];
 
   console.log(cookieValue);
 
