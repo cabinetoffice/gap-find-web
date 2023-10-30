@@ -30,7 +30,7 @@ import gloss from '../../../src/utils/glossary.json';
 import { client as axios, getJwtFromCookies } from '../../../src/utils';
 import nookies from 'nookies';
 import { MigrationBanner } from '../../../src/components/notification-banner';
-import { MigrationBannerProps } from './types';
+import { MigrationBannerProps } from '../../../src/types/subscription';
 import { GetServerSidePropsContext } from 'next';
 
 //TODO GAP-560 / GAP-592
