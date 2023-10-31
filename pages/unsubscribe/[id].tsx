@@ -117,12 +117,13 @@ const handleUnsubscribe = async (
   notificationKey: NotificationKey,
   emailAddress: string,
   unsubscribeReferenceId: string,
-) =>
-  UNSUBSCRIBE_HANDLER_MAP[type](
+) => {
+  return UNSUBSCRIBE_HANDLER_MAP[type](
     notificationKey,
     emailAddress,
     unsubscribeReferenceId,
   );
+};
 
 const Unsubscribe = (props: undefined | { error: boolean }) => {
   if (props.error) {

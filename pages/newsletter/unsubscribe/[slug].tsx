@@ -6,7 +6,7 @@ import {
   cookieName,
   newsletterRoutes,
   notificationRoutes,
-} from '../../../src/utils/constants';
+} from '../../../src/utils';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import gloss from '../../../src/utils/glossary.json';
 
@@ -28,6 +28,7 @@ const breadcrumbsRoutes = [
 
 export async function getServerSideProps(ctx) {
   if (
+    process.env.ONE_LOGIN_ENABLED !== 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
   ) {
     return {
@@ -67,20 +68,21 @@ function notifications() {
           </div>
           <div className="govuk-grid-column-two-thirds">
             <form method="post" action="/api/newsletter/unsubscribe">
-              <button
-                className="govuk-button"
-                data-module="govuk-button"
-                data-cy="cyUnsubscribeConfirmationButton"
-              >
-                Yes, unsubscribe
-              </button>
+              <div className="govuk-button-group">
+                <button
+                  className="govuk-button"
+                  data-module="govuk-button"
+                  data-cy="cyUnsubscribeConfirmationButton"
+                >
+                  Yes, unsubscribe
+                </button>
+                <Link href={notificationRoutes['manageNotifications']}>
+                  <a className="govuk-link" data-cy="cyCancelUnsubscribe">
+                    Cancel
+                  </a>
+                </Link>
+              </div>
             </form>
-            <br />
-            <Link href={notificationRoutes['manageNotifications']}>
-              <a className="govuk-link" data-cy="cyCancelUnsubscribe">
-                Cancel
-              </a>
-            </Link>
           </div>
         </div>
       </Layout>

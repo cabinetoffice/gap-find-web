@@ -2,6 +2,8 @@
   "name": "gap",
   "private": true,
   "scripts": {
+    "clean": "rm -rf node_modules yarn.lock",
+    "clean:install": "yarn run clean && yarn install",
     "dev": "next dev",
     "build": "next build",
     "build:image": "npm run build && docker build -t gap-web-docker .",

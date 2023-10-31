@@ -8,6 +8,7 @@ manifest.yml
 package-lock.json
 src/assets/.DS_Store
 coverage
+.idea/
 
 ### Local properties ###
 application-local.properties

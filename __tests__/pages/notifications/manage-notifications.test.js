@@ -18,8 +18,10 @@ import {
   context,
   deleteContext,
   deletedProps,
+  newsletterSubscribeContext,
   newsletterSubscription,
   noNotificationNoSavedSearchesProps,
+  notNewsletterSubscribeContext,
   props,
   redirectResult,
   savedSearches,
@@ -47,6 +49,7 @@ jest.mock('../../../src/utils/jwt', () => ({
   getJwtFromCookies: jest.fn(() => ({
     jwtPayload: {
       email: 'fake@email.com',
+      sub: 'sub',
     },
     jwt: 'a.b.c',
   })),
@@ -167,14 +170,14 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType',
+        'getBySubAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 
     fetchByGrantIds.mockReturnValue([]);
     const result = await management.getServerSideProps(context);
 
-    expect(decrypt).toHaveBeenCalledTimes(1);
+    expect(decrypt).toHaveBeenCalledTimes(2);
     expect(decrypt).toHaveBeenCalledWith(encryptedEmail);
     expect(subscriptionServiceMock).toBeCalledTimes(1);
     expect(getAllSavedSearches).toBeCalledTimes(1);
@@ -242,7 +245,7 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType',
+        'getBySubAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 
@@ -250,7 +253,7 @@ describe('get server side props for manage notifications page', () => {
     fetchByGrantId.mockReturnValue(testGrants[0]);
     let result = await management.getServerSideProps(deleteContext);
 
-    expect(decrypt).toHaveBeenCalledTimes(1);
+    expect(decrypt).toHaveBeenCalledTimes(2);
     expect(decrypt).toHaveBeenCalledWith(encryptedEmail);
     expect(subscriptionServiceMock).toBeCalledTimes(1);
     expect(newsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
@@ -268,7 +271,7 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType',
+        'getBySubAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 
@@ -278,6 +281,128 @@ describe('get server side props for manage notifications page', () => {
     expect(subscriptionServiceMock).toBeCalledTimes(1);
     expect(newsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual(testResultSubscribeSuccess);
+  });
+
+  it('should create a new newsletter subscription if one does not already exist', async () => {
+    const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
+    process.env.ONE_LOGIN_ENABLED = 'true';
+
+    jest
+      .spyOn(SubscriptionService.prototype, 'getSubscriptionsByEmail')
+      .mockImplementationOnce(() => {
+        return testSubscriptionArray;
+      });
+
+    const getNewsletterSubscriptionServiceMock = jest
+      .spyOn(
+        NewsletterSubscriptionService.prototype,
+        'getBySubAndNewsletterType',
+      )
+      .mockImplementation(() => {});
+
+    const postNewsletterSubscriptionServiceMock = jest
+      .spyOn(NewsletterSubscriptionService.prototype, 'subscribeToNewsletter')
+      .mockImplementation(() => newsletterSubscription);
+
+    let result = await management.getServerSideProps(
+      newsletterSubscribeContext,
+    );
+
+    expect(getNewsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
+    expect(getNewsletterSubscriptionServiceMock).toHaveBeenCalledWith(
+      'sub',
+      'NEW_GRANTS',
+      'a.b.c',
+    );
+    expect(postNewsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
+    expect(postNewsletterSubscriptionServiceMock).toHaveBeenCalledWith(
+      'fake@email.com',
+      'NEW_GRANTS',
+      'a.b.c',
+      'sub',
+    );
+
+    expect(result.props.urlAction).toBe('newsletter-subscribe');
+
+    process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
+  });
+
+  it('should not create a new newsletter subscription if one already exists', async () => {
+    const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
+    process.env.ONE_LOGIN_ENABLED = 'true';
+
+    jest
+      .spyOn(SubscriptionService.prototype, 'getSubscriptionsByEmail')
+      .mockImplementationOnce(() => {
+        return testSubscriptionArray;
+      });
+
+    const getNewsletterSubscriptionServiceMock = jest
+      .spyOn(
+        NewsletterSubscriptionService.prototype,
+        'getBySubAndNewsletterType',
+      )
+      .mockImplementation(() => newsletterSubscription);
+
+    const postNewsletterSubscriptionServiceMock = jest.spyOn(
+      NewsletterSubscriptionService.prototype,
+      'subscribeToNewsletter',
+    );
+
+    let result = await management.getServerSideProps(
+      newsletterSubscribeContext,
+    );
+
+    expect(getNewsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
+    expect(getNewsletterSubscriptionServiceMock).toHaveBeenCalledWith(
+      'sub',
+      'NEW_GRANTS',
+      'a.b.c',
+    );
+    expect(postNewsletterSubscriptionServiceMock).not.toHaveBeenCalled();
+
+    expect(result.props.urlAction).toBe(null);
+
+    process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
+  });
+
+  it('should not create a new newsletter subscription if action is not newsletter-subscribe', async () => {
+    const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
+    process.env.ONE_LOGIN_ENABLED = 'true';
+
+    jest
+      .spyOn(SubscriptionService.prototype, 'getSubscriptionsByEmail')
+      .mockImplementationOnce(() => {
+        return testSubscriptionArray;
+      });
+
+    const getNewsletterSubscriptionServiceMock = jest
+      .spyOn(
+        NewsletterSubscriptionService.prototype,
+        'getBySubAndNewsletterType',
+      )
+      .mockImplementation(() => {});
+
+    const postNewsletterSubscriptionServiceMock = jest.spyOn(
+      NewsletterSubscriptionService.prototype,
+      'subscribeToNewsletter',
+    );
+
+    let result = await management.getServerSideProps(
+      notNewsletterSubscribeContext,
+    );
+
+    expect(getNewsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
+    expect(getNewsletterSubscriptionServiceMock).toHaveBeenCalledWith(
+      'sub',
+      'NEW_GRANTS',
+      'a.b.c',
+    );
+    expect(postNewsletterSubscriptionServiceMock).not.toHaveBeenCalled();
+
+    expect(result.props.urlAction).toBe('not-newsletter-subscribe');
+
+    process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
   });
 
   it('should redirect to check email if no cookie is set', async () => {
