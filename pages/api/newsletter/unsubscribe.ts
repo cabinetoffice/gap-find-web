@@ -8,31 +8,40 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
-import { addErrorInfo, logger } from '../../../src/utils';
+import { addErrorInfo, getJwtFromCookies, logger } from '../../../src/utils';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   const newsletterService = NewsletterSubscriptionService.getInstance();
-  if (!req.cookies[cookieName.currentEmailAddress]) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: notificationRoutes['checkEmail'],
-      },
-    };
-  }
+  let decryptedEmailAddress;
+  let sub = null;
+  if (process.env.ONE_LOGIN_ENABLED === 'true') {
+    const { jwtPayload } = getJwtFromCookies(req);
+    decryptedEmailAddress = jwtPayload.email;
+    sub = jwtPayload.sub;
+  } else {
+    if (!req.cookies[cookieName.currentEmailAddress]) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: notificationRoutes['checkEmail'],
+        },
+      };
+    }
 
-  const decodedEmailCookie = decryptSignedApiKey(
-    req.cookies[cookieName['currentEmailAddress']],
-  );
-  const decryptedEmailAddress = await decrypt(decodedEmailCookie.email);
+    const decodedEmailCookie = decryptSignedApiKey(
+      req.cookies[cookieName['currentEmailAddress']],
+    );
+    decryptedEmailAddress = await decrypt(decodedEmailCookie.email);
+  }
 
   try {
     await newsletterService.unsubscribeFromNewsletter(
       decryptedEmailAddress,
       NewsletterType.NEW_GRANTS,
+      sub,
     );
   } catch (e) {
     logger.error('error unsubscribing from newsletter', addErrorInfo(e, req));

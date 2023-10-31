@@ -17,6 +17,7 @@ jest.mock(
   () => ({
     NewsletterSubscriptionService: {
       getInstance: jest.fn(),
+      unsubscribeFromNewsletter: jest.fn(),
     },
   }),
 );
@@ -142,6 +143,7 @@ const TEST_USER_DATA_MAP = {
 const getMockUnsubscribeReferenceData = (type) => ({
   user: {
     encryptedEmailAddress: 'some-email',
+    sub: 'sub',
   },
   ...TEST_USER_DATA_MAP[type],
 });

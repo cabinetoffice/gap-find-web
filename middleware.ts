@@ -5,6 +5,7 @@ import { checkUserLoggedIn } from './src/service';
 import {
   HEADERS,
   notificationRoutes,
+  newsletterRoutes,
   LOGIN_NOTICE_TYPES,
   logger,
   getJwtFromCookies,
@@ -111,9 +112,12 @@ const authenticateRequest = async (req: NextRequest) => {
 };
 
 const authenticatedPaths = [
-  notificationRoutes.manageNotifications,
   '/api/user/migrate',
-  '/subscriptions/signup',
+  notificationRoutes.manageNotifications,
+  notificationRoutes.subscriptionSignUp,
+  newsletterRoutes.signup,
+  newsletterRoutes.confirmation,
+  newsletterRoutes.unsubscribe,
 ];
 
 const isAuthenticatedPath = (url: string) =>

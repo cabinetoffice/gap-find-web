@@ -172,6 +172,32 @@ export const subscribeContext = {
   },
 };
 
+export const newsletterSubscribeContext = {
+  req: {
+    cookies: {},
+    jwtPayload: 'jwt',
+  },
+  res: {
+    setHeader: jest.fn(),
+  },
+  query: {
+    action: 'newsletter-subscribe',
+  },
+};
+
+export const notNewsletterSubscribeContext = {
+  req: {
+    cookies: {},
+    jwtPayload: 'jwt',
+  },
+  res: {
+    setHeader: jest.fn(),
+  },
+  query: {
+    action: 'not-newsletter-subscribe',
+  },
+};
+
 export const props = {
   currentNotificationList: JSON.stringify(testSubscriptionArray),
   grantDetails: null,

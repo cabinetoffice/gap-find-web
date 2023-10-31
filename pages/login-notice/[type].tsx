@@ -1,3 +1,4 @@
+import React from 'react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Layout from '../../src/components/partials/Layout';
@@ -52,7 +53,7 @@ export const NOTICE_CONTENT = {
 
 export const getServerSideProps = (ctx: GetServerSidePropsContext) => ({
   props: {
-    type: ctx.params.type,
+    type: ctx.params?.type,
     userServiceHost: USER_SERVICE_HOST,
     host: HOST,
   },
@@ -70,7 +71,6 @@ const LoginNotice = ({ type, host, userServiceHost }) => {
   const formattedRedirectUrl = encodeURIComponent(
     `${host}${redirectUrl}${getRedirectUrlQueryString(type)}`,
   );
-
   return (
     <>
       <Head>
@@ -85,12 +85,21 @@ const LoginNotice = ({ type, host, userServiceHost }) => {
                 {paragraph}
               </p>
             ))}
-            <a
-              className="govuk-button"
-              href={`${userServiceHost}/v2/login?redirectUrl=${formattedRedirectUrl}`}
-            >
-              Continue to One Login
-            </a>
+            <div className="govuk-button-group">
+              <a
+                className="govuk-button"
+                href={`${userServiceHost}/v2/login?redirectUrl=${formattedRedirectUrl}`}
+              >
+                Continue to One Login
+              </a>
+              <a
+                className="govuk-link"
+                data-cy="cyCancelNewsletterSignup"
+                href={host}
+              >
+                Cancel
+              </a>
+            </div>
           </div>
         </div>
       </Layout>
