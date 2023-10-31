@@ -126,7 +126,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       applyMigrationStatus = null,
       findMigrationStatus = null,
       migrationType = null,
-    } = ctx.query as NodeJS.Dict<string>;
+    } = ctx.query as Record<string, string>;
     migrationBannerProps = {
       applyMigrationStatus,
       findMigrationStatus,
