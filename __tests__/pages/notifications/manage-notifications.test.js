@@ -220,7 +220,7 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType',
+        'getBySubAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 
