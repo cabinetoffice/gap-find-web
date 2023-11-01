@@ -13,6 +13,7 @@ import { SubscriptionService } from '../../../src/service/subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
 import {
   cookieName,
+  LOGIN_NOTICE_TYPES,
   notificationRoutes,
   tableHeadArr,
   URL_ACTION_MESSAGES,
@@ -327,7 +328,11 @@ const ManageNotifications = (props) => {
       return { cells };
     });
 
+  //The subscription-notification alert rendered by "urlAction" contains the same content as the successful migration banners.
+  //this variable hides the alert when one of the migrations is successful and neither of them have failed
   const hideAlertConfirmationMessage =
+    props.migrationBannerProps.migrationType ===
+      LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS &&
     (props.migrationBannerProps.applyMigrationStatus === 'SUCCEEDED' ||
       props.migrationBannerProps.findMigrationStatus === 'SUCCEEDED') &&
     props.migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
