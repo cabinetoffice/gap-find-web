@@ -327,6 +327,12 @@ const ManageNotifications = (props) => {
       return { cells };
     });
 
+  const hideAlertConfirmationMessage =
+    (props.migrationBannerProps.applyMigrationStatus === 'SUCCEEDED' ||
+      props.migrationBannerProps.findMigrationStatus === 'SUCCEEDED') &&
+    props.migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
+    props.migrationBannerProps.findMigrationStatus !== 'FAILED';
+
   return (
     <>
       <Head>
@@ -338,7 +344,7 @@ const ManageNotifications = (props) => {
         </div>
 
         <div className="govuk-grid-row govuk-body">
-          {!!urlAction && (
+          {!!urlAction && !hideAlertConfirmationMessage && (
             <ConfirmationMessage
               {...generateSuccessMessage(
                 urlAction,
