@@ -13,6 +13,7 @@ const defaultErrorProps = {
       <a href="mailto:findagrant@cabinetoffice.gov.uk">
         findagrant@cabinetoffice.gov.uk
       </a>
+      .
     </p>
   ),
 };
