@@ -8,9 +8,12 @@ const defaultErrorProps = {
   isSuccess: false,
   heading: 'Something went wrong while transferring your data.',
   content: (
-    <p>
-      Please try again later.{' '}
-      <a href="mailto:findagrant@cabinetoffice.gov.uk">
+    <p className="govuk-body">
+      Please get in contact with our support team at{' '}
+      <a
+        className="govuk-notification-banner__link"
+        href="mailto:findagrant@cabinetoffice.gov.uk"
+      >
         findagrant@cabinetoffice.gov.uk
       </a>
     </p>
