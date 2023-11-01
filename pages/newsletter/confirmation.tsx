@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSidePropsContext, NextApiRequest } from 'next';
 import Head from 'next/head';
 import React from 'react';
 import Layout from '../../src/components/partials/Layout';
@@ -26,8 +26,10 @@ const generateConfirmationUrl = (apiKey: string) => {
   ).toString();
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const req: any = context.req;
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+) => {
+  const req = context.req;
 
   const body = await parseBody(req, '1mb');
   const validationErrors = validateSignupForm(body);
@@ -65,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (e) {
     logger.error(
       'error sending newsletter signup confirmation email',
-      addErrorInfo(e, req),
+      addErrorInfo(e, req as NextApiRequest),
     );
   }
   return {

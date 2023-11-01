@@ -110,6 +110,7 @@ export const testResultSuccess = {
     newGrantsParams,
     savedSearches,
     deletedSavedSearchName: null,
+    migrationBannerProps: undefined,
   },
 };
 
@@ -122,6 +123,7 @@ export const testResultDeleteSuccess = {
     newGrantsParams,
     savedSearches,
     deletedSavedSearchName: null,
+    migrationBannerProps: undefined,
   },
 };
 
@@ -134,6 +136,7 @@ export const testResultSubscribeSuccess = {
     newGrantsParams,
     savedSearches,
     deletedSavedSearchName: null,
+    migrationBannerProps: undefined,
   },
 };
 
@@ -145,6 +148,7 @@ export const context = {
   },
   query: {
     grantId: null,
+    applyMigrationStatus: 'SUCCEEDED',
   },
 };
 
@@ -170,7 +174,11 @@ export const subscribeContext = {
 
 export const newsletterSubscribeContext = {
   req: {
+    cookies: {},
     jwtPayload: 'jwt',
+  },
+  res: {
+    setHeader: jest.fn(),
   },
   query: {
     action: 'newsletter-subscribe',
@@ -179,7 +187,11 @@ export const newsletterSubscribeContext = {
 
 export const notNewsletterSubscribeContext = {
   req: {
+    cookies: {},
     jwtPayload: 'jwt',
+  },
+  res: {
+    setHeader: jest.fn(),
   },
   query: {
     action: 'not-newsletter-subscribe',
@@ -193,6 +205,10 @@ export const props = {
   newsletterSubscription,
   newGrantsParams,
   savedSearches,
+  migrationBannerProps: {
+    applyMigrationStatus: null,
+    findMigrationStatus: null,
+  },
 };
 
 export const deletedProps = {

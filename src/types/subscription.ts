@@ -4,3 +4,10 @@ export type UnsubscribeSubscriptionRequest = {
   sub?: string;
   unsubscribeReferenceId?: string;
 };
+
+export type MigrationBannerProps = {
+  applyMigrationStatus: string;
+  grantIdCookieValue?: string;
+  findMigrationStatus: string;
+  migrationType: string;
+};

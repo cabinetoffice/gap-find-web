@@ -29,6 +29,10 @@ import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
 import { client as axios, getJwtFromCookies } from '../../../src/utils';
+import nookies from 'nookies';
+import { MigrationBanner } from '../../../src/components/notification-banner';
+import { MigrationBannerProps } from '../../../src/types/subscription';
+import { GetServerSidePropsContext } from 'next';
 
 //TODO GAP-560 / GAP-592
 const breadcrumbsRoutes = [
@@ -92,7 +96,7 @@ const getSub = async (ctx) => {
   return jwtPayload.sub as string;
 };
 
-export const getServerSideProps = async (ctx) => {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (
     process.env.ONE_LOGIN_ENABLED != 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
@@ -111,12 +115,12 @@ export const getServerSideProps = async (ctx) => {
   const sub = await getSub(ctx);
 
   let grantId = ctx.query.grantId;
-  let jwtValue;
+  let jwtValue: string, migrationBannerProps: MigrationBannerProps;
 
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
     jwtValue = jwt;
-    const grantIdCookieValue = ctx.req.cookies.grantIdCookieValue;
+    const { grantIdCookieValue } = nookies.get(ctx);
     ctx.res.setHeader(
       'Set-Cookie',
       `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
@@ -134,10 +138,21 @@ export const getServerSideProps = async (ctx) => {
         },
       );
     }
+    const {
+      applyMigrationStatus = null,
+      findMigrationStatus = null,
+      migrationType = null,
+    } = ctx.query as Record<string, string>;
+    migrationBannerProps = {
+      applyMigrationStatus,
+      findMigrationStatus,
+      migrationType,
+    };
   }
 
   // Fetch individual grant details if required for things like success messages
   const grantDetails = grantId ? await fetchByGrantId(grantId) : null;
+
   // Fetch the user's grant subscriptions
   const subscriptionService = SubscriptionService.getInstance();
 
@@ -196,6 +211,7 @@ export const getServerSideProps = async (ctx) => {
       newsletterSubscription: newsletterSubscription ?? null,
       newGrantsParams,
       savedSearches,
+      migrationBannerProps,
     },
   };
 };
@@ -332,6 +348,16 @@ const ManageNotifications = (props) => {
             />
           )}
           <div className="govuk-grid-column-full ">
+            {(props.migrationBannerProps.applyMigrationStatus ??
+              props.migrationBannerProps.findMigrationStatus) && (
+              <MigrationBanner
+                nameOfGrantUpdated={
+                  grantDetails?.fields?.grantName &&
+                  `"${grantDetails.fields.grantName}"`
+                }
+                {...props.migrationBannerProps}
+              />
+            )}
             <h1
               className="govuk-heading-l"
               data-cy="cyManageYourNotificationsHeading"
@@ -340,7 +366,6 @@ const ManageNotifications = (props) => {
             >
               Manage your notifications and saved searches
             </h1>
-
             {!!props.newsletterSubscription && (
               <ManageNewsletter
                 signupDate={props.newsletterSubscription.createdAt}
@@ -348,7 +373,6 @@ const ManageNotifications = (props) => {
                 newGrantsDateParams={props.newGrantsParams}
               />
             )}
-
             {notificationAndSavedSearchList.length > 0 ? (
               <Table
                 caption="Saved searches and grants you are following:"

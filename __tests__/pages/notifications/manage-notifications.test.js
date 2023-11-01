@@ -67,6 +67,9 @@ jest.mock('nookies', () => ({
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/cookieAndJwtChecker');
+jest.mock('../../../src/components/notification-banner', () => ({
+  MigrationBanner: () => <p>Test migration banner</p>,
+}));
 
 const encryptedEmail = 'test-encrypted-email-string';
 const decryptedEmail = 'test-decrypted-email-string';
@@ -84,21 +87,32 @@ describe('Testing manage-notifications component', () => {
     });
   });
 
-  it('renders at manage-notifications heading', async () => {
+  it('renders migration banner', () => {
+    render(
+      <management.default
+        {...props}
+        migrationBannerProps={{ findMigrationStatus: 'SUCCEEDED' }}
+      />,
+    );
+    const banner = screen.getByText('Test migration banner');
+    expect(banner).toBeVisible();
+  });
+  it('renders at manage-notifications heading', () => {
     render(<management.default {...props} />);
 
     const heading = screen.getAllByText(/Manage your notifications/);
     // 1 for breadcrumb and 1 for main heading
     expect(heading).toHaveLength(1);
+    expect(screen.queryByText('Test migration banner')).toBeNull();
   });
 
-  it('renders at manage-notifications content with email address from cookies', async () => {
+  it('renders at manage-notifications content with email address from cookies', () => {
     render(<management.default {...props} />);
     const heading = screen.getAllByText(/Grants you are following/i);
     expect(heading).toHaveLength(1);
   });
 
-  it('should call the confirmation message when there are deleted grants', async () => {
+  it('should call the confirmation message when there are deleted grants', () => {
     render(<management.default {...deletedProps} />);
     const heading = screen.getAllByText(
       /You have been unsubscribed from "Test Grant"/,
@@ -106,7 +120,7 @@ describe('Testing manage-notifications component', () => {
     expect(heading).toHaveLength(1);
   });
 
-  it('should call the confirmation message when there are subscribed grants', async () => {
+  it('should call the confirmation message when there are subscribed grants', () => {
     render(<management.default {...subscribedProps} />);
     const heading = screen.getAllByText(
       /You have signed up for updates about "Test Grant"/,
@@ -128,7 +142,7 @@ describe('Testing manage-notifications component', () => {
     expect(screen.queryByText('Updates about new grants')).toBeNull();
   });
 
-  it('should display notifications sorted by time (newest to oldest), and saved searches sorted by time (newest to oldest)', async () => {
+  it('should display notifications sorted by time (newest to oldest), and saved searches sorted by time (newest to oldest)', () => {
     render(<management.default {...noNotificationNoSavedSearchesProps} />);
     screen.getByText(
       /you are not signed up for any notifications, and you don't have any saved searches\./i,
@@ -199,6 +213,7 @@ describe('get server side props for manage notifications page', () => {
         },
       },
       query: {
+        applyMigrationStatus: 'SUCCEEDED',
         grantId: '12345678',
         action: 'subscribe',
       },
@@ -220,7 +235,7 @@ describe('get server side props for manage notifications page', () => {
     const newsletterSubscriptionServiceMock = jest
       .spyOn(
         NewsletterSubscriptionService.prototype,
-        'getByEmailAndNewsletterType',
+        'getBySubAndNewsletterType',
       )
       .mockImplementation(() => newsletterSubscription);
 
@@ -231,6 +246,11 @@ describe('get server side props for manage notifications page', () => {
     expect(client.post).toHaveBeenCalledTimes(1);
     expect(newsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
     testResultSuccess.props.urlAction = 'subscribe';
+    testResultSuccess.props.migrationBannerProps = {
+      applyMigrationStatus: 'SUCCEEDED',
+      findMigrationStatus: null,
+      migrationType: null,
+    };
     expect(result).toStrictEqual(testResultSuccess);
   });
 
