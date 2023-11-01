@@ -1,13 +1,15 @@
 // eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextRequest } from 'next/server';
-import { NextApiRequest } from 'next';
+import { GetServerSidePropsContext, NextApiRequest } from 'next';
 import cookieParser from 'cookie-parser';
 import { decodeJwt } from 'jose';
 
-const USER_TOKEN_NAME = process.env.USER_TOKEN_NAME;
+const USER_TOKEN_NAME = process.env.USER_TOKEN_NAME as string;
 const USER_TOKEN_SECRET = process.env.USER_TOKEN_SECRET;
 
-export const getJwtFromCookies = (req: NextRequest | NextApiRequest) => {
+export const getJwtFromCookies = (
+  req: NextRequest | NextApiRequest | GetServerSidePropsContext['req'],
+) => {
   const cookieValue =
     req instanceof NextRequest
       ? req.cookies.get(USER_TOKEN_NAME)
