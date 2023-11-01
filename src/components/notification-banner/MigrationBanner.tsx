@@ -16,6 +16,7 @@ const defaultErrorProps = {
       >
         findagrant@cabinetoffice.gov.uk
       </a>
+      .
     </p>
   ),
 };

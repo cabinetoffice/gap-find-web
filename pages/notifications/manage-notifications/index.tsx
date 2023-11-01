@@ -28,7 +28,7 @@ import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChec
 import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
-import { client as axios, getJwtFromCookies } from '../../../src/utils';
+import { client as axios, getJwtFromCookies, logger } from '../../../src/utils';
 import nookies from 'nookies';
 import { MigrationBanner } from '../../../src/components/notification-banner';
 import { MigrationBannerProps } from '../../../src/types/subscription';
@@ -333,6 +333,19 @@ const ManageNotifications = (props) => {
     props.migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
     props.migrationBannerProps.findMigrationStatus !== 'FAILED';
 
+  const hasMigrationStatus =
+    props.migrationBannerProps.applyMigrationStatus ??
+    props.migrationBannerProps.findMigrationStatus;
+
+  const shouldRenderMigrationBanner =
+    props.migrationBannerProps.migrationType && hasMigrationStatus;
+
+  if (!shouldRenderMigrationBanner && hasMigrationStatus) {
+    logger.error(
+      'Migration banner props found but no migration type was passed from user-service.',
+    );
+  }
+
   return (
     <>
       <Head>
@@ -354,8 +367,7 @@ const ManageNotifications = (props) => {
             />
           )}
           <div className="govuk-grid-column-full ">
-            {(props.migrationBannerProps.applyMigrationStatus ??
-              props.migrationBannerProps.findMigrationStatus) && (
+            {shouldRenderMigrationBanner && (
               <MigrationBanner
                 nameOfGrantUpdated={
                   grantDetails?.fields?.grantName &&

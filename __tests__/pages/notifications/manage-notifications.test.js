@@ -91,7 +91,10 @@ describe('Testing manage-notifications component', () => {
     render(
       <management.default
         {...props}
-        migrationBannerProps={{ findMigrationStatus: 'SUCCEEDED' }}
+        migrationBannerProps={{
+          migrationType: 'newsletters',
+          findMigrationStatus: 'SUCCEEDED',
+        }}
       />,
     );
     const banner = screen.getByText('Test migration banner');
