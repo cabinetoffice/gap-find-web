@@ -38,11 +38,11 @@ export default async function handler(
   }
 
   try {
-    await newsletterService.unsubscribeFromNewsletter(
-      decryptedEmailAddress,
-      NewsletterType.NEW_GRANTS,
+    await newsletterService.unsubscribeFromNewsletter({
+      plaintextEmail: decryptedEmailAddress,
+      type: NewsletterType.NEW_GRANTS,
       sub,
-    );
+    });
   } catch (e) {
     logger.error('error unsubscribing from newsletter', addErrorInfo(e, req));
   }
