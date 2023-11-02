@@ -14,6 +14,8 @@ import {
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import { decrypt } from '../../../src/utils/encryption';
 import { hash } from '../../../src/utils/hash';
+import { ConfirmationMessage } from '../../../src/components/confirmation-message/ConfirmationMessage';
+
 import {
   context,
   deleteContext,
@@ -71,6 +73,13 @@ jest.mock('../../../src/components/notification-banner', () => ({
   MigrationBanner: () => <p>Test migration banner</p>,
 }));
 
+jest.mock(
+  '../../../src/components/confirmation-message/ConfirmationMessage',
+  () => ({
+    ConfirmationMessage: () => <p>Test confirmation message</p>,
+  }),
+);
+
 const encryptedEmail = 'test-encrypted-email-string';
 const decryptedEmail = 'test-decrypted-email-string';
 const hashedEmail = 'test-hashed-email-string';
@@ -100,6 +109,37 @@ describe('Testing manage-notifications component', () => {
     const banner = screen.getByText('Test migration banner');
     expect(banner).toBeVisible();
   });
+
+  it('hides confirmation message with a successful subsctiption notification banner', () => {
+    render(
+      <management.default
+        {...props}
+        migrationBannerProps={{
+          migrationType: 'subscription-notifications',
+          findMigrationStatus: 'SUCCEEDED',
+          applyMigrationStatus: 'ALREADY_MIGRATED',
+        }}
+        urlAction="subscribe"
+      />,
+    );
+    expect(screen.queryByText('Test Confirmation Message')).toBeNull();
+  });
+
+  it('shows confirmation message with a FAILED subsctiption notification banner', () => {
+    render(
+      <management.default
+        {...props}
+        migrationBannerProps={{
+          migrationType: 'subscription-notifications',
+          findMigrationStatus: 'FAILED',
+          applyMigrationStatus: 'ALREADY_MIGRATED',
+        }}
+        urlAction="subscribe"
+      />,
+    );
+    expect(screen.getByText('Test Confirmation Message')).toBeVisible();
+  });
+
   it('renders at manage-notifications heading', () => {
     render(<management.default {...props} />);
 
