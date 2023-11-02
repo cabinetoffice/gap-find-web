@@ -14,7 +14,6 @@ import {
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import { decrypt } from '../../../src/utils/encryption';
 import { hash } from '../../../src/utils/hash';
-import { ConfirmationMessage } from '../../../src/components/confirmation-message/ConfirmationMessage';
 
 import {
   context,
@@ -73,13 +72,6 @@ jest.mock('../../../src/components/notification-banner', () => ({
   MigrationBanner: () => <p>Test migration banner</p>,
 }));
 
-jest.mock(
-  '../../../src/components/confirmation-message/ConfirmationMessage',
-  () => ({
-    ConfirmationMessage: () => <p>Test confirmation message</p>,
-  }),
-);
-
 const encryptedEmail = 'test-encrypted-email-string';
 const decryptedEmail = 'test-decrypted-email-string';
 const hashedEmail = 'test-hashed-email-string';
@@ -135,9 +127,12 @@ describe('Testing manage-notifications component', () => {
           applyMigrationStatus: 'ALREADY_MIGRATED',
         }}
         urlAction="subscribe"
+        grantDetails={{ fields: { grantName: 'grantName' } }}
       />,
     );
-    expect(screen.getByText('Test Confirmation Message')).toBeVisible();
+    expect(
+      screen.getByText('You have signed up for updates about "grantName".'),
+    ).toBeVisible();
   });
 
   it('renders at manage-notifications heading', () => {

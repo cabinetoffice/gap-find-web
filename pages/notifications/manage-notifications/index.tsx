@@ -328,22 +328,23 @@ const ManageNotifications = (props) => {
       return { cells };
     });
 
-  //The subscription-notification alert rendered by "urlAction" contains the same content as the successful migration banners.
-  //this variable hides the alert when one of the migrations is successful and neither of them have failed
-  const hideAlertConfirmationMessage =
-    props.migrationBannerProps.migrationType ===
-      LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS &&
-    (props.migrationBannerProps.applyMigrationStatus === 'SUCCEEDED' ||
-      props.migrationBannerProps.findMigrationStatus === 'SUCCEEDED') &&
-    props.migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
-    props.migrationBannerProps.findMigrationStatus !== 'FAILED';
-
   const hasMigrationStatus =
     props.migrationBannerProps.applyMigrationStatus ??
     props.migrationBannerProps.findMigrationStatus;
 
   const shouldRenderMigrationBanner =
     props.migrationBannerProps.migrationType && hasMigrationStatus;
+
+  //The subscription-notification alert rendered by "urlAction" contains the same content as the successful migration banners.
+  //this variable hides the alert when one of the migrations is successful and neither of them have failed
+  const hideAlertConfirmationMessage =
+    shouldRenderMigrationBanner &&
+    props.migrationBannerProps.migrationType ===
+      LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS &&
+    (props.migrationBannerProps.applyMigrationStatus === 'SUCCEEDED' ||
+      props.migrationBannerProps.findMigrationStatus === 'SUCCEEDED') &&
+    props.migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
+    props.migrationBannerProps.findMigrationStatus !== 'FAILED';
 
   if (!shouldRenderMigrationBanner && hasMigrationStatus) {
     logger.error(
