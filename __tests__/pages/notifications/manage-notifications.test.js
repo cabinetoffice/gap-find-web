@@ -112,9 +112,12 @@ describe('Testing manage-notifications component', () => {
           applyMigrationStatus: 'ALREADY_MIGRATED',
         }}
         urlAction="subscribe"
+        grantDetails={{ fields: { grantName: 'grantName' } }}
       />,
     );
-    expect(screen.queryByText('Test Confirmation Message')).toBeNull();
+    expect(
+      screen.queryByText('You have signed up for updates about "grantName".'),
+    ).toBeNull();
   });
 
   it('shows confirmation message with a FAILED subsctiption notification banner', () => {
