@@ -335,16 +335,10 @@ const ManageNotifications = (props) => {
   const shouldRenderMigrationBanner =
     props.migrationBannerProps.migrationType && hasMigrationStatus;
 
-  //The subscription-notification alert rendered by "urlAction" contains the same content as the successful migration banners.
-  //this variable hides the alert when one of the migrations is successful and neither of them have failed
-  const hideAlertConfirmationMessage =
-    shouldRenderMigrationBanner &&
-    props.migrationBannerProps.migrationType ===
-      LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS &&
-    (props.migrationBannerProps.applyMigrationStatus === 'SUCCEEDED' ||
-      props.migrationBannerProps.findMigrationStatus === 'SUCCEEDED') &&
-    props.migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
-    props.migrationBannerProps.findMigrationStatus !== 'FAILED';
+  const hideConfirmationMessage = checkShouldHideConfirmationMessage(
+    props.migrationBannerProps,
+    shouldRenderMigrationBanner,
+  );
 
   if (!shouldRenderMigrationBanner && hasMigrationStatus) {
     logger.error(
@@ -363,7 +357,7 @@ const ManageNotifications = (props) => {
         </div>
 
         <div className="govuk-grid-row govuk-body">
-          {!!urlAction && !hideAlertConfirmationMessage && (
+          {!!urlAction && !hideConfirmationMessage && (
             <ConfirmationMessage
               {...generateSuccessMessage(
                 urlAction,
@@ -423,6 +417,27 @@ const ManageNotifications = (props) => {
       </Layout>
     </>
   );
+};
+
+const checkShouldHideConfirmationMessage = (
+  migrationBannerProps,
+  shouldRenderMigrationBanner,
+) => {
+  if (!shouldRenderMigrationBanner) return false;
+  if (
+    migrationBannerProps.migrationType ===
+    LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS
+  )
+    return false;
+
+  const oneOfTheMigrationsPassed =
+    migrationBannerProps.applyMigrationStatus === 'SUCCEEDED' ||
+    migrationBannerProps.findMigrationStatus === 'SUCCEEDED';
+  const noFailedMigrations =
+    migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
+    migrationBannerProps.findMigrationStatus !== 'FAILED';
+
+  return oneOfTheMigrationsPassed && noFailedMigrations;
 };
 
 export default ManageNotifications;
