@@ -110,7 +110,11 @@ export const testResultSuccess = {
     newGrantsParams,
     savedSearches,
     deletedSavedSearchName: null,
-    migrationBannerProps: undefined,
+    migrationBannerProps: {
+      applyMigrationStatus: null,
+      findMigrationStatus: null,
+      migrationType: null,
+    },
   },
 };
 
@@ -123,7 +127,11 @@ export const testResultDeleteSuccess = {
     newGrantsParams,
     savedSearches,
     deletedSavedSearchName: null,
-    migrationBannerProps: undefined,
+    migrationBannerProps: {
+      applyMigrationStatus: null,
+      findMigrationStatus: null,
+      migrationType: null,
+    },
   },
 };
 
@@ -136,7 +144,11 @@ export const testResultSubscribeSuccess = {
     newGrantsParams,
     savedSearches,
     deletedSavedSearchName: null,
-    migrationBannerProps: undefined,
+    migrationBannerProps: {
+      applyMigrationStatus: null,
+      findMigrationStatus: null,
+      migrationType: null,
+    },
   },
 };
 
