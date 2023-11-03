@@ -13,6 +13,7 @@ import { SubscriptionService } from '../../../src/service/subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
 import {
   cookieName,
+  LOGIN_NOTICE_TYPES,
   notificationRoutes,
   tableHeadArr,
   URL_ACTION_MESSAGES,
@@ -334,6 +335,11 @@ const ManageNotifications = (props) => {
   const shouldRenderMigrationBanner =
     props.migrationBannerProps.migrationType && hasMigrationStatus;
 
+  const hideConfirmationMessage = checkShouldHideConfirmationMessage(
+    props.migrationBannerProps,
+    shouldRenderMigrationBanner,
+  );
+
   if (!shouldRenderMigrationBanner && hasMigrationStatus) {
     logger.error(
       'Migration banner props found but no migration type was passed from user-service.',
@@ -351,7 +357,7 @@ const ManageNotifications = (props) => {
         </div>
 
         <div className="govuk-grid-row govuk-body">
-          {!!urlAction && (
+          {!!urlAction && !hideConfirmationMessage && (
             <ConfirmationMessage
               {...generateSuccessMessage(
                 urlAction,
@@ -411,6 +417,31 @@ const ManageNotifications = (props) => {
       </Layout>
     </>
   );
+};
+
+const checkShouldHideConfirmationMessage = (
+  migrationBannerProps: {
+    migrationType: string;
+    applyMigrationStatus: string;
+    findMigrationStatus: string;
+  },
+  shouldRenderMigrationBanner: boolean,
+) => {
+  const isSubscriptionNotificationMigration =
+    migrationBannerProps.migrationType ===
+    LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS;
+
+  if (!shouldRenderMigrationBanner && isSubscriptionNotificationMigration)
+    return false;
+
+  const migrationPassed =
+    migrationBannerProps.applyMigrationStatus === 'SUCCEEDED' ||
+    migrationBannerProps.findMigrationStatus === 'SUCCEEDED';
+  const noFailedMigrations =
+    migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
+    migrationBannerProps.findMigrationStatus !== 'FAILED';
+
+  return migrationPassed && noFailedMigrations;
 };
 
 export default ManageNotifications;

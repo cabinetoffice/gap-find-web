@@ -100,6 +100,43 @@ describe('Testing manage-notifications component', () => {
     const banner = screen.getByText('Test migration banner');
     expect(banner).toBeVisible();
   });
+
+  it('hides confirmation message with a successful subsctiption notification banner', () => {
+    render(
+      <management.default
+        {...props}
+        migrationBannerProps={{
+          migrationType: 'subscription-notifications',
+          findMigrationStatus: 'SUCCEEDED',
+          applyMigrationStatus: 'ALREADY_MIGRATED',
+        }}
+        urlAction="subscribe"
+        grantDetails={{ fields: { grantName: 'grantName' } }}
+      />,
+    );
+    expect(
+      screen.queryByText('You have signed up for updates about "grantName".'),
+    ).toBeNull();
+  });
+
+  it('shows confirmation message with a FAILED subsctiption notification banner', () => {
+    render(
+      <management.default
+        {...props}
+        migrationBannerProps={{
+          migrationType: 'subscription-notifications',
+          findMigrationStatus: 'FAILED',
+          applyMigrationStatus: 'ALREADY_MIGRATED',
+        }}
+        urlAction="subscribe"
+        grantDetails={{ fields: { grantName: 'grantName' } }}
+      />,
+    );
+    expect(
+      screen.getByText('You have signed up for updates about "grantName".'),
+    ).toBeVisible();
+  });
+
   it('renders at manage-notifications heading', () => {
     render(<management.default {...props} />);
 
