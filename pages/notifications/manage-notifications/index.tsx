@@ -434,14 +434,14 @@ const checkShouldHideConfirmationMessage = (
   if (!shouldRenderMigrationBanner && isSubscriptionNotificationMigration)
     return false;
 
-  const oneOfTheMigrationsPassed =
+  const migrationPassed =
     migrationBannerProps.applyMigrationStatus === 'SUCCEEDED' ||
     migrationBannerProps.findMigrationStatus === 'SUCCEEDED';
   const noFailedMigrations =
     migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
     migrationBannerProps.findMigrationStatus !== 'FAILED';
 
-  return oneOfTheMigrationsPassed && noFailedMigrations;
+  return migrationPassed && noFailedMigrations;
 };
 
 export default ManageNotifications;
