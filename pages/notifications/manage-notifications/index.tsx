@@ -420,8 +420,12 @@ const ManageNotifications = (props) => {
 };
 
 const checkShouldHideConfirmationMessage = (
-  migrationBannerProps,
-  shouldRenderMigrationBanner,
+  migrationBannerProps: {
+    migrationType: string;
+    applyMigrationStatus: string;
+    findMigrationStatus: string;
+  },
+  shouldRenderMigrationBanner: boolean,
 ) => {
   if (!shouldRenderMigrationBanner) return false;
   if (
