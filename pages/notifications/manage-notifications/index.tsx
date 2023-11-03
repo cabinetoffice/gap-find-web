@@ -427,11 +427,11 @@ const checkShouldHideConfirmationMessage = (
   },
   shouldRenderMigrationBanner: boolean,
 ) => {
-  if (!shouldRenderMigrationBanner) return false;
-  if (
+  const isSubscriptionNotificationMigration =
     migrationBannerProps.migrationType ===
-    LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS
-  )
+    LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS;
+
+  if (!shouldRenderMigrationBanner && isSubscriptionNotificationMigration)
     return false;
 
   const oneOfTheMigrationsPassed =
