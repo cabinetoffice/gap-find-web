@@ -14,7 +14,6 @@ import {
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import { decrypt } from '../../../src/utils/encryption';
 import { hash } from '../../../src/utils/hash';
-
 import {
   context,
   deleteContext,
