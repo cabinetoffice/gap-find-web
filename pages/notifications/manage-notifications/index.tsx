@@ -116,7 +116,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const sub = await getSub(ctx);
 
   let grantId = ctx.query.grantId;
-  let jwtValue: string, migrationBannerProps: MigrationBannerProps;
+  let jwtValue: string,
+    migrationBannerProps: MigrationBannerProps = {
+      applyMigrationStatus: null,
+      findMigrationStatus: null,
+      migrationType: null,
+    };
 
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
