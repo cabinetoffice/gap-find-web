@@ -19,6 +19,9 @@ jest.mock('../../../src/utils/axios', () => ({
     post: jest.fn(),
   },
 }));
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
 
 describe('Signing up with email and accepting privacy policy', () => {
   const grantDetail = {

@@ -23,7 +23,9 @@ jest.mock('next/config', () => {
     return { serverRuntimeConfig: {} };
   });
 });
-
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
 jest.mock('next/router', () => {
   return {
     useRouter: jest.fn(),

@@ -16,7 +16,7 @@ const encryptedEmail = 'test-encrypted-email-string';
 
 jest.mock('next/config', () => {
   return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
+    return { serverRuntimeConfig: {}, publicRuntimeConfig: {} };
   });
 });
 

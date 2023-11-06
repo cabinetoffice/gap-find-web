@@ -10,6 +10,9 @@ jest.mock('nookies', () => {
     get: jest.fn(),
   };
 });
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
 
 describe('notifications/index.js testing the page', () => {
   const mockBack = jest.fn();

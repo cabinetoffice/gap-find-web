@@ -6,6 +6,9 @@ jest.mock('next/router', () => ({
     return jest.fn();
   },
 }));
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
 
 const component = <Cookies />;
 

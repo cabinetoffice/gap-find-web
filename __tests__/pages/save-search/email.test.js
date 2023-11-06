@@ -17,12 +17,14 @@ jest.mock('../../../src/utils/transform');
 jest.mock('../../../src/service/saved_search_service');
 jest.mock('../../../src/service/gov_notify_service');
 jest.mock('../../../src/service/api-key-service');
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
 
 describe('getServerSideProps', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-
   it('should return expected props for a GET request', async () => {
     const context = {
       req: {

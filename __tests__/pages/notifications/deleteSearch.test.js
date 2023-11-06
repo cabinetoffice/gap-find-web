@@ -21,15 +21,17 @@ jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('../../../src/utils/cookieAndJwtChecker');
 jest.mock('../../../src/service/saved_search_service');
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
 
 const encryptedEmail = 'test-encrypted-email-string';
 const decryptedEmail = 'test-decrypted-email-string';
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+  serverRuntimeConfig: {},
+}));
 
 jest.mock('next/router', () => {
   return {

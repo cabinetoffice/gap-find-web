@@ -13,6 +13,9 @@ jest.mock('next/router', () => ({
     return jest.fn();
   },
 }));
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
 
 describe('Get server side props', () => {
   let ContentfulPageServiceMock;

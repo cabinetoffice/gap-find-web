@@ -16,7 +16,9 @@ jest.mock('next/router', () => ({
     return jest.fn();
   },
 }));
-
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
 let props, component;
 beforeAll(async () => {
   props = {

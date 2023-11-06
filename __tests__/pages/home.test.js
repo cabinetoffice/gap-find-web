@@ -8,6 +8,10 @@ jest.mock('next/router', () => ({
   },
 }));
 
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
+
 const applicantUrl = 'http://localhost:3002';
 const component = (
   <Home

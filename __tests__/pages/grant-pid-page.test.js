@@ -10,6 +10,10 @@ jest.mock('next/router', () => {
   };
 });
 
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
+
 jest.mock('../../src/utils/contentFulPage');
 
 const grantDetail = {

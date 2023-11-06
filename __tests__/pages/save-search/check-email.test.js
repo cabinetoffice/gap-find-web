@@ -2,6 +2,11 @@ import { render, screen } from '@testing-library/react';
 import Router from 'next/router';
 import CheckEmail from '../../../pages/save-search/check-email';
 
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+}));
+
+
 describe('save-search/check-email.js testing the page', () => {
   const mockBack = jest.fn();
   const props = {
