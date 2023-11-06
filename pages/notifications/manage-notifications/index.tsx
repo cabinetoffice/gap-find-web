@@ -356,7 +356,7 @@ const ManageNotifications = (props) => {
       <Head>
         <title>{gloss.title}</title>
       </Head>
-      <Layout>
+      <Layout isUserLoggedIn={props.isUserLoggedIn}>
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
           <BreadCrumbs routes={breadcrumbsRoutes} />
         </div>

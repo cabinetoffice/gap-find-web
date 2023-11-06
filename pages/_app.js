@@ -4,9 +4,12 @@ import React, { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 import '../src/lib/ie11_nodelist_polyfill';
 import '../styles/globals.scss';
+import { checkUserLoggedIn } from '../src/service';
+import { getJwtFromCookies } from '../src/utils/jwt';
+import App from 'next/app';
 
-const MyApp = ({ Component, pageProps }) => {
-  let cookies = nookies.get({});
+const MyApp = ({ Component, pageProps, isUserLoggedIn }) => {
+  const cookies = nookies.get({});
 
   useEffect(() => {
     if (cookies.design_system_cookies_policy === 'true') {
@@ -28,10 +31,20 @@ const MyApp = ({ Component, pageProps }) => {
   return (
     <>
       <Script src="/javascript/govuk.js" strategy="beforeInteractive" />
-
-      <Component {...pageProps} />
+      <Component isUserLoggedIn={isUserLoggedIn} {...pageProps} />
     </>
   );
+};
+
+MyApp.getInitialProps = async (context) => {
+  const ctx = await App.getInitialProps(context);
+  try {
+    const { jwt } = getJwtFromCookies(context.ctx.req);
+    const isUserLoggedIn = await checkUserLoggedIn(jwt);
+    return { ...ctx, isUserLoggedIn };
+  } catch (err) {
+    return { ...ctx, isUserLoggedIn: false };
+  }
 };
 
 export default MyApp;

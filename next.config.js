@@ -16,4 +16,8 @@ module.exports = {
     includePaths: [path.join(__dirname, 'styles')],
   },
   output: 'standalone',
+  publicRuntimeConfig: {
+    APPLY_FOR_A_GRANT_APPLICANT_URL:
+      process.env.APPLY_FOR_A_GRANT_APPLICANT_URL,
+  },
 };

@@ -126,6 +126,7 @@ const BrowseByCategory = ({
   query,
   currentPage,
   titleContent,
+  isUserLoggedIn,
 }) => {
   const router = useRouter();
 
@@ -146,7 +147,7 @@ const BrowseByCategory = ({
       <Head>
         <title>{titleContent}</title>
       </Head>
-      <Layout description="Find a grant">
+      <Layout isUserLoggedIn={isUserLoggedIn} description="Find a grant">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
           <Link href={{ pathname: '../', query: { searchTerm } }}>
             <a className="govuk-back-link" data-cy="cyBrowseBackText">
