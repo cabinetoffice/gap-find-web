@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { skipToMainContent } from '../../../utils/skipToMainContent';
 import { authenticatedNavItems, navItems } from './links';
-import { GovUKHeader } from './GovUkHeader';
+import { GovUKHeader } from './GovUKHeader';
 
 const FEEDBACK_FORM_HREF = `https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link`;
 
