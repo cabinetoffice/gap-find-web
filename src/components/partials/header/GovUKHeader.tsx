@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { isIE } from 'react-device-detect';
+
 const GovUKHeader = () => (
   <header className="govuk-header " role="banner" data-module="govuk-header">
     <div className="govuk-header__container govuk-width-container">
