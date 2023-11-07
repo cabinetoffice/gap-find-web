@@ -10,9 +10,6 @@ import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChec
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
 jest.mock('nookies', () => ({
   get: jest.fn(),
   set: jest.fn(),

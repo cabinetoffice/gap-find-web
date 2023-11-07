@@ -4,16 +4,7 @@ import {
   generateSignedApiKey,
 } from '../../../src/service/api-key-service';
 import * as nookies from 'nookies';
-import {
-  maxAgeForCookies,
-  notificationRoutes,
-} from '../../../src/utils/constants';
-
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
+import { notificationRoutes } from '../../../src/utils/constants';
 
 jest.mock('../../../src/service/api-key-service');
 
@@ -52,7 +43,7 @@ describe('Confirm email and set cookie', () => {
     handler(req, res);
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(
-      notificationRoutes['manageNotifications']
+      notificationRoutes['manageNotifications'],
     );
   });
 
@@ -75,7 +66,7 @@ describe('Confirm email and set cookie', () => {
         maxAge: 2 * 60 * 60,
         path: '/',
         httpOnly: true,
-      }
+      },
     );
   });
 });

@@ -12,9 +12,7 @@ jest.mock('../../../pages/service-error/index.page', () => ({
 jest.mock('../../../src/utils/encryption', () => ({
   decrypt: jest.fn(),
 }));
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
+
 jest.mock(
   '../../../src/service/newsletter/newsletter-subscription-service',
   () => ({

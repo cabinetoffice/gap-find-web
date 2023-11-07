@@ -29,9 +29,7 @@ jest.mock('next/router', () => ({
     return jest.fn();
   },
 }));
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
+
 jest.mock('../../../src/service/gov_notify_service', () => {
   return {
     sendEmail: jest.fn(),

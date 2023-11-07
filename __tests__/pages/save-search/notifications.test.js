@@ -6,10 +6,6 @@ import SignupSavedSearch, {
 import { RouterContext } from 'next/dist/shared/lib/router-context.js';
 import { parseBody } from 'next/dist/server/api-utils/node';
 jest.mock('next/dist/server/api-utils/node');
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
-
 describe('Rendering serverside props', () => {
   const queryWithNoErrors = {
     req: { method: 'GET' },

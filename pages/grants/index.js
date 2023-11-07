@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useContext } from 'react';
 import ErrorBanner from '../../src/components/displayErrors/errorBanner/ErrorBanner';
 import { NewsletterCallToAction } from '../../src/components/newsletter/NewsletterCallToAction';
 import { Pagination } from '../../src/components/pagination/Pagination';
@@ -22,6 +22,7 @@ import {
   extractFiltersFields,
   generateSearchHeadingFromDateRange,
 } from '../../src/utils/transform';
+import { AuthContext } from '../_app';
 
 const conditionallyClearFiltersFromQuery = (
   clearFilters,
@@ -126,9 +127,9 @@ const BrowseByCategory = ({
   query,
   currentPage,
   titleContent,
-  isUserLoggedIn,
 }) => {
   const router = useRouter();
+  const { isUserLoggedIn } = useContext(AuthContext);
 
   const handleSortByChange = (sort) => {
     const newQuery = {

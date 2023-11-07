@@ -50,11 +50,6 @@ jest.mock('../../src/utils/axios', () => {
   };
 });
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
 const subscriptionService = SubscriptionService.getInstance();
 const instance = axios.create();
 

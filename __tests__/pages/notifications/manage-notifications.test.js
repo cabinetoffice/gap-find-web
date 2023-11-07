@@ -44,9 +44,6 @@ jest.mock('nookies', () => {
     destroy: jest.fn(),
   };
 });
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
 
 jest.mock('../../../src/utils/jwt', () => ({
   getJwtFromCookies: jest.fn(() => ({

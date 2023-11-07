@@ -5,12 +5,6 @@ import { notificationRoutes } from '../../../src/utils/constants';
 import { decrypt } from '../../../src/utils/encryption';
 import nookies from 'nookies';
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
-
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/encryption');
 jest.mock('nookies');
@@ -57,13 +51,13 @@ describe('handler function for the deletion or subscriptions', () => {
     expect(res.redirect).toHaveBeenCalledWith(
       new URL(
         `${notificationRoutes['manageNotifications']}?grantId=${tokenValues.contentful_grant_subscription_id}&action=subscribe`,
-        process.env.HOST
-      ).toString()
+        process.env.HOST,
+      ).toString(),
     );
     expect(subscriptionServiceMock).toHaveBeenCalledTimes(1);
     expect(subscriptionServiceMock).toHaveBeenCalledWith(
       'test-mail',
-      '12345678'
+      '12345678',
     );
     expect(nookies.set).toHaveBeenCalledTimes(1);
     expect(nookies.destroy).toHaveBeenCalledTimes(1);

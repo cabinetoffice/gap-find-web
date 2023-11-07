@@ -13,9 +13,6 @@ jest.mock('next/dist/server/api-utils/node');
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
 jest.mock('../../../src/service/gov_notify_service', () => ({
   sendEmail: jest.fn(),
 }));

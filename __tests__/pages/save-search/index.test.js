@@ -10,9 +10,6 @@ import { extractFiltersFields } from '../../../src/utils/transform';
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('../../../src/utils/transform');
 jest.mock('next/dist/server/api-utils/node');
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
 
 describe('getServerSideProps', () => {
   const filterObjectFromQuery = {

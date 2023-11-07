@@ -10,12 +10,7 @@ const Logout = async (req: NextApiRequest, res: NextApiResponse) => {
     'Set-Cookie',
     `session_id=deleted; Path=/; secure; HttpOnly; SameSite=Strict; expires=Thu, 01 Jan 2003 00:00:00 GMT`,
   );
-  const logoutUrl =
-    process.env.ONE_LOGIN_ENABLED === 'true'
-      ? process.env.V2_LOGOUT_URL
-      : process.env.LOGOUT_URL;
-
-  res.redirect(302, logoutUrl);
+  res.redirect(302, process.env.V2_LOGOUT_URL);
 };
 
 const axiosSessionConfig = (sessionId: string) => ({

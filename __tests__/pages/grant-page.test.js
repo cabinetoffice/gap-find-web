@@ -17,10 +17,6 @@ jest.mock('../../src/utils/transform', () => ({
 }));
 jest.mock('../../src/utils/contentFulPage');
 
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
-
 const mockGrant = {
   grantName: 'Some Grant Name',
   label: 'label',

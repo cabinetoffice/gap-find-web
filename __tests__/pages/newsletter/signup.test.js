@@ -8,9 +8,6 @@ jest.mock('next/router', () => {
     useRouter: jest.fn(),
   };
 });
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
 
 const component = (
   <Signup

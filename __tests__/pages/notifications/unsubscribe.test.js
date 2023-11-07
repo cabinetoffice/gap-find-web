@@ -18,14 +18,6 @@ jest.mock('../../../src/service/api-key-service');
 const encryptedEmail = 'test-encrypted-email-string';
 const decryptedEmail = 'test-decrypted-email-string';
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
-jest.mock('next/config', () => () => ({
-  publicRuntimeConfig: {},
-}));
 jest.mock('next/router', () => {
   return {
     useRouter: jest.fn(),
