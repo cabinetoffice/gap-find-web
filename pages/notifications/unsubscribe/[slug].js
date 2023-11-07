@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import nookies from 'nookies';
-import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import Layout from '../../../src/components/partials/Layout';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { SubscriptionService } from '../../../src/service/subscription-service';
@@ -11,22 +10,6 @@ import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChec
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
 import { getJwtFromCookies } from '../../../src/utils/jwt';
-
-//TODO GAP-560 / GAP-592
-const breadcrumbsRoutes = [
-  {
-    label: 'Home',
-    path: notificationRoutes['home'],
-  },
-  {
-    label: 'Notifications',
-    path: notificationRoutes['notificationsHome'],
-  },
-  {
-    label: 'Unsubscribe',
-    path: notificationRoutes['unsubscribe'],
-  },
-];
 
 export async function getServerSideProps(ctx) {
   const {

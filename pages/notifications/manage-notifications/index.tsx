@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import { ConfirmationMessage } from '../../../src/components/confirmation-message/ConfirmationMessage';
 import { ManageNewsletter } from '../../../src/components/manage-newsletter/ManageNewsletter';
 import Layout from '../../../src/components/partials/Layout';
@@ -34,22 +33,6 @@ import nookies from 'nookies';
 import { MigrationBanner } from '../../../src/components/notification-banner';
 import { MigrationBannerProps } from '../../../src/types/subscription';
 import { GetServerSidePropsContext } from 'next';
-
-//TODO GAP-560 / GAP-592
-const breadcrumbsRoutes = [
-  {
-    label: 'Home',
-    path: notificationRoutes['home'],
-  },
-  {
-    label: 'Notifications',
-    path: notificationRoutes['notificationsHome'],
-  },
-  {
-    label: 'Manage your Notifications',
-    path: notificationRoutes['manageNotifications'],
-  },
-];
 
 /**
  * A convenience function that merges Contentful grant data into a list of the user's subscriptions to simplify displaying
