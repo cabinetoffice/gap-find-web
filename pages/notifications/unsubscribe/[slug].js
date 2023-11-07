@@ -89,16 +89,29 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-function notifications({ unsubscribeGrant, email, grantDetails }) {
+function notifications({
+  unsubscribeGrant,
+  email,
+  grantDetails,
+  isUserLoggedIn,
+}) {
   unsubscribeGrant = JSON.parse(unsubscribeGrant);
   return (
     <>
       <Head>
         <title>{gloss.title}</title>
       </Head>
-      <Layout description="Notifications">
-        <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <BreadCrumbs routes={breadcrumbsRoutes} />
+      <Layout isUserLoggedIn={isUserLoggedIn} description="Notifications">
+        <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom-0">
+          <a
+            href={`${notificationRoutes.manageNotifications}`}
+            className="govuk-back-link"
+          >
+            Back
+          </a>
+        </div>
+        <div className="govuk-width-container">
+          <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 govuk-!-padding-bottom-4"></div>
         </div>
         <div className="govuk-grid-row govuk-body">
           <div className="govuk-grid-column-full">

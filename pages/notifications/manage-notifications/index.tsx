@@ -357,11 +357,7 @@ const ManageNotifications = (props) => {
         <title>{gloss.title}</title>
       </Head>
       <Layout isUserLoggedIn={props.isUserLoggedIn}>
-        <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <BreadCrumbs routes={breadcrumbsRoutes} />
-        </div>
-
-        <div className="govuk-grid-row govuk-body">
+        <div className="govuk-grid-row govuk-body padding-bottom40 govuk-!-margin-top-9">
           {!!urlAction && !hideConfirmationMessage && (
             <ConfirmationMessage
               {...generateSuccessMessage(
