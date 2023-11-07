@@ -6,6 +6,7 @@ import { authenticatedNavItems, navItems } from './links';
 import { GovUKHeader } from './GovUKHeader';
 
 const FEEDBACK_FORM_HREF = `https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link`;
+const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
 
 const MobileLink = ({ btn, index, pathname }) => (
   <li
@@ -75,7 +76,7 @@ const BetaBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => (
             </span>
           </p>
         </div>
-        {isUserLoggedIn && <SignOut />}
+        {isUserLoggedIn && ONE_LOGIN_ENABLED && <SignOut />}
       </div>
     </div>
   </div>
