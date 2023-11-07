@@ -5,7 +5,7 @@ import axios from 'axios';
 const Logout = async (req: NextApiRequest, res: NextApiResponse) => {
   const sessionCookie = getSessionIdFromCookies(req);
   if (sessionCookie) await logoutAdmin(sessionCookie);
-  
+
   res.setHeader(
     'Set-Cookie',
     `session_id=deleted; Path=/; secure; HttpOnly; SameSite=Strict; expires=Thu, 01 Jan 2003 00:00:00 GMT`,

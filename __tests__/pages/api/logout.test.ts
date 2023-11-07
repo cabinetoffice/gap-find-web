@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
 import { merge } from 'lodash';
-
 import Logout from '../../../pages/api/logout';
 import { getSessionIdFromCookies } from '../../../src/utils/session';
 import axios from 'axios';
