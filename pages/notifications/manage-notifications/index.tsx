@@ -1,3 +1,4 @@
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
@@ -8,9 +9,15 @@ import { Table } from '../../../src/components/table';
 import { generateWeeklyNewsletterParams } from '../../../src/manager/newsletter_manager';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
-import { getAllSavedSearches } from '../../../src/service/saved_search_service';
+import {
+  getAllSavedSearches,
+  save as saveSearch,
+} from '../../../src/service/saved_search_service';
 import { SubscriptionService } from '../../../src/service/subscription-service';
-import { NewsletterType } from '../../../src/types/newsletter';
+import {
+  NewsletterSubscription,
+  NewsletterType,
+} from '../../../src/types/newsletter';
 import {
   cookieName,
   LOGIN_NOTICE_TYPES,
@@ -19,21 +26,19 @@ import {
   URL_ACTION_MESSAGES,
   URL_ACTION_SUBHEADINGS,
   URL_ACTIONS,
-} from '../../../src/utils/constants';
+} from '../../../src/utils';
 import {
   fetchByGrantId,
   fetchByGrantIds,
 } from '../../../src/utils/contentFulPage';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
-
 import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
-import { client as axios, getJwtFromCookies, logger } from '../../../src/utils';
-import nookies from 'nookies';
+import { getJwtFromCookies, logger } from '../../../src/utils';
 import { MigrationBanner } from '../../../src/components/notification-banner';
 import { MigrationBannerProps } from '../../../src/types/subscription';
-import { GetServerSidePropsContext } from 'next';
+import { Entry } from 'contentful';
 
 //TODO GAP-560 / GAP-592
 const breadcrumbsRoutes = [
@@ -50,6 +55,57 @@ const breadcrumbsRoutes = [
     path: notificationRoutes['manageNotifications'],
   },
 ];
+
+const getEmail = async (ctx) => {
+  if (process.env.ONE_LOGIN_ENABLED != 'true') {
+    return getEmailAddressFromCookies(ctx);
+  }
+  const { jwtPayload } = getJwtFromCookies(ctx.req);
+
+  return jwtPayload.email as string;
+};
+
+const getUserId = async (ctx) => {
+  if (process.env.ONE_LOGIN_ENABLED != 'true') {
+    return getEmailAddressFromCookies(ctx);
+  }
+  const { jwtPayload } = getJwtFromCookies(ctx.req);
+
+  return jwtPayload.sub as string;
+};
+
+const fetchOrCreateNewsletterSubscription = async ({
+  userId,
+  jwtValue,
+  action,
+  plainTextEmailAddress,
+}) => {
+  const newsletterSubsService = NewsletterSubscriptionService.getInstance();
+
+  // Fetch the user's newsletter subscription
+  let newsletterSubscription =
+    await newsletterSubsService.getBySubAndNewsletterType(
+      userId,
+      NewsletterType.NEW_GRANTS,
+      jwtValue,
+    );
+
+  // Creates new subscription if required
+  if (action === URL_ACTIONS.NEWSLETTER_SUBSCRIBE) {
+    if (!newsletterSubscription) {
+      newsletterSubscription =
+        await newsletterSubsService.subscribeToNewsletter(
+          plainTextEmailAddress,
+          NewsletterType.NEW_GRANTS,
+          jwtValue,
+          userId,
+        );
+    } else {
+      action = null;
+    }
+  }
+  return { newsletterSubscription, derivedAction: action };
+};
 
 /**
  * A convenience function that merges Contentful grant data into a list of the user's subscriptions to simplify displaying
@@ -79,25 +135,66 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
   });
 };
 
-const getEmail = async (ctx) => {
-  if (process.env.ONE_LOGIN_ENABLED != 'true') {
-    return getEmailAddressFromCookies(ctx);
-  }
-  const { jwtPayload } = getJwtFromCookies(ctx.req);
+const sortGrantSubscriptions = (a, b) =>
+  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 
-  return jwtPayload.email as string;
+const fetchSubscriptions = async ({ plainTextEmailAddress, jwtValue }) => {
+  const subscriptions =
+    await SubscriptionService.getInstance().getSubscriptionsByEmail(
+      plainTextEmailAddress,
+      jwtValue,
+    );
+  if (!subscriptions) return [];
+  const mergedSubscriptions =
+    await mergeGrantNameIntoSubscriptions(subscriptions);
+  return mergedSubscriptions.sort(sortGrantSubscriptions);
 };
 
-const getSub = async (ctx) => {
-  if (process.env.ONE_LOGIN_ENABLED != 'true') {
-    return getEmailAddressFromCookies(ctx);
-  }
-  const { jwtPayload } = getJwtFromCookies(ctx.req);
-
-  return jwtPayload.sub as string;
+const fetchSavedSearches = async ({ plainTextEmailAddress, jwtValue }) => {
+  const savedSearches = await getAllSavedSearches(
+    plainTextEmailAddress,
+    jwtValue,
+  );
+  return savedSearches
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+    .filter((savedSearch) => savedSearch.status === 'CONFIRMED');
 };
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+const saveNotificationIfPresent = async ({
+  action,
+  grantIdCookieValue,
+  savedSearchInfo,
+  grantId,
+  jwtPayload,
+}) => {
+  if (action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
+    await SubscriptionService.getInstance().addSubscription({
+      emailAddress: jwtPayload.email,
+      sub: jwtPayload.sub,
+      grantId,
+    });
+  } else if (action === URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE && savedSearchInfo) {
+    await saveSearch({ ...JSON.parse(savedSearchInfo), sub: jwtPayload.sub });
+  }
+};
+
+type ManageNotificationsProps = {
+  currentNotificationList: object[];
+  grantDetails: Entry<unknown> | null;
+  urlAction: string | null;
+  deletedSavedSearchName: string | null;
+  newsletterSubscription: NewsletterSubscription;
+  newGrantsParams: ReturnType<typeof generateWeeklyNewsletterParams>;
+  savedSearches: object[];
+  migrationBannerProps: MigrationBannerProps;
+};
+
+export const getServerSideProps: GetServerSideProps<
+  ManageNotificationsProps
+> = async (ctx) => {
   if (
     process.env.ONE_LOGIN_ENABLED != 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
@@ -110,10 +207,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     };
   }
 
-  let action = ctx.query.action;
+  const action = ctx.query.action;
 
   const plainTextEmailAddress = await getEmail(ctx);
-  const sub = await getSub(ctx);
+  const userId = await getUserId(ctx);
 
   let grantId = ctx.query.grantId;
   let jwtValue: string,
@@ -126,97 +223,53 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
     jwtValue = jwt;
-    const { grantIdCookieValue } = nookies.get(ctx);
+    const { grantIdCookieValue, savedSearchInfo } = ctx.req.cookies;
     ctx.res.setHeader(
       'Set-Cookie',
       `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
     );
 
-    grantId = grantIdCookieValue ?? ctx.query.grantId;
+    grantId = grantIdCookieValue || grantId;
 
-    if (ctx.query.action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
-      await axios.post(
-        new URL(`${process.env.HOST}/api/subscription`).toString(),
-        {
-          contentfulGrantSubscriptionId: grantId,
-          emailAddress: jwtPayload.email,
-          sub: jwtPayload.sub,
-        },
-      );
-    }
-    const {
-      applyMigrationStatus = null,
-      findMigrationStatus = null,
-      migrationType = null,
-    } = ctx.query as Record<string, string>;
+    await saveNotificationIfPresent({
+      action,
+      grantIdCookieValue,
+      savedSearchInfo,
+      grantId,
+      jwtPayload,
+    });
+
     migrationBannerProps = {
-      applyMigrationStatus,
-      findMigrationStatus,
-      migrationType,
+      applyMigrationStatus: (ctx.query.applyMigrationStatus as string) || null,
+      findMigrationStatus: (ctx.query.findMigrationStatus as string) || null,
+      migrationType: (ctx.query.migrationType as string) || null,
     };
   }
 
-  // Fetch individual grant details if required for things like success messages
-  const grantDetails = grantId ? await fetchByGrantId(grantId) : null;
-
-  // Fetch the user's grant subscriptions
-  const subscriptionService = SubscriptionService.getInstance();
-
-  let subscriptions = await subscriptionService.getSubscriptionsByEmail(
-    plainTextEmailAddress,
-    jwtValue,
-  );
-  if (subscriptions) {
-    subscriptions = await mergeGrantNameIntoSubscriptions(subscriptions);
-  }
-
-  const newsletterSubsService = NewsletterSubscriptionService.getInstance();
-
-  // Fetch the user's newsletter subscription
-  let newsletterSubscription = sub
-    ? await newsletterSubsService.getBySubAndNewsletterType(
-        sub,
-        NewsletterType.NEW_GRANTS,
-        jwtValue,
-      )
-    : await newsletterSubsService.getByEmailAndNewsletterType(
-        plainTextEmailAddress,
-        NewsletterType.NEW_GRANTS,
-        jwtValue,
-      );
-  // Creates new subscription if required
-  if (ctx.query.action === URL_ACTIONS.NEWSLETTER_SUBSCRIBE) {
-    if (!newsletterSubscription) {
-      newsletterSubscription =
-        await newsletterSubsService.subscribeToNewsletter(
-          plainTextEmailAddress,
-          NewsletterType.NEW_GRANTS,
-          jwtValue,
-          sub,
-        );
-    } else {
-      action = null;
-    }
-  }
-
-  const newGrantsParams = generateWeeklyNewsletterParams();
-  const savedSearches = await getAllSavedSearches(
-    plainTextEmailAddress,
-    jwtValue,
-  );
+  const { newsletterSubscription, derivedAction } =
+    await fetchOrCreateNewsletterSubscription({
+      userId,
+      jwtValue,
+      action,
+      plainTextEmailAddress,
+    });
 
   return {
     props: {
-      currentNotificationList: JSON.stringify(subscriptions),
-      grantDetails,
-      urlAction: action !== undefined ? action : null,
-      deletedSavedSearchName:
-        ctx.query.savedSearchName !== undefined
-          ? ctx.query.savedSearchName
-          : null,
-      newsletterSubscription: newsletterSubscription ?? null,
-      newGrantsParams,
-      savedSearches,
+      currentNotificationList: await fetchSubscriptions({
+        plainTextEmailAddress,
+        jwtValue,
+      }),
+      // Fetch individual grant details if required for things like success messages
+      grantDetails: grantId ? await fetchByGrantId(grantId) : null,
+      urlAction: derivedAction || null,
+      deletedSavedSearchName: (ctx.query.savedSearchName as string) || null,
+      newsletterSubscription: newsletterSubscription || null,
+      newGrantsParams: generateWeeklyNewsletterParams(),
+      savedSearches: await fetchSavedSearches({
+        plainTextEmailAddress,
+        jwtValue,
+      }),
       migrationBannerProps,
     },
   };
@@ -257,24 +310,19 @@ const generateSuccessMessage = (
 const buildQueryString = (filters) =>
   filters.map((filter) => `${filter.name}=${filter.subFilterid}`).join('&');
 
-const ManageNotifications = (props) => {
-  const sortedSubscribedGrantUpdateList = JSON.parse(
-    props.currentNotificationList,
-  ).sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  );
-  const { grantDetails, urlAction, savedSearches, deletedSavedSearchName } =
-    props;
-  const sortedSavedSearchList = savedSearches
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
-    .filter((savedSearch) => savedSearch.status === 'CONFIRMED');
-
+const ManageNotifications = ({
+  currentNotificationList,
+  grantDetails,
+  urlAction,
+  deletedSavedSearchName,
+  newsletterSubscription,
+  newGrantsParams,
+  savedSearches,
+  migrationBannerProps,
+}) => {
   const notificationAndSavedSearchList = [
-    ...sortedSubscribedGrantUpdateList,
-    ...sortedSavedSearchList,
+    ...currentNotificationList,
+    ...savedSearches,
   ];
 
   const notificationAndSavedSearchTableContent =
@@ -334,14 +382,14 @@ const ManageNotifications = (props) => {
     });
 
   const hasMigrationStatus =
-    props.migrationBannerProps.applyMigrationStatus ??
-    props.migrationBannerProps.findMigrationStatus;
+    migrationBannerProps.applyMigrationStatus ??
+    migrationBannerProps.findMigrationStatus;
 
   const shouldRenderMigrationBanner =
-    props.migrationBannerProps.migrationType && hasMigrationStatus;
+    migrationBannerProps.migrationType && hasMigrationStatus;
 
   const hideConfirmationMessage = checkShouldHideConfirmationMessage(
-    props.migrationBannerProps,
+    migrationBannerProps,
     shouldRenderMigrationBanner,
   );
 
@@ -378,7 +426,7 @@ const ManageNotifications = (props) => {
                   grantDetails?.fields?.grantName &&
                   `"${grantDetails.fields.grantName}"`
                 }
-                {...props.migrationBannerProps}
+                {...migrationBannerProps}
               />
             )}
             <h1
@@ -389,11 +437,11 @@ const ManageNotifications = (props) => {
             >
               Manage your notifications and saved searches
             </h1>
-            {!!props.newsletterSubscription && (
+            {!!newsletterSubscription && (
               <ManageNewsletter
-                signupDate={props.newsletterSubscription.createdAt}
-                subscriptionId={props.newsletterSubscription.id}
-                newGrantsDateParams={props.newGrantsParams}
+                signupDate={newsletterSubscription.createdAt}
+                subscriptionId={newsletterSubscription.id}
+                newGrantsDateParams={newGrantsParams}
               />
             )}
             {notificationAndSavedSearchList.length > 0 ? (

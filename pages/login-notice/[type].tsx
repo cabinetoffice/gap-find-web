@@ -18,7 +18,7 @@ const {
   NEWSLETTER,
 } = LOGIN_NOTICE_TYPES;
 
-//can be replaced with tickets 1976 / 1975
+// can be replaced with tickets 1976 / 1975
 const DEFAULT_CONTENT = {
   title: 'Manage your notifications',
   content: [
@@ -29,25 +29,30 @@ const DEFAULT_CONTENT = {
   redirectUrl: notificationRoutes.manageNotifications,
 };
 
+const getNotificationContent = (action: string) => [
+  `To ${action}, you need to sign in with GOV.UK One Login.`,
+  'If you do not have a GOV.UK One Login, you can create one.',
+];
+
 export const NOTICE_CONTENT = {
   [MANAGE_NOTIFICATIONS]: {
     title: 'Manage your notifications',
     content: [
-      'To manage your notifications, you need to sign in with GOV.UK One Login.',
-      'If you do not have a GOV.UK One Login, you can create one.',
+      ...getNotificationContent('manage your notifications'),
       'If you want to unsubscribe from notifications without creating a GOV.UK One Login, you can use the unsubscribe link in the emails we send to you.',
     ],
     redirectUrl: notificationRoutes.manageNotifications,
   },
   [SUBSCRIPTION_NOTIFICATIONS]: {
     title: 'Sign up for updates',
-    content: [
-      'To sign up for updates, you need to sign in with GOV.UK One Login.',
-      'If you do not have a GOV.UK One Login, you can create one.',
-    ],
-    redirectUrl: `${notificationRoutes.manageNotifications}`,
+    content: getNotificationContent('sign up for updates'),
+    redirectUrl: `${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.SUBSCRIBE}`,
   },
-  [SAVED_SEARCH]: DEFAULT_CONTENT,
+  [SAVED_SEARCH]: {
+    title: 'Save your search',
+    content: getNotificationContent('save a search'),
+    redirectUrl: `${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE}`,
+  },
   [NEWSLETTER]: DEFAULT_CONTENT,
 } as const;
 

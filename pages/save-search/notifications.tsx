@@ -8,6 +8,7 @@ import { parseBody } from 'next/dist/server/api-utils/node';
 import { buildQueryString } from '.';
 import gloss from '../../src/utils/glossary.json';
 import Link from 'next/link';
+import { URL_ACTIONS, notificationRoutes } from '../../src/utils';
 
 const validate = (saveSearchConsent) => {
   const errors = [];
@@ -33,10 +34,15 @@ export const getServerSideProps: GetServerSideProps = async ({
     delete query.notifications_consent;
     const queryString = buildQueryString(query);
     if (validationErrors.length === 0) {
+      const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED == 'true';
+      const HOST = process.env.HOST;
+      const destination = ONE_LOGIN_ENABLED
+        ? `${HOST}/${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE}&${queryString}&notifications_consent=${body.consent_radio}`
+        : `email?${queryString}&notifications_consent=${body.consent_radio}`;
       return {
         redirect: {
           statusCode: 302,
-          destination: `email?${queryString}&notifications_consent=${body.consent_radio}`,
+          destination,
         },
       };
     }

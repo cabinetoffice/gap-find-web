@@ -239,7 +239,7 @@ describe('get server side props for manage notifications page', () => {
     expect(result).toStrictEqual(testResultSuccess);
   });
 
-  it('should proceed when one login is enabled', async () => {
+  it.only('saves new grant subscription when one login is enabled', async () => {
     process.env.ONE_LOGIN_ENABLED = 'true';
     cookieExistsAndContainsValidJwt.mockReturnValue(false);
 

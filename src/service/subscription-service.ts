@@ -24,13 +24,18 @@ export class SubscriptionService {
     return SubscriptionService.instance;
   }
 
-  async addSubscription(
-    emailAddress: string,
-    contentfulGrantSubscriptionId: string,
-  ): Promise<boolean> {
+  async addSubscription({
+    emailAddress,
+    sub,
+    grantId,
+  }: {
+    emailAddress: string;
+    sub?: string;
+    grantId: string;
+  }): Promise<boolean> {
     const result = await SubscriptionService.client.post(
       SubscriptionService.endpoint.addSubscription,
-      { emailAddress, contentfulGrantSubscriptionId },
+      { emailAddress, sub, contentfulGrantSubscriptionId: grantId },
     );
     return result.data;
   }

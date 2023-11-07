@@ -41,6 +41,7 @@ describe('handler function for the deletion or subscriptions', () => {
     nookies.destroy.mockImplementation(mockDestroy);
     nookies.set.mockImplementation(mockSet);
   });
+
   it('should work as expected given a correct request', async () => {
     const subscriptionServiceMock = jest
       .spyOn(SubscriptionService.prototype, 'addSubscription')
@@ -57,14 +58,14 @@ describe('handler function for the deletion or subscriptions', () => {
     expect(res.redirect).toHaveBeenCalledWith(
       new URL(
         `${notificationRoutes['manageNotifications']}?grantId=${tokenValues.contentful_grant_subscription_id}&action=subscribe`,
-        process.env.HOST
-      ).toString()
+        process.env.HOST,
+      ).toString(),
     );
     expect(subscriptionServiceMock).toHaveBeenCalledTimes(1);
-    expect(subscriptionServiceMock).toHaveBeenCalledWith(
-      'test-mail',
-      '12345678'
-    );
+    expect(subscriptionServiceMock).toHaveBeenCalledWith({
+      emailAddress: 'test-mail',
+      grantId: '12345678',
+    });
     expect(nookies.set).toHaveBeenCalledTimes(1);
     expect(nookies.destroy).toHaveBeenCalledTimes(1);
   });
