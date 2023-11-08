@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED == 'true';
       const HOST = process.env.HOST;
       const destination = ONE_LOGIN_ENABLED
-        ? `${HOST}/${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE}&${queryString}&notifications_consent=${body.consent_radio}`
+        ? `${HOST}${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE}&${queryString}&notifications_consent=${body.consent_radio}`
         : `email?${queryString}&notifications_consent=${body.consent_radio}`;
       return {
         redirect: {
