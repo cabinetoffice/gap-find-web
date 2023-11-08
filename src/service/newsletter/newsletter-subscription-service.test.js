@@ -70,15 +70,49 @@ describe('newsletter-subscription-service', () => {
   });
 
   describe('unsubscribeFromNewsletter', () => {
-    it('should unsubscrube from the new grants newsletter', async () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should unsubscribe from the new grants newsletter', async () => {
       const email = 'email@email.com';
-      await newsletterSubscriptionService.unsubscribeFromNewsletter(
-        email,
-        NewsletterType.NEW_GRANTS,
-      );
+      await newsletterSubscriptionService.unsubscribeFromNewsletter({
+        plaintextEmail: email,
+        type: NewsletterType.NEW_GRANTS,
+      });
 
       expect(axiosInstance.delete).toHaveBeenCalledWith(
         `/users/${email}/types/${NewsletterType.NEW_GRANTS}`,
+      );
+    });
+
+    it('should unsubscribe from the new grants newsletter', async () => {
+      const email = 'email@email.com';
+      const sub = 'sub';
+      await newsletterSubscriptionService.unsubscribeFromNewsletter({
+        plaintextEmail: email,
+        type: NewsletterType.NEW_GRANTS,
+        sub,
+      });
+
+      expect(axiosInstance.delete).toHaveBeenCalledWith(
+        `/users/${sub}/types/${NewsletterType.NEW_GRANTS}`,
+      );
+    });
+
+    it('should unsubscribe from the new grants newsletter', async () => {
+      const email = 'email@email.com';
+      const sub = 'sub';
+      const unsubscribeReferenceId = 'unsubscribeReferenceId';
+      await newsletterSubscriptionService.unsubscribeFromNewsletter({
+        plaintextEmail: email,
+        type: NewsletterType.NEW_GRANTS,
+        sub,
+        unsubscribeReferenceId,
+      });
+
+      expect(axiosInstance.delete).toHaveBeenCalledWith(
+        `/users/${sub}/types/${NewsletterType.NEW_GRANTS}?unsubscribeReference=${unsubscribeReferenceId}`,
       );
     });
   });

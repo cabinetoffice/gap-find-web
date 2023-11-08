@@ -38,6 +38,7 @@ export interface SavedSearch {
   status: SavedSearchStatusType;
   notifications: boolean;
   email: string;
+  sub?: string;
   user: User;
 }
 
@@ -58,11 +59,11 @@ export async function getBySavedSearchId(savedSearchId: number) {
   return response.data;
 }
 
-export async function getAllSavedSearches(email: string, jwt: string) {
-  const encodedEmail = encodeURIComponent(email);
+export async function getAllSavedSearches(userId: string, jwt: string) {
+  const encodedUserId = encodeURIComponent(userId);
   const response = await axios({
     method: 'get',
-    url: `${process.env.BACKEND_HOST}/saved-searches/${encodedEmail}`,
+    url: `${process.env.BACKEND_HOST}/saved-searches/${encodedUserId}`,
     ...axiosConfig(jwt),
   });
   return response.data;
@@ -84,14 +85,17 @@ export async function updateStatus(
 
 export async function deleteSaveSearch(
   savedSearchId: number,
-  email: string,
+  id: string,
   unsubscribeReferenceId: string,
 ) {
+  const query = unsubscribeReferenceId
+    ? `?unsubscribeReference=${unsubscribeReferenceId}`
+    : '';
   const response = await axios({
     method: 'post',
-    url: `${process.env.BACKEND_HOST}/saved-searches/${savedSearchId}/delete?unsubscribeReference=${unsubscribeReferenceId}`,
+    url: `${process.env.BACKEND_HOST}/saved-searches/${savedSearchId}/delete${query}`,
     data: {
-      email,
+      id,
     },
   });
   return response.data;

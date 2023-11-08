@@ -66,12 +66,17 @@ export class NewsletterSubscriptionService {
     return response.data;
   }
 
-  async unsubscribeFromNewsletter(
-    plaintextEmail: string,
-    type: NewsletterType,
-    unsubscribeReferenceId?: string,
-    sub?: string,
-  ): Promise<void> {
+  async unsubscribeFromNewsletter({
+    plaintextEmail,
+    type,
+    unsubscribeReferenceId,
+    sub,
+  }: {
+    plaintextEmail: string;
+    type: NewsletterType;
+    unsubscribeReferenceId?: string;
+    sub?: string;
+  }): Promise<void> {
     const id = sub ?? plaintextEmail;
     const queryParam = unsubscribeReferenceId
       ? `?unsubscribeReference=${unsubscribeReferenceId}`

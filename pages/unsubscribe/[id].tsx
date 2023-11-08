@@ -93,17 +93,18 @@ const newsletterHandler = async (
 ) => {
   const newsletterSubscriptionService =
     NewsletterSubscriptionService.getInstance();
-  return newsletterSubscriptionService.unsubscribeFromNewsletter(
-    emailAddress,
-    id as NewsletterType,
+  return newsletterSubscriptionService.unsubscribeFromNewsletter({
+    plaintextEmail: emailAddress,
+    type: id as NewsletterType,
     unsubscribeReferenceId,
-  );
+  });
 };
 
 const savedSearchHandler = async (
   id: NotificationKey,
   emailAddress: string,
   unsubscribeReferenceId: string,
+  // @TODO: use sub when ONE_LOGIN_ENABLED = 'true'
 ) => deleteSaveSearch(id as number, emailAddress, unsubscribeReferenceId);
 
 const UNSUBSCRIBE_HANDLER_MAP = {

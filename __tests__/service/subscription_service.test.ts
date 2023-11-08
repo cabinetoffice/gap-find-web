@@ -55,10 +55,10 @@ const instance = axios.create();
 
 describe('subscription manager add subscription', () => {
   it('should return true when a correct email and grant id are passed in', async () => {
-    const result = await subscriptionService.addSubscription(
-      body.encrypted_email_address,
-      body.contentful_grant_subscription_id,
-    );
+    const result = await subscriptionService.addSubscription({
+      emailAddress: body.encrypted_email_address,
+      grantId: body.contentful_grant_subscription_id,
+    });
     expect(result).toBe(true);
     expect(instance.post).toHaveBeenNthCalledWith(1, ' ', {
       emailAddress: body.encrypted_email_address,
@@ -77,7 +77,7 @@ describe('subscription manager delete Subscription By ID', () => {
 
     expect(instance.delete).toHaveBeenNthCalledWith(
       1,
-      'users/fake%40fake.com/grants/12345678?unsubscribeReference=undefined',
+      'users/fake%40fake.com/grants/12345678',
     );
     expect(result).toBe(true);
   });
@@ -87,6 +87,7 @@ describe('subscription manager get Subscription By Email', () => {
   beforeAll(() => {
     jest.clearAllMocks();
   });
+
   it('should return records when they are found', async () => {
     const example = [
       {
