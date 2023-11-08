@@ -88,9 +88,12 @@ export async function deleteSaveSearch(
   id: string,
   unsubscribeReferenceId: string,
 ) {
+  const query = unsubscribeReferenceId
+    ? `?unsubscribeReference=${unsubscribeReferenceId}`
+    : '';
   const response = await axios({
     method: 'post',
-    url: `${process.env.BACKEND_HOST}/saved-searches/${savedSearchId}/delete?unsubscribeReference=${unsubscribeReferenceId}`,
+    url: `${process.env.BACKEND_HOST}/saved-searches/${savedSearchId}/delete${query}`,
     data: {
       id,
     },
