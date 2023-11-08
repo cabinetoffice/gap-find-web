@@ -7,7 +7,6 @@ export type UnsubscribeSubscriptionRequest = {
 
 export type MigrationBannerProps = {
   applyMigrationStatus: string | null;
-  grantIdCookieValue?: string | null;
   findMigrationStatus: string | null;
   migrationType: string | null;
 };

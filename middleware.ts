@@ -12,12 +12,6 @@ import {
   addErrorInfo,
 } from './src/utils';
 
-const COOKIE_CONFIG = {
-  path: '/',
-  secure: true,
-  httpOnly: true,
-  maxAge: 900,
-};
 const HOST = process.env.HOST;
 const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
 const APPLICANT_HOST = process.env.APPLICANT_HOST;
@@ -75,20 +69,18 @@ const getLoginNoticeUrl = (noticeType: ValueOf<typeof LOGIN_NOTICE_TYPES>) =>
   `${HOST}${notificationRoutes.loginNotice}${noticeType}`;
 
 const handleSubscriptionRedirect = (req: NextRequest) => {
-  const grantId = req.nextUrl.searchParams.get('id');
-
   const res = NextResponse.redirect(
-    getLoginNoticeUrl(LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS),
+    `${getLoginNoticeUrl(LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS)}${
+      req.nextUrl.search
+    }`,
   );
-
-  res.cookies.set('grantIdCookieValue', grantId, COOKIE_CONFIG);
 
   return res;
 };
 
 const handleSavedSearchRedirect = (req: NextRequest) => {
   const res = NextResponse.redirect(
-    `${getLoginNoticeUrl(LOGIN_NOTICE_TYPES.SAVED_SEARCH)}?${
+    `${getLoginNoticeUrl(LOGIN_NOTICE_TYPES.SAVED_SEARCH)}${
       req.nextUrl.search
     }`,
   );
@@ -149,6 +141,7 @@ const authenticatedPaths = [
   notificationRoutes.manageNotifications,
   notificationRoutes.subscriptionSignUp,
   notificationRoutes.saveSearch,
+  notificationRoutes.deleteSaveSearch,
   newsletterRoutes.signup,
   newsletterRoutes.confirmation,
   newsletterRoutes.unsubscribe,

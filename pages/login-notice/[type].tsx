@@ -44,10 +44,10 @@ export const NOTICE_CONTENT = {
     ],
     redirectUrl: notificationRoutes.manageNotifications,
   }),
-  [SUBSCRIPTION_NOTIFICATIONS]: () => ({
+  [SUBSCRIPTION_NOTIFICATIONS]: (ctx) => ({
     title: 'Sign up for updates',
     content: getNotificationContent('sign up for updates'),
-    redirectUrl: `${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.SUBSCRIBE}`,
+    redirectUrl: `${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.SUBSCRIBE}&grantId=${ctx.query.grantId}`,
   }),
   [SAVED_SEARCH]: (ctx) => ({
     title: 'Save your search',
@@ -62,36 +62,26 @@ export const NOTICE_CONTENT = {
 export const getServerSideProps = (ctx: GetServerSidePropsContext) => {
   const { title, content, redirectUrl } =
     NOTICE_CONTENT[ctx.params?.type as string](ctx);
+
   return {
     props: {
       title,
       content,
       redirectUrl,
-      type: ctx.params?.type,
       userServiceHost: USER_SERVICE_HOST,
       host: HOST,
     },
   };
 };
 
-const getRedirectUrlQueryString = (type: string) =>
-  `?migrationType=${type}${
-    type === SUBSCRIPTION_NOTIFICATIONS
-      ? `&action=${URL_ACTIONS.SUBSCRIBE}`
-      : ''
-  }`;
-
 const LoginNotice = ({
   title,
   content,
   redirectUrl,
-  type,
   host,
   userServiceHost,
 }) => {
-  const formattedRedirectUrl = encodeURIComponent(
-    `${host}${redirectUrl}${getRedirectUrlQueryString(type)}`,
-  );
+  const formattedRedirectUrl = encodeURIComponent(`${host}${redirectUrl}`);
   return (
     <>
       <Head>
