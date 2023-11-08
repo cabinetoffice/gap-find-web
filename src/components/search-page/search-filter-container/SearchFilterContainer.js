@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import { useEffect } from 'react';
 import { SearchFilterButton } from '../search-apply-filters/SearchFilterButton';
 import { SearchFilterClearButton } from '../search-clear-filters/SearchFilterClearButton';
 import { SearchFilterDate } from '../search-filter-date/SearchFilterDate';
 import { SearchFilterSelector } from '../search-filter-selector/SearchFilterSelector';
+import { buildQueryString } from '../../../../pages/save-search';
 
 export function SearchFilterContainer({ filters, filterObj, query }) {
   useEffect(() => {
@@ -62,21 +62,15 @@ export function SearchFilterContainer({ filters, filterObj, query }) {
           Save this search
         </button>
       ) : (
-        <Link
-          href={{
-            pathname: '/save-search',
-            query: query,
-          }}
+        <a
+          className="govuk-button govuk-button--secondary govuk-!-margin-top-4"
+          data-module="govuk-button"
+          role="button"
+          data-cy="cySaveSearchLink"
+          href={`/save-search?${buildQueryString(query)}`}
         >
-          <a
-            className="govuk-button govuk-button--secondary govuk-!-margin-top-4"
-            data-module="govuk-button"
-            role="button"
-            data-cy="cySaveSearchLink"
-          >
-            Save this search
-          </a>
-        </Link>
+          Save this search
+        </a>
       )}
 
       <p className="govuk-body">
