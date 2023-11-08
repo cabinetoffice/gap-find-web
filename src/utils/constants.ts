@@ -120,7 +120,7 @@ export const ELASTIC_INDEX_FIELDS = {
   grantMaximumAward: 'fields.grantMaximumAward.en-US',
   grantMinimumAward: 'fields.grantMinimumAward.en-US',
   grantApplicationOpenDate: 'fields.grantApplicationOpenDate.en-US',
-} as const;
+};
 
 export const ELASTIC_GRANT_PAGE_FIELDS = [
   'fields.grantName',
@@ -137,7 +137,7 @@ export const ELASTIC_GRANT_PAGE_FIELDS = [
   'fields.grantApplicationCloseDate',
   'fields.label',
   'fields.grantApplicantType',
-] as const;
+];
 
 export const HEADERS = {
   CORRELATION_ID: 'tco-correlation-id',
