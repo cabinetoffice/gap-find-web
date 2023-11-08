@@ -76,7 +76,7 @@ const BetaBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => (
             </span>
           </p>
         </div>
-        {isUserLoggedIn && ONE_LOGIN_ENABLED && <SignOut />}
+        {isUserLoggedIn && ONE_LOGIN_ENABLED === 'true' && <SignOut />}
       </div>
     </div>
   </div>
