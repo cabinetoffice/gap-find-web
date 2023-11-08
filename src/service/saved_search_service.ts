@@ -59,11 +59,11 @@ export async function getBySavedSearchId(savedSearchId: number) {
   return response.data;
 }
 
-export async function getAllSavedSearches(email: string, jwt: string) {
-  const encodedEmail = encodeURIComponent(email);
+export async function getAllSavedSearches(userId: string, jwt: string) {
+  const encodedUserId = encodeURIComponent(userId);
   const response = await axios({
     method: 'get',
-    url: `${process.env.BACKEND_HOST}/saved-searches/${encodedEmail}`,
+    url: `${process.env.BACKEND_HOST}/saved-searches/${encodedUserId}`,
     ...axiosConfig(jwt),
   });
   return response.data;

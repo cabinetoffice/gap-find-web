@@ -160,11 +160,8 @@ const fetchSubscriptions = async ({ userId, jwtValue }) => {
   return mergedSubscriptions.sort(sortGrantSubscriptions);
 };
 
-const fetchSavedSearches = async ({ plainTextEmailAddress, jwtValue }) => {
-  const savedSearches = await getAllSavedSearches(
-    plainTextEmailAddress,
-    jwtValue,
-  );
+const fetchSavedSearches = async ({ userId, jwtValue }) => {
+  const savedSearches = await getAllSavedSearches(userId, jwtValue);
   return savedSearches
     .sort(
       (a, b) =>
