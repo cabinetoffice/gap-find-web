@@ -1,7 +1,4 @@
-import getConfig from 'next/config';
-const { publicRuntimeConfig } = getConfig();
-
-export const authenticatedNavItems = [
+export const getAuthenticatedNavItems = (applicantUrl: string) => [
   {
     pageId: 'Search grants',
     link: '/grants',
@@ -16,14 +13,14 @@ export const authenticatedNavItems = [
   },
   {
     pageId: 'Manage Applications',
-    link: `${publicRuntimeConfig.APPLY_FOR_A_GRANT_APPLICANT_URL}/applications`,
-    as: `${publicRuntimeConfig.APPLY_FOR_A_GRANT_APPLICANT_URL}/applications`,
+    link: `${applicantUrl}/applications`,
+    as: `${applicantUrl}/applications`,
     title: 'Manage Applications',
   },
   {
     pageId: 'Account details',
-    link: `${publicRuntimeConfig.APPLY_FOR_A_GRANT_APPLICANT_URL}/dashboard`,
-    as: `${publicRuntimeConfig.APPLY_FOR_A_GRANT_APPLICANT_URL}/dashboard`,
+    link: `${applicantUrl}/dashboard`,
+    as: `${applicantUrl}/dashboard`,
     title: 'Account details',
   },
 ];

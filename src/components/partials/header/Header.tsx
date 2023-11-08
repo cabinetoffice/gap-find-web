@@ -2,14 +2,11 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { skipToMainContent } from '../../../utils/skipToMainContent';
-import { authenticatedNavItems, navItems } from './links';
+import { getAuthenticatedNavItems, navItems } from './links';
 import { GovUKHeader } from './GovUKHeader';
-import getConfig from 'next/config';
+import { useAppContext } from '../../../../pages/_app';
 
 const FEEDBACK_FORM_HREF = `https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link`;
-const {
-  publicRuntimeConfig: { ONE_LOGIN_ENABLED },
-} = getConfig();
 
 const MobileLink = ({ btn, index, pathname }) => (
   <li
@@ -25,11 +22,14 @@ const MobileLink = ({ btn, index, pathname }) => (
   </li>
 );
 
-const getNavItems = (isUserLoggedIn: boolean) =>
-  isUserLoggedIn ? authenticatedNavItems : navItems;
+const getNavItems = (isUserLoggedIn: boolean, applicantUrl: string) =>
+  isUserLoggedIn ? getAuthenticatedNavItems(applicantUrl) : navItems;
 
 const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
+  const { applicantUrl } = useAppContext();
+
   const { pathname } = useRouter();
+
   return (
     <details className="menu-toggler-mobile govuk-body">
       <summary
@@ -41,7 +41,7 @@ const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
       </summary>
       <nav aria-label="menu">
         <ul>
-          {getNavItems(isUserLoggedIn).map((btn, index) => (
+          {getNavItems(isUserLoggedIn, applicantUrl).map((btn, index) => (
             <MobileLink
               key={index}
               btn={btn}
@@ -55,39 +55,43 @@ const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
   );
 };
 
-const BetaBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => (
-  <div className="govuk-width-container ">
-    <div className="govuk-phase-banner">
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-three-quarters">
-          <p className="govuk-phase-banner__content">
-            <strong className="govuk-tag govuk-phase-banner__content__tag">
-              BETA
-            </strong>
-            <span className="govuk-phase-banner__text">
-              This is a new service – your{' '}
-              <Link href={FEEDBACK_FORM_HREF}>
-                <a
-                  className="govuk-link"
-                  target="_blank"
-                  data-cy="cyBetaFeedbackLinkBanner"
-                >
-                  feedback
-                </a>
-              </Link>{' '}
-              will help us to improve it.
-            </span>
-          </p>
+const BetaBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
+  const { oneLoginEnabled } = useAppContext();
+  return (
+    <div className="govuk-width-container ">
+      <div className="govuk-phase-banner">
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-three-quarters">
+            <p className="govuk-phase-banner__content">
+              <strong className="govuk-tag govuk-phase-banner__content__tag">
+                BETA
+              </strong>
+              <span className="govuk-phase-banner__text">
+                This is a new service – your{' '}
+                <Link href={FEEDBACK_FORM_HREF}>
+                  <a
+                    className="govuk-link"
+                    target="_blank"
+                    data-cy="cyBetaFeedbackLinkBanner"
+                  >
+                    feedback
+                  </a>
+                </Link>{' '}
+                will help us to improve it.
+              </span>
+            </p>
+          </div>
+          {isUserLoggedIn && oneLoginEnabled === 'true' && <SignOut />}
         </div>
-        {isUserLoggedIn && ONE_LOGIN_ENABLED === 'true' && <SignOut />}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const MainNavBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
   const router = useRouter();
-  const links = getNavItems(isUserLoggedIn).map((btn, index) => {
+  const { applicantUrl } = useAppContext();
+  const links = getNavItems(isUserLoggedIn, applicantUrl).map((btn, index) => {
     return (
       <li
         data-value="parent"

@@ -8,11 +8,22 @@ import { checkUserLoggedIn } from '../src/service';
 import { getJwtFromCookies } from '../src/utils/jwt';
 import App from 'next/app';
 
-export const AuthContext = createContext({ isUserLoggedIn: false });
+export const AuthContext = createContext({
+  isUserLoggedIn: false,
+});
+export const AppContext = createContext({
+  applicantUrl: null,
+  oneLoginEnabled: null,
+});
 
 export const useAuth = () => useContext(AuthContext);
+export const useAppContext = () => useContext(AppContext);
 
-const MyApp = ({ Component, pageProps, isUserLoggedIn }) => {
+const MyApp = ({
+  Component,
+  pageProps,
+  props: { isUserLoggedIn, applicantUrl, oneLoginEnabled },
+}) => {
   const cookies = nookies.get({});
 
   useEffect(() => {
@@ -35,21 +46,34 @@ const MyApp = ({ Component, pageProps, isUserLoggedIn }) => {
   return (
     <>
       <Script src="/javascript/govuk.js" strategy="beforeInteractive" />
-      <AuthContext.Provider value={{ isUserLoggedIn }}>
-        <Component {...pageProps} />
-      </AuthContext.Provider>
+      <AppContext.Provider value={{ applicantUrl, oneLoginEnabled }}>
+        <AuthContext.Provider value={{ isUserLoggedIn }}>
+          <Component {...pageProps} />
+        </AuthContext.Provider>
+      </AppContext.Provider>
     </>
   );
 };
 
 MyApp.getInitialProps = async (context) => {
   const ctx = await App.getInitialProps(context);
+  let oneLoginEnabled = null;
+  let applicantUrl = null;
+
+  if (process?.env) {
+    oneLoginEnabled = process.env.ONE_LOGIN_ENABLED;
+    applicantUrl = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
+  }
   try {
     const { jwt } = getJwtFromCookies(context.ctx.req);
     const isUserLoggedIn = await checkUserLoggedIn(jwt);
-    return { ...ctx, isUserLoggedIn };
+
+    return { ...ctx, props: { isUserLoggedIn, applicantUrl, oneLoginEnabled } };
   } catch (err) {
-    return { ...ctx, isUserLoggedIn: false };
+    return {
+      ...ctx,
+      props: { isUserLoggedIn: false, applicantUrl, oneLoginEnabled },
+    };
   }
 };
 

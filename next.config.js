@@ -17,9 +17,4 @@ module.exports = {
   },
 
   output: 'standalone',
-  publicRuntimeConfig: {
-    ONE_LOGIN_ENABLED: process.env.ONE_LOGIN_ENABLED,
-    APPLY_FOR_A_GRANT_APPLICANT_URL:
-      process.env.APPLY_FOR_A_GRANT_APPLICANT_URL,
-  },
 };
