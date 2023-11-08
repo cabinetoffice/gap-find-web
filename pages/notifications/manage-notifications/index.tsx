@@ -298,7 +298,7 @@ export const getServerSideProps: GetServerSideProps<
       newsletterSubscription: newsletterSubscription || null,
       newGrantsParams: generateWeeklyNewsletterParams(),
       savedSearches: await fetchSavedSearches({
-        plainTextEmailAddress,
+        userId,
         jwtValue,
       }),
       migrationBannerProps,
