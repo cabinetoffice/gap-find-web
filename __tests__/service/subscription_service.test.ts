@@ -82,7 +82,7 @@ describe('subscription manager delete Subscription By ID', () => {
 
     expect(instance.delete).toHaveBeenNthCalledWith(
       1,
-      'users/fake%40fake.com/grants/12345678?unsubscribeReference=undefined',
+      'users/fake%40fake.com/grants/12345678',
     );
     expect(result).toBe(true);
   });
@@ -92,6 +92,7 @@ describe('subscription manager get Subscription By Email', () => {
   beforeAll(() => {
     jest.clearAllMocks();
   });
+
   it('should return records when they are found', async () => {
     const example = [
       {

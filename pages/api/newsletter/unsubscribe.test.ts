@@ -80,11 +80,11 @@ describe('newsletter unsubscribe api', () => {
       expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(
         1,
       );
-      expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
-        decryptedEmail,
-        NewsletterType.NEW_GRANTS,
-        null,
-      );
+      expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith({
+        plaintextEmail: decryptedEmail,
+        sub: null,
+        type: NewsletterType.NEW_GRANTS,
+      });
       expect(res.redirect).toBeCalledTimes(1);
       expect(res.redirect).toBeCalledWith(expectedUrl);
       process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
@@ -121,11 +121,11 @@ describe('newsletter unsubscribe api', () => {
       expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(
         1,
       );
-      expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
-        decryptedEmail,
-        NewsletterType.NEW_GRANTS,
-        null,
-      );
+      expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith({
+        plaintextEmail: decryptedEmail,
+        sub: null,
+        type: NewsletterType.NEW_GRANTS,
+      });
       expect(logger.error).toBeCalledTimes(1);
       expect(logger.error).toBeCalledWith(
         'error unsubscribing from newsletter',
@@ -201,11 +201,11 @@ describe('newsletter unsubscribe api', () => {
       expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(
         1,
       );
-      expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
-        email,
-        NewsletterType.NEW_GRANTS,
+      expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith({
+        plaintextEmail: email,
         sub,
-      );
+        type: NewsletterType.NEW_GRANTS,
+      });
       expect(res.redirect).toBeCalledTimes(1);
       expect(res.redirect).toBeCalledWith(expectedUrl);
       process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
@@ -246,11 +246,11 @@ describe('newsletter unsubscribe api', () => {
       expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(
         1,
       );
-      expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith(
-        email,
-        NewsletterType.NEW_GRANTS,
+      expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledWith({
+        plaintextEmail: email,
         sub,
-      );
+        type: NewsletterType.NEW_GRANTS,
+      });
       expect(logger.error).toBeCalledTimes(1);
       expect(logger.error).toBeCalledWith(
         'error unsubscribing from newsletter',
