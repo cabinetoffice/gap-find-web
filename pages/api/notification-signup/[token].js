@@ -22,10 +22,10 @@ export default async function handler(req, res) {
 
   const subscriptionService = SubscriptionService.getInstance();
 
-  await subscriptionService.addSubscription(
-    decryptedEmailAddress,
-    tokenValues.contentful_grant_subscription_id,
-  );
+  await subscriptionService.addSubscription({
+    emailAddress: decryptedEmailAddress,
+    grantId: tokenValues.contentful_grant_subscription_id,
+  });
 
   nookies.destroy({ res }, cookieName['currentEmailAddress']);
   const cookieSignedKey = generateSignedApiKey({

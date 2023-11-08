@@ -104,6 +104,7 @@ const savedSearchHandler = async (
   id: NotificationKey,
   emailAddress: string,
   unsubscribeReferenceId: string,
+  // @TODO: use sub when ONE_LOGIN_ENABLED = 'true'
 ) => deleteSaveSearch(id as number, emailAddress, unsubscribeReferenceId);
 
 const UNSUBSCRIBE_HANDLER_MAP = {

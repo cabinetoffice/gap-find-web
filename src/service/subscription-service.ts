@@ -24,23 +24,28 @@ export class SubscriptionService {
     return SubscriptionService.instance;
   }
 
-  async addSubscription(
-    emailAddress: string,
-    contentfulGrantSubscriptionId: string,
-  ): Promise<boolean> {
+  async addSubscription({
+    emailAddress,
+    sub,
+    grantId,
+  }: {
+    emailAddress: string;
+    sub?: string;
+    grantId: string;
+  }): Promise<boolean> {
     const result = await SubscriptionService.client.post(
       SubscriptionService.endpoint.addSubscription,
-      { emailAddress, contentfulGrantSubscriptionId },
+      { emailAddress, sub, contentfulGrantSubscriptionId: grantId },
     );
     return result.data;
   }
 
   async getSubscriptionsByEmail(
-    emailAddress: string,
+    userId: string,
     jwt: string,
   ): Promise<Response> {
     const endpoint: string =
-      SubscriptionService.endpoint.userParam + encodeURIComponent(emailAddress);
+      SubscriptionService.endpoint.userParam + encodeURIComponent(userId);
     const result = await SubscriptionService.client.get(
       endpoint,
       axiosConfig(jwt),
@@ -81,12 +86,10 @@ export class SubscriptionService {
     const endpoint = `${
       SubscriptionService.endpoint.userParam + encodeURIComponent(id)
     }/${SubscriptionService.endpoint.grantIdParam + dto.grantId}`;
-    const queryParam = dto.unsubscribeReferenceId
+    const query = dto.unsubscribeReferenceId
       ? `?unsubscribeReference=${dto.unsubscribeReferenceId}`
       : '';
-    const result = await SubscriptionService.client.delete(
-      endpoint + queryParam,
-    );
+    const result = await SubscriptionService.client.delete(endpoint + query);
     return result.data;
   }
 }

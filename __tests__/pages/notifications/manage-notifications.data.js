@@ -90,6 +90,12 @@ export const savedSearches = [
   savedSearchNewest,
 ];
 
+const processedSavedSearches = savedSearches
+  .sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  )
+  .filter((savedSearch) => savedSearch.status === 'CONFIRMED');
+
 export const newsletterSubscription = {
   id: '1234',
   type: 'NEW_GRANTS',
@@ -103,12 +109,12 @@ export const newGrantsParams = {
 
 export const testResultSuccess = {
   props: {
-    currentNotificationList: JSON.stringify(testSubscriptionArray),
+    currentNotificationList: testSubscriptionArray,
     grantDetails: null,
     urlAction: null,
     newsletterSubscription,
     newGrantsParams,
-    savedSearches,
+    savedSearches: processedSavedSearches,
     deletedSavedSearchName: null,
     migrationBannerProps: {
       applyMigrationStatus: null,
@@ -120,12 +126,12 @@ export const testResultSuccess = {
 
 export const testResultDeleteSuccess = {
   props: {
-    currentNotificationList: JSON.stringify(testSubscriptionArrayWithGrantName),
+    currentNotificationList: testSubscriptionArrayWithGrantName,
     grantDetails: testGrants[0],
     urlAction: 'unsubscribe',
     newsletterSubscription,
     newGrantsParams,
-    savedSearches,
+    savedSearches: processedSavedSearches,
     deletedSavedSearchName: null,
     migrationBannerProps: {
       applyMigrationStatus: null,
@@ -137,12 +143,12 @@ export const testResultDeleteSuccess = {
 
 export const testResultSubscribeSuccess = {
   props: {
-    currentNotificationList: JSON.stringify(testSubscriptionArrayWithGrantName),
+    currentNotificationList: testSubscriptionArrayWithGrantName,
     grantDetails: testGrants[0],
     urlAction: 'subscribe',
     newsletterSubscription,
     newGrantsParams,
-    savedSearches,
+    savedSearches: processedSavedSearches,
     deletedSavedSearchName: null,
     migrationBannerProps: {
       applyMigrationStatus: null,
@@ -211,12 +217,12 @@ export const notNewsletterSubscribeContext = {
 };
 
 export const props = {
-  currentNotificationList: JSON.stringify(testSubscriptionArray),
+  currentNotificationList: testSubscriptionArray,
   grantDetails: null,
   urlAction: null,
   newsletterSubscription,
   newGrantsParams,
-  savedSearches,
+  savedSearches: processedSavedSearches,
   migrationBannerProps: {
     applyMigrationStatus: null,
     findMigrationStatus: null,
@@ -236,6 +242,6 @@ export const subscribedProps = {
 
 export const noNotificationNoSavedSearchesProps = {
   ...props,
-  currentNotificationList: JSON.stringify([]),
+  currentNotificationList: [],
   savedSearches: [],
 };
