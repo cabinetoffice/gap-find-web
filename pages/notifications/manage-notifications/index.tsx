@@ -28,13 +28,15 @@ import {
   URL_ACTION_MESSAGES,
   URL_ACTION_SUBHEADINGS,
   URL_ACTIONS,
-  buildSavedSearchFilters,
-  getDateFromFilters,
   getJwtFromCookies,
   logger,
+} from '../../../src/utils';
+import {
+  buildSavedSearchFilters,
+  getDateFromFilters,
   extractFiltersFields,
   addPublishedDateFilter,
-} from '../../../src/utils';
+} from '../../../src/utils/transform';
 import {
   fetchByGrantId,
   fetchByGrantIds,
