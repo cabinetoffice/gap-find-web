@@ -108,8 +108,6 @@ const buildSavedSearch = async (query, body) => {
     await fetchFilters(),
   );
 
-  console.log({ filterObjFromQuery });
-
   return {
     name: query.search_name,
     search_term: query.searchTerm,

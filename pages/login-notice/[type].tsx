@@ -62,7 +62,7 @@ export const NOTICE_CONTENT = {
 export const getServerSideProps = (ctx: GetServerSidePropsContext) => {
   const { title, content, redirectUrl } =
     NOTICE_CONTENT[ctx.params?.type as string](ctx);
-  console.log({ ctx });
+
   return {
     props: {
       title,
