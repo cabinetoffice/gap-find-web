@@ -4,9 +4,12 @@ import { useRouter } from 'next/router';
 import { skipToMainContent } from '../../../utils/skipToMainContent';
 import { authenticatedNavItems, navItems } from './links';
 import { GovUKHeader } from './GovUKHeader';
+import getConfig from 'next/config';
 
 const FEEDBACK_FORM_HREF = `https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link`;
-const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
+const {
+  publicRuntimeConfig: { ONE_LOGIN_ENABLED },
+} = getConfig();
 
 const MobileLink = ({ btn, index, pathname }) => (
   <li
