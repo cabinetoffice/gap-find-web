@@ -246,21 +246,12 @@ describe('get server side props for manage notifications page', () => {
       res: {
         setHeader: jest.fn(),
       },
-      req: {
-        cookies: {
-          grantIdCookieValue: '12345678',
-        },
-      },
       query: {
         applyMigrationStatus: 'SUCCEEDED',
         grantId: '12345678',
         action: 'subscribe',
       },
     };
-
-    nookies.get.mockReturnValue({
-      grantIdCookieValue: 'blah',
-    });
 
     fetchByGrantIds.mockReturnValue([]);
 

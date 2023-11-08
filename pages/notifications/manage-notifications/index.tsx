@@ -198,12 +198,11 @@ const buildSavedSearch = async (query, jwtPayload) => {
 
 const saveNotificationIfPresent = async ({
   action,
-  grantIdCookieValue,
   grantId,
   jwtPayload,
   ctx,
 }) => {
-  if (action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
+  if (action === URL_ACTIONS.SUBSCRIBE && grantId) {
     await SubscriptionService.getInstance().addSubscription({
       emailAddress: jwtPayload.email,
       sub: jwtPayload.sub,
@@ -254,7 +253,7 @@ export const getServerSideProps: GetServerSideProps<
   const plainTextEmailAddress = await getEmail(ctx);
   const userId = await getUserId(ctx);
 
-  let grantId = ctx.query.grantId;
+  const grantId = ctx.query.grantId;
   let jwtValue: string,
     migrationBannerProps: MigrationBannerProps = {
       applyMigrationStatus: null,
@@ -265,17 +264,9 @@ export const getServerSideProps: GetServerSideProps<
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
     jwtValue = jwt;
-    const { grantIdCookieValue } = ctx.req.cookies;
-    ctx.res.setHeader(
-      'Set-Cookie',
-      `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
-    );
-
-    grantId = grantIdCookieValue || grantId;
 
     const redirect = await saveNotificationIfPresent({
       action,
-      grantIdCookieValue,
       grantId,
       jwtPayload,
       ctx,

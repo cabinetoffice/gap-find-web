@@ -15,7 +15,7 @@ export async function getServerSideProps(ctx) {
     const response = await axios.post(
       new URL(`${process.env.HOST}/api/subscription`).toString(),
       {
-        contentfulGrantSubscriptionId: ctx.query.id,
+        contentfulGrantSubscriptionId: ctx.query.grantId,
         emailAddress: jwtPayload.email,
         sub: jwtPayload.sub,
       },
@@ -33,7 +33,7 @@ export async function getServerSideProps(ctx) {
     return {
       redirect: {
         permanent: false,
-        destination: `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.SUBSCRIBE}&grantId=${ctx.query.id}`,
+        destination: `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.SUBSCRIBE}&grantId=${ctx.query.grantId}`,
       },
     };
   }
