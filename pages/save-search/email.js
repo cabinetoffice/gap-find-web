@@ -23,7 +23,7 @@ import {
   getDateFromFilters,
   extractFiltersFields,
   addPublishedDateFilter,
-} from '../../src/utils';
+} from '../../src/utils/transform';
 import { addErrorInfo, logger } from '../../src/utils';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 

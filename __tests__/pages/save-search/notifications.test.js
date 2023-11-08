@@ -138,8 +138,7 @@ describe('Rendering serverside props', () => {
       expect(result).toEqual({
         redirect: {
           statusCode: 302,
-          destination:
-            'http://localhost:3000//notifications/manage-notifications?action=save-search-subscribe&errors[]=&notifications_consent=true',
+          destination: `${process.env.HOST}/notifications/manage-notifications?action=save-search-subscribe&errors[]=&notifications_consent=true`,
         },
       });
     });
