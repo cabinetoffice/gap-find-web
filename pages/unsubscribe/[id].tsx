@@ -93,11 +93,11 @@ const newsletterHandler = async (
 ) => {
   const newsletterSubscriptionService =
     NewsletterSubscriptionService.getInstance();
-  return newsletterSubscriptionService.unsubscribeFromNewsletter(
-    emailAddress,
-    id as NewsletterType,
+  return newsletterSubscriptionService.unsubscribeFromNewsletter({
+    plaintextEmail: emailAddress,
+    type: id as NewsletterType,
     unsubscribeReferenceId,
-  );
+  });
 };
 
 const savedSearchHandler = async (

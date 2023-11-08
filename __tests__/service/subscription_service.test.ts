@@ -92,6 +92,7 @@ describe('subscription manager get Subscription By Email', () => {
   beforeAll(() => {
     jest.clearAllMocks();
   });
+
   it('should return records when they are found', async () => {
     const example = [
       {
