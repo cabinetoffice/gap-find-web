@@ -176,6 +176,8 @@ const getFilterObjectFromQuery = (query, filters) => {
   return filterObjFromQuery;
 };
 
+const hasSaveSearchParams = (query) => query.search_name;
+
 const buildSavedSearch = async (query, jwtPayload) => {
   const filterObjFromQuery = getFilterObjectFromQuery(
     query,
@@ -207,8 +209,17 @@ const saveNotificationIfPresent = async ({
       sub: jwtPayload.sub,
       grantId,
     });
-  } else if (action === URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE) {
+  } else if (
+    action === URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE &&
+    hasSaveSearchParams(ctx.query)
+  ) {
     await saveSearch(await buildSavedSearch(ctx.query, jwtPayload));
+    return {
+      redirect: {
+        permanent: false,
+        destination: `${notificationRoutes.manageNotifications}?action=${action}`,
+      },
+    };
   }
 };
 
@@ -262,13 +273,15 @@ export const getServerSideProps: GetServerSideProps<
 
     grantId = grantIdCookieValue || grantId;
 
-    await saveNotificationIfPresent({
+    const redirect = await saveNotificationIfPresent({
       action,
       grantIdCookieValue,
       grantId,
       jwtPayload,
       ctx,
     });
+
+    if (redirect) return redirect;
 
     migrationBannerProps = {
       applyMigrationStatus: (ctx.query.applyMigrationStatus as string) || null,

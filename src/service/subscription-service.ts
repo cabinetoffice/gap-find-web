@@ -86,9 +86,10 @@ export class SubscriptionService {
     const endpoint = `${
       SubscriptionService.endpoint.userParam + encodeURIComponent(id)
     }/${SubscriptionService.endpoint.grantIdParam + dto.grantId}`;
-    const result = await SubscriptionService.client.delete(
-      endpoint + '?unsubscribeReference=' + dto.unsubscribeReferenceId,
-    );
+    const query = dto.unsubscribeReferenceId
+      ? `?unsubscribeReference=${dto.unsubscribeReferenceId}`
+      : '';
+    const result = await SubscriptionService.client.delete(endpoint + query);
     return result.data;
   }
 }
