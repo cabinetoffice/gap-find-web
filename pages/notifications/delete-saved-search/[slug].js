@@ -66,7 +66,7 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  const userId = getUserId(ctx);
+  const userId = await getUserId(ctx);
 
   let errorMessage = '';
   const slug = ctx.query.slug;

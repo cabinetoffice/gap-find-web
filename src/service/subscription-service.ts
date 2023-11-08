@@ -41,11 +41,11 @@ export class SubscriptionService {
   }
 
   async getSubscriptionsByEmail(
-    emailAddress: string,
+    userId: string,
     jwt: string,
   ): Promise<Response> {
     const endpoint: string =
-      SubscriptionService.endpoint.userParam + encodeURIComponent(emailAddress);
+      SubscriptionService.endpoint.userParam + encodeURIComponent(userId);
     const result = await SubscriptionService.client.get(
       endpoint,
       axiosConfig(jwt),

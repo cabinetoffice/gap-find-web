@@ -148,10 +148,10 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
 const sortGrantSubscriptions = (a, b) =>
   new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 
-const fetchSubscriptions = async ({ plainTextEmailAddress, jwtValue }) => {
+const fetchSubscriptions = async ({ userId, jwtValue }) => {
   const subscriptions =
     await SubscriptionService.getInstance().getSubscriptionsByEmail(
-      plainTextEmailAddress,
+      userId,
       jwtValue,
     );
   if (!subscriptions) return [];
@@ -291,7 +291,7 @@ export const getServerSideProps: GetServerSideProps<
   return {
     props: {
       currentNotificationList: await fetchSubscriptions({
-        plainTextEmailAddress,
+        userId,
         jwtValue,
       }),
       // Fetch individual grant details if required for things like success messages
