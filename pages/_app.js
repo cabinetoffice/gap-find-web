@@ -1,6 +1,6 @@
 import Script from 'next/script';
 import nookies from 'nookies';
-import React, { createContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 import '../src/lib/ie11_nodelist_polyfill';
 import '../styles/globals.scss';
@@ -9,6 +9,8 @@ import { getJwtFromCookies } from '../src/utils/jwt';
 import App from 'next/app';
 
 export const AuthContext = createContext({ isUserLoggedIn: false });
+
+export const useAuth = () => useContext(AuthContext);
 
 const MyApp = ({ Component, pageProps, isUserLoggedIn }) => {
   const cookies = nookies.get({});

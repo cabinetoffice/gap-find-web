@@ -2,12 +2,10 @@ import { useEffect } from 'react';
 import CookieBanner from './cookie-banner';
 import Footer from './Footer';
 import { Header } from './header';
+import { useAuth } from '../../../pages/_app';
 
-const Layout = ({
-  children,
-  isBasicHeader = false,
-  isUserLoggedIn = false,
-}) => {
+const Layout = ({ children, isBasicHeader = false }) => {
+  const { isUserLoggedIn } = useAuth();
   const clx = ['js-enabled', 'govuk-template__body'];
   useEffect(() => {
     document.querySelector('body').classList.add(...clx);

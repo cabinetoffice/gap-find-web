@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext } from 'react';
+import React from 'react';
 import ErrorBanner from '../../src/components/displayErrors/errorBanner/ErrorBanner';
 import { NewsletterCallToAction } from '../../src/components/newsletter/NewsletterCallToAction';
 import { Pagination } from '../../src/components/pagination/Pagination';
@@ -22,7 +22,6 @@ import {
   extractFiltersFields,
   generateSearchHeadingFromDateRange,
 } from '../../src/utils/transform';
-import { AuthContext } from '../_app';
 
 const conditionallyClearFiltersFromQuery = (
   clearFilters,
@@ -129,7 +128,6 @@ const BrowseByCategory = ({
   titleContent,
 }) => {
   const router = useRouter();
-  const { isUserLoggedIn } = useContext(AuthContext);
 
   const handleSortByChange = (sort) => {
     const newQuery = {
@@ -148,7 +146,7 @@ const BrowseByCategory = ({
       <Head>
         <title>{titleContent}</title>
       </Head>
-      <Layout isUserLoggedIn={isUserLoggedIn} description="Find a grant">
+      <Layout description="Find a grant">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
           <Link href={{ pathname: '../', query: { searchTerm } }}>
             <a className="govuk-back-link" data-cy="cyBrowseBackText">

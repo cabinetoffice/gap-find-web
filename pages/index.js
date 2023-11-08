@@ -26,12 +26,7 @@ export function getServerSideProps({ query }) {
   };
 }
 
-const Home = ({
-  searchTerm,
-  applicantUrl,
-  oneLoginEnabled,
-  isUserLoggedIn,
-}) => {
+const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
   return (
     <>
       <Head>
@@ -41,7 +36,7 @@ const Home = ({
         />
         <title>Home - Find a grant</title>
       </Head>
-      <Layout isUserLoggedIn={isUserLoggedIn} description="Find a grant">
+      <Layout description="Find a grant">
         <div className="govuk-width-container ">
           <div className="govuk-grid-row">
             <div className="govuk-grid-column-full govuk-!-margin-top-5 govuk-!-margin-bottom-5">

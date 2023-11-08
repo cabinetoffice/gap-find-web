@@ -339,7 +339,7 @@ const ManageNotifications = (props) => {
       <Head>
         <title>{gloss.title}</title>
       </Head>
-      <Layout isUserLoggedIn={props.isUserLoggedIn}>
+      <Layout>
         <div className="govuk-grid-row govuk-body padding-bottom40 govuk-!-margin-top-9">
           {!!urlAction && !hideConfirmationMessage && (
             <ConfirmationMessage

@@ -72,19 +72,14 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-function notifications({
-  unsubscribeGrant,
-  email,
-  grantDetails,
-  isUserLoggedIn,
-}) {
+function notifications({ unsubscribeGrant, email, grantDetails }) {
   unsubscribeGrant = JSON.parse(unsubscribeGrant);
   return (
     <>
       <Head>
         <title>{gloss.title}</title>
       </Head>
-      <Layout isUserLoggedIn={isUserLoggedIn} description="Notifications">
+      <Layout description="Notifications">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom-0">
           <a
             href={`${notificationRoutes.manageNotifications}`}
