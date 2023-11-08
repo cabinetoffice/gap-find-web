@@ -90,6 +90,7 @@ export const URL_ACTION_MESSAGES = new Map([
     URL_ACTIONS.EVERYTHING_UNSUBSCRIBE,
     'You have unsubscribed from all updates.',
   ],
+  [URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE, 'Your saved search has been added.'],
   [
     URL_ACTIONS.DELETE_SAVED_SEARCH,
     'You have deleted the saved search called: ',
@@ -99,6 +100,10 @@ export const URL_ACTION_MESSAGES = new Map([
 export const URL_ACTION_SUBHEADINGS = new Map([
   [
     URL_ACTIONS.NEWSLETTER_SUBSCRIBE,
+    'You can now access your notifications and grant applications when you sign in with GOV.UK One Login.',
+  ],
+  [
+    URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE,
     'You can now access your notifications and grant applications when you sign in with GOV.UK One Login.',
   ],
 ]);

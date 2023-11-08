@@ -10,7 +10,6 @@ import {
   logger,
   getJwtFromCookies,
   addErrorInfo,
-  cookieName,
 } from './src/utils';
 
 const COOKIE_CONFIG = {
@@ -88,16 +87,10 @@ const handleSubscriptionRedirect = (req: NextRequest) => {
 };
 
 const handleSavedSearchRedirect = (req: NextRequest) => {
-  const searchInfo = asObject(req.nextUrl.searchParams.entries(), ['href']);
-
   const res = NextResponse.redirect(
-    getLoginNoticeUrl(LOGIN_NOTICE_TYPES.SAVED_SEARCH),
-  );
-
-  res.cookies.set(
-    cookieName.saveSearchInfo,
-    JSON.stringify(searchInfo),
-    COOKIE_CONFIG,
+    `${getLoginNoticeUrl(LOGIN_NOTICE_TYPES.SAVED_SEARCH)}?${
+      req.nextUrl.search
+    }`,
   );
 
   return res;

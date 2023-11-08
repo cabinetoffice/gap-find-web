@@ -7,6 +7,7 @@ import {
   URL_ACTIONS,
   notificationRoutes,
 } from '../../src/utils';
+import { buildQueryString } from '../save-search';
 
 const HOST = process.env.HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
@@ -35,34 +36,43 @@ const getNotificationContent = (action: string) => [
 ];
 
 export const NOTICE_CONTENT = {
-  [MANAGE_NOTIFICATIONS]: {
+  [MANAGE_NOTIFICATIONS]: () => ({
     title: 'Manage your notifications',
     content: [
       ...getNotificationContent('manage your notifications'),
       'If you want to unsubscribe from notifications without creating a GOV.UK One Login, you can use the unsubscribe link in the emails we send to you.',
     ],
     redirectUrl: notificationRoutes.manageNotifications,
-  },
-  [SUBSCRIPTION_NOTIFICATIONS]: {
+  }),
+  [SUBSCRIPTION_NOTIFICATIONS]: () => ({
     title: 'Sign up for updates',
     content: getNotificationContent('sign up for updates'),
     redirectUrl: `${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.SUBSCRIBE}`,
-  },
-  [SAVED_SEARCH]: {
+  }),
+  [SAVED_SEARCH]: (ctx) => ({
     title: 'Save your search',
     content: getNotificationContent('save a search'),
-    redirectUrl: `${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE}`,
-  },
-  [NEWSLETTER]: DEFAULT_CONTENT,
+    redirectUrl: `${notificationRoutes.saveSearch}?${buildQueryString(
+      ctx.query,
+    )}`,
+  }),
+  [NEWSLETTER]: () => DEFAULT_CONTENT,
 } as const;
 
-export const getServerSideProps = (ctx: GetServerSidePropsContext) => ({
-  props: {
-    type: ctx.params?.type,
-    userServiceHost: USER_SERVICE_HOST,
-    host: HOST,
-  },
-});
+export const getServerSideProps = (ctx: GetServerSidePropsContext) => {
+  const { title, content, redirectUrl } =
+    NOTICE_CONTENT[ctx.params?.type as string](ctx);
+  return {
+    props: {
+      title,
+      content,
+      redirectUrl,
+      type: ctx.params?.type,
+      userServiceHost: USER_SERVICE_HOST,
+      host: HOST,
+    },
+  };
+};
 
 const getRedirectUrlQueryString = (type: string) =>
   `?migrationType=${type}${
@@ -71,8 +81,14 @@ const getRedirectUrlQueryString = (type: string) =>
       : ''
   }`;
 
-const LoginNotice = ({ type, host, userServiceHost }) => {
-  const { title, content, redirectUrl } = NOTICE_CONTENT[type];
+const LoginNotice = ({
+  title,
+  content,
+  redirectUrl,
+  type,
+  host,
+  userServiceHost,
+}) => {
   const formattedRedirectUrl = encodeURIComponent(
     `${host}${redirectUrl}${getRedirectUrlQueryString(type)}`,
   );

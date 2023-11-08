@@ -38,6 +38,7 @@ export interface SavedSearch {
   status: SavedSearchStatusType;
   notifications: boolean;
   email: string;
+  sub?: string;
   user: User;
 }
 

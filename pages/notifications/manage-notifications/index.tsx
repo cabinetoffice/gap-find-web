@@ -10,6 +10,8 @@ import { generateWeeklyNewsletterParams } from '../../../src/manager/newsletter_
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
 import {
+  SavedSearch,
+  SavedSearchStatusType,
   getAllSavedSearches,
   save as saveSearch,
 } from '../../../src/service/saved_search_service';
@@ -26,16 +28,22 @@ import {
   URL_ACTION_MESSAGES,
   URL_ACTION_SUBHEADINGS,
   URL_ACTIONS,
+  buildSavedSearchFilters,
+  getDateFromFilters,
+  getJwtFromCookies,
+  logger,
+  extractFiltersFields,
+  addPublishedDateFilter,
 } from '../../../src/utils';
 import {
   fetchByGrantId,
   fetchByGrantIds,
+  fetchFilters,
 } from '../../../src/utils/contentFulPage';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
-import { getJwtFromCookies, logger } from '../../../src/utils';
 import { MigrationBanner } from '../../../src/components/notification-banner';
 import { MigrationBannerProps } from '../../../src/types/subscription';
 import { Entry } from 'contentful';
@@ -163,12 +171,36 @@ const fetchSavedSearches = async ({ plainTextEmailAddress, jwtValue }) => {
     .filter((savedSearch) => savedSearch.status === 'CONFIRMED');
 };
 
+const getFilterObjectFromQuery = (query, filters) => {
+  const filterObjFromQuery = extractFiltersFields(query, filters);
+  addPublishedDateFilter(query, filterObjFromQuery);
+  return filterObjFromQuery;
+};
+
+const buildSavedSearch = async (query, jwtPayload) => {
+  const filterObjFromQuery = getFilterObjectFromQuery(
+    query,
+    await fetchFilters(),
+  );
+  return {
+    name: query.search_name,
+    search_term: query.searchTerm,
+    filters: buildSavedSearchFilters(filterObjFromQuery),
+    fromDate: getDateFromFilters(filterObjFromQuery, 'gte'),
+    toDate: getDateFromFilters(filterObjFromQuery, 'lte'),
+    status: SavedSearchStatusType.CONFIRMED,
+    notifications: query.notifications_consent === 'true' ? true : false,
+    email: jwtPayload.email,
+    sub: jwtPayload.sub,
+  };
+};
+
 const saveNotificationIfPresent = async ({
   action,
   grantIdCookieValue,
-  savedSearchInfo,
   grantId,
   jwtPayload,
+  ctx,
 }) => {
   if (action === URL_ACTIONS.SUBSCRIBE && grantIdCookieValue) {
     await SubscriptionService.getInstance().addSubscription({
@@ -176,8 +208,8 @@ const saveNotificationIfPresent = async ({
       sub: jwtPayload.sub,
       grantId,
     });
-  } else if (action === URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE && savedSearchInfo) {
-    await saveSearch({ ...JSON.parse(savedSearchInfo), sub: jwtPayload.sub });
+  } else if (action === URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE) {
+    await saveSearch(await buildSavedSearch(ctx.query, jwtPayload));
   }
 };
 
@@ -188,7 +220,7 @@ type ManageNotificationsProps = {
   deletedSavedSearchName: string | null;
   newsletterSubscription: NewsletterSubscription;
   newGrantsParams: ReturnType<typeof generateWeeklyNewsletterParams>;
-  savedSearches: object[];
+  savedSearches: SavedSearch[];
   migrationBannerProps: MigrationBannerProps;
 };
 
@@ -223,7 +255,7 @@ export const getServerSideProps: GetServerSideProps<
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
     const { jwtPayload, jwt } = getJwtFromCookies(ctx.req);
     jwtValue = jwt;
-    const { grantIdCookieValue, savedSearchInfo } = ctx.req.cookies;
+    const { grantIdCookieValue } = ctx.req.cookies;
     ctx.res.setHeader(
       'Set-Cookie',
       `${cookieName.grantId}=deleted; Path=/; Max-Age=0`,
@@ -234,9 +266,9 @@ export const getServerSideProps: GetServerSideProps<
     await saveNotificationIfPresent({
       action,
       grantIdCookieValue,
-      savedSearchInfo,
       grantId,
       jwtPayload,
+      ctx,
     });
 
     migrationBannerProps = {
@@ -290,8 +322,13 @@ const generateSuccessMessage = (
   grantDetails,
   deletedSavedSearchName,
 ) => {
-  const { NEWSLETTER_SUBSCRIBE, SUBSCRIBE, UNSUBSCRIBE, DELETE_SAVED_SEARCH } =
-    URL_ACTIONS;
+  const {
+    NEWSLETTER_SUBSCRIBE,
+    SUBSCRIBE,
+    UNSUBSCRIBE,
+    SAVED_SEARCH_SUBSCRIBE,
+    DELETE_SAVED_SEARCH,
+  } = URL_ACTIONS;
   let heading = URL_ACTION_MESSAGES.get(action);
   let subheading = null;
 
@@ -300,6 +337,9 @@ const generateSuccessMessage = (
     subheading = URL_ACTION_SUBHEADINGS.get(action);
   } else if ([SUBSCRIBE, UNSUBSCRIBE].includes(action)) {
     heading = addGrantDetailsToMessage(heading, grantDetails);
+  } else if (action === SAVED_SEARCH_SUBSCRIBE) {
+    heading = URL_ACTION_MESSAGES.get(action);
+    subheading = URL_ACTION_SUBHEADINGS.get(action);
   } else if (action === DELETE_SAVED_SEARCH) {
     heading = `${URL_ACTION_MESSAGES.get(action)} ${deletedSavedSearchName}`;
   }
