@@ -6,7 +6,7 @@ import {
   cookieName,
   newsletterRoutes,
   notificationRoutes,
-} from '../../../src/utils';
+} from '../../../src/utils/constants';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import gloss from '../../../src/utils/glossary.json';
 
