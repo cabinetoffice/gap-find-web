@@ -97,17 +97,6 @@ export const URL_ACTION_MESSAGES = new Map([
   ],
 ]);
 
-export const URL_ACTION_SUBHEADINGS = new Map([
-  [
-    URL_ACTIONS.NEWSLETTER_SUBSCRIBE,
-    'You can now access your notifications and grant applications when you sign in with GOV.UK One Login.',
-  ],
-  [
-    URL_ACTIONS.SAVED_SEARCH_SUBSCRIBE,
-    'You can now access your notifications and grant applications when you sign in with GOV.UK One Login.',
-  ],
-]);
-
 export const ELASTIC_INDEX_FIELDS = {
   grantName: 'fields.grantName.en-US',
   shortDescription: 'fields.grantShortDescription.en-US',

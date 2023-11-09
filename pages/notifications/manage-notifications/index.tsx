@@ -25,7 +25,6 @@ import {
   notificationRoutes,
   tableHeadArr,
   URL_ACTION_MESSAGES,
-  URL_ACTION_SUBHEADINGS,
   URL_ACTIONS,
   getJwtFromCookies,
   logger,
@@ -179,6 +178,20 @@ const buildSavedSearch = async (query, jwtPayload) => {
   };
 };
 
+const formatRedirectQueryParams = (query) => {
+  const paramOrEmptyString = (query, name) =>
+    query[name] ? `${name}=${query[name]}` : '';
+  return [
+    'action',
+    'migrationType',
+    'findMigrationStatus',
+    'applyMigrationStatus',
+  ]
+    .map((name) => paramOrEmptyString(query, name))
+    .filter((param) => !!param)
+    .join('&');
+};
+
 const saveNotificationIfPresent = async ({
   action,
   grantId,
@@ -199,7 +212,9 @@ const saveNotificationIfPresent = async ({
     return {
       redirect: {
         permanent: false,
-        destination: `${notificationRoutes.manageNotifications}?action=${action}`,
+        destination: `${
+          notificationRoutes.manageNotifications
+        }?${formatRedirectQueryParams(ctx.query)}`,
       },
     };
   }
@@ -316,21 +331,18 @@ const generateSuccessMessage = (
     DELETE_SAVED_SEARCH,
   } = URL_ACTIONS;
   let heading = URL_ACTION_MESSAGES.get(action);
-  let subheading = null;
 
   if ([NEWSLETTER_SUBSCRIBE].includes(action)) {
     heading = URL_ACTION_MESSAGES.get(action);
-    subheading = URL_ACTION_SUBHEADINGS.get(action);
   } else if ([SUBSCRIBE, UNSUBSCRIBE].includes(action)) {
     heading = addGrantDetailsToMessage(heading, grantDetails);
   } else if (action === SAVED_SEARCH_SUBSCRIBE) {
     heading = URL_ACTION_MESSAGES.get(action);
-    subheading = URL_ACTION_SUBHEADINGS.get(action);
   } else if (action === DELETE_SAVED_SEARCH) {
     heading = `${URL_ACTION_MESSAGES.get(action)} ${deletedSavedSearchName}`;
   }
 
-  return { heading, subheading };
+  return { heading };
 };
 
 const buildQueryString = (filters) =>
@@ -441,16 +453,16 @@ const ManageNotifications = ({
               )}
             />
           )}
-          <div className="govuk-grid-column-full ">
-            {shouldRenderMigrationBanner && (
-              <MigrationBanner
-                nameOfGrantUpdated={
-                  grantDetails?.fields?.grantName &&
-                  `"${grantDetails.fields.grantName}"`
-                }
-                {...migrationBannerProps}
-              />
-            )}
+          {shouldRenderMigrationBanner && (
+            <MigrationBanner
+              nameOfGrantUpdated={
+                grantDetails?.fields?.grantName &&
+                `"${grantDetails.fields.grantName}"`
+              }
+              {...migrationBannerProps}
+            />
+          )}
+          <div className="govuk-grid-column-full">
             <h1
               className="govuk-heading-l"
               data-cy="cyManageYourNotificationsHeading"
