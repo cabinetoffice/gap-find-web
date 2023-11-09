@@ -5,12 +5,6 @@ import { notificationRoutes } from '../../../src/utils/constants';
 import { decrypt } from '../../../src/utils/encryption';
 import nookies from 'nookies';
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
-
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/encryption');
 jest.mock('nookies');

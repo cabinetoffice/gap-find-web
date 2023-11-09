@@ -2,12 +2,6 @@ import { NewsletterSubscriptionService } from './newsletter-subscription-service
 import { NewsletterType } from '../../types/newsletter';
 import { axios } from '../../../src/utils/axios';
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
-
 jest.mock('../../../src/utils/axios', () => {
   const createMock = {
     get: jest.fn().mockImplementation(() => {

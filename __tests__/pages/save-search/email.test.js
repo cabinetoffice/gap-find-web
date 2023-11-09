@@ -25,7 +25,6 @@ describe('getServerSideProps', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-
   it('should return expected props for a GET request', async () => {
     const context = {
       req: {

@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import { ConfirmationMessage } from '../../../src/components/confirmation-message/ConfirmationMessage';
 import { ManageNewsletter } from '../../../src/components/manage-newsletter/ManageNewsletter';
 import Layout from '../../../src/components/partials/Layout';
@@ -49,22 +48,6 @@ import gloss from '../../../src/utils/glossary.json';
 import { MigrationBanner } from '../../../src/components/notification-banner';
 import { MigrationBannerProps } from '../../../src/types/subscription';
 import { Entry } from 'contentful';
-
-//TODO GAP-560 / GAP-592
-const breadcrumbsRoutes = [
-  {
-    label: 'Home',
-    path: notificationRoutes['home'],
-  },
-  {
-    label: 'Notifications',
-    path: notificationRoutes['notificationsHome'],
-  },
-  {
-    label: 'Manage your Notifications',
-    path: notificationRoutes['manageNotifications'],
-  },
-];
 
 const getEmail = async (ctx) => {
   if (process.env.ONE_LOGIN_ENABLED != 'true') {
@@ -448,11 +431,7 @@ const ManageNotifications = ({
         <title>{gloss.title}</title>
       </Head>
       <Layout>
-        <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <BreadCrumbs routes={breadcrumbsRoutes} />
-        </div>
-
-        <div className="govuk-grid-row govuk-body">
+        <div className="govuk-grid-row govuk-body padding-bottom40 govuk-!-margin-top-9">
           {!!urlAction && !hideConfirmationMessage && (
             <ConfirmationMessage
               {...generateSuccessMessage(

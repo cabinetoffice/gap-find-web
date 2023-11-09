@@ -7,5 +7,10 @@ jest.mock('jose', () => ({
   decodeJwt: (jwt) => jwt,
 }));
 
+jest.mock('next/config', () => () => ({
+  publicRuntimeConfig: {},
+  serverRuntimeConfig: {},
+}));
+
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;

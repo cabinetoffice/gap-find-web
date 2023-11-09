@@ -24,12 +24,6 @@ jest.mock('../../../src/service/saved_search_service');
 const encryptedEmail = 'test-encrypted-email-string';
 const decryptedEmail = 'test-decrypted-email-string';
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
-
 jest.mock('next/router', () => {
   return {
     useRouter: jest.fn(),
