@@ -68,7 +68,10 @@ const NewsletterLandingPage = ({
                 data-cy="cyContinueToNewsletterSignup"
                 href={
                   oneLoginEnabled
-                    ? `${userServiceHost}/v2/login?redirectUrl=${host}${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.NEWSLETTER_SUBSCRIBE}&migrationType=${LOGIN_NOTICE_TYPES.NEWSLETTER}`
+                    ? `${userServiceHost}/v2/login?redirectUrl=` +
+                      encodeURIComponent(
+                        `${host}${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.NEWSLETTER_SUBSCRIBE}&migrationType=${LOGIN_NOTICE_TYPES.NEWSLETTER}`,
+                      )
                     : newsletterRoutes.signup
                 }
               >

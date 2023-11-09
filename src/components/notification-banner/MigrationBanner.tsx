@@ -27,14 +27,16 @@ const MigrationBanner = ({
   migrationType,
   nameOfGrantUpdated,
 }: MigrationProps) => (
-  <ImportantBanner
-    {...getMigrationBannerProps({
-      applyMigrationStatus,
-      findMigrationStatus,
-      migrationType,
-      nameOfGrantUpdated,
-    })}
-  />
+  <div className="govuk-grid-column-two-thirds">
+    <ImportantBanner
+      {...getMigrationBannerProps({
+        applyMigrationStatus,
+        findMigrationStatus,
+        migrationType,
+        nameOfGrantUpdated,
+      })}
+    />
+  </div>
 );
 
 const getMigrationBannerProps = ({
