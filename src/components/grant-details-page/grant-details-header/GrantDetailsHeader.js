@@ -19,7 +19,7 @@ export function GrantDetailsHeader({ grant }) {
         <li>
           <strong>{gloss.grantDetails.opens}:</strong>{' '}
           <span>
-            <Moment format="D MMMM YYYY, h:mma" tz="GMT">
+            <Moment format="D MMMM YYYY" tz="GMT">
               {moment.utc(grant.grantApplicationOpenDate)}
             </Moment>
           </span>
@@ -27,7 +27,7 @@ export function GrantDetailsHeader({ grant }) {
         <li>
           <strong>{gloss.grantDetails.closes}:</strong>{' '}
           <span>
-            <Moment format="D MMMM YYYY, h:mma" tz="GMT">
+            <Moment format="D MMMM YYYY" tz="GMT">
               {moment.utc(grant.grantApplicationCloseDate)}
             </Moment>
           </span>
