@@ -22,11 +22,23 @@ const MobileLink = ({ btn, index, pathname }) => (
   </li>
 );
 
-const getNavItems = (isUserLoggedIn: boolean, applicantUrl: string) =>
-  isUserLoggedIn ? getAuthenticatedNavItems(applicantUrl) : navItems;
+type GetNavItemsProps = {
+  isUserLoggedIn: boolean;
+  applicantUrl: string;
+  oneLoginEnabled: string;
+};
+
+const getNavItems = ({
+  isUserLoggedIn,
+  applicantUrl,
+  oneLoginEnabled,
+}: GetNavItemsProps) =>
+  oneLoginEnabled === 'true' && isUserLoggedIn
+    ? getAuthenticatedNavItems(applicantUrl)
+    : navItems;
 
 const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
-  const { applicantUrl } = useAppContext();
+  const { applicantUrl, oneLoginEnabled } = useAppContext();
 
   const { pathname } = useRouter();
 
@@ -41,14 +53,16 @@ const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
       </summary>
       <nav aria-label="menu">
         <ul>
-          {getNavItems(isUserLoggedIn, applicantUrl).map((btn, index) => (
-            <MobileLink
-              key={index}
-              btn={btn}
-              index={index}
-              pathname={pathname}
-            />
-          ))}
+          {getNavItems({ isUserLoggedIn, applicantUrl, oneLoginEnabled }).map(
+            (btn, index) => (
+              <MobileLink
+                key={index}
+                btn={btn}
+                index={index}
+                pathname={pathname}
+              />
+            ),
+          )}
         </ul>
       </nav>
     </details>
@@ -90,8 +104,12 @@ const BetaBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
 
 const MainNavBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
   const router = useRouter();
-  const { applicantUrl } = useAppContext();
-  const links = getNavItems(isUserLoggedIn, applicantUrl).map((btn, index) => {
+  const { applicantUrl, oneLoginEnabled } = useAppContext();
+  const links = getNavItems({
+    isUserLoggedIn,
+    applicantUrl,
+    oneLoginEnabled,
+  }).map((btn, index) => {
     return (
       <li
         data-value="parent"
