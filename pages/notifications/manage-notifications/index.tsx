@@ -342,7 +342,6 @@ const generateSuccessMessage = (
     heading = addGrantDetailsToMessage(heading, grantDetails);
   } else if (action === SAVED_SEARCH_SUBSCRIBE) {
     heading = URL_ACTION_MESSAGES.get(action);
-    subheading = URL_ACTION_SUBHEADINGS.get(action);
   } else if (action === DELETE_SAVED_SEARCH) {
     heading = `${URL_ACTION_MESSAGES.get(action)} ${deletedSavedSearchName}`;
   }
