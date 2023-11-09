@@ -216,7 +216,6 @@ const Cookies = () => {
                   <th
                     scope="row"
                     className="govuk-table__header  gap-overflow-wrap"
-                    npm
                   >
                     login_session
                   </th>

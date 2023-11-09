@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axios, axiosConfig } from '../../src/utils';
 
 //TODO remove these ESLint exceptions and fix
 export enum SavedSearchStatusType {
@@ -58,11 +58,12 @@ export async function getBySavedSearchId(savedSearchId: number) {
   return response.data;
 }
 
-export async function getAllSavedSearches(email: string) {
+export async function getAllSavedSearches(email: string, jwt: string) {
   const encodedEmail = encodeURIComponent(email);
   const response = await axios({
     method: 'get',
     url: `${process.env.BACKEND_HOST}/saved-searches/${encodedEmail}`,
+    ...axiosConfig(jwt),
   });
   return response.data;
 }
@@ -81,10 +82,14 @@ export async function updateStatus(
   return response.data;
 }
 
-export async function deleteSaveSearch(savedSearchId: number, email: string) {
+export async function deleteSaveSearch(
+  savedSearchId: number,
+  email: string,
+  unsubscribeReferenceId: string,
+) {
   const response = await axios({
     method: 'post',
-    url: `${process.env.BACKEND_HOST}/saved-searches/${savedSearchId}/delete`,
+    url: `${process.env.BACKEND_HOST}/saved-searches/${savedSearchId}/delete?unsubscribeReference=${unsubscribeReferenceId}`,
     data: {
       email,
     },

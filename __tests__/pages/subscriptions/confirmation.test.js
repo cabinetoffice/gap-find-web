@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom/extend-expect';
 import { render, screen, within } from '@testing-library/react';
 import SignupConfirmation, {
   getServerSideProps,
@@ -9,9 +8,11 @@ import { sendEmail } from '../../../src/service/gov_notify_service';
 import { notificationRoutes } from '../../../src/utils/constants';
 import { encrypt } from '../../../src/utils/encryption';
 import { hash } from '../../../src/utils/hash';
+import { parseBody } from 'next/dist/server/api-utils/node';
 
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/utils/hash');
+jest.mock('next/dist/server/api-utils/node');
 
 const encryptedEmail = 'test-encrypted-email-string';
 const hashedEmail = 'test-hashed-email-string';
@@ -22,7 +23,6 @@ const props = {
   grantTitle: 'Chargepoint Grant for people renting and living in flats (1)',
 };
 const component = <SignupConfirmation {...props} />;
-
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -52,7 +52,7 @@ describe('Confirmation', () => {
   it('Should display the name of the grant', async () => {
     render(component);
     expect(screen.getByTestId('signed_up_to_bold')).toHaveTextContent(
-      'Chargepoint Grant for people renting and living in flats (1)'
+      'Chargepoint Grant for people renting and living in flats (1)',
     );
   });
 
@@ -119,8 +119,10 @@ describe('Server Side Props', () => {
   it('should send a verification email', async () => {
     const url = new URL(
       `${notificationRoutes['addSubscription']}${tokenValue}`,
-      process.env.HOST
+      process.env.HOST,
     ).toString();
+
+    parseBody.mockResolvedValue(req.body);
 
     const expectedEmailBody = {
       'name of grant': 'grant-title',
@@ -143,7 +145,7 @@ describe('Server Side Props', () => {
     expect(sendEmail).toHaveBeenCalledWith(
       email,
       expectedEmailBody,
-      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE,
     );
     expect(response).toStrictEqual({
       props: {
@@ -157,7 +159,7 @@ describe('Server Side Props', () => {
   it('should still render the page if the email failed to send', async () => {
     const url = new URL(
       `${notificationRoutes['addSubscription']}${tokenValue}`,
-      process.env.HOST
+      process.env.HOST,
     ).toString();
 
     const expectedEmailBody = {
@@ -169,6 +171,8 @@ describe('Server Side Props', () => {
       contentful_grant_subscription_id: 'a-grant-id',
       encrypted_email_address: encryptedEmail,
     };
+
+    parseBody.mockResolvedValue(req.body);
 
     generateSignedApiKey.mockReturnValue(tokenValue);
 
@@ -185,7 +189,7 @@ describe('Server Side Props', () => {
     expect(sendEmail).toHaveBeenCalledWith(
       email,
       expectedEmailBody,
-      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE,
     );
     expect(response).toStrictEqual({
       props: {

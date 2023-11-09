@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import ErrorBanner from './ErrorBanner';
 
 const multipleErrors = [

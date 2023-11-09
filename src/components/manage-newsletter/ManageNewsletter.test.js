@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { ManageNewsletter } from './ManageNewsletter';
-import '@testing-library/jest-dom';
 import { formatDateTimeForSentence } from '../../../src/utils/dateFormatterGDS';
 import { newsletterRoutes } from '../../utils/constants';
 

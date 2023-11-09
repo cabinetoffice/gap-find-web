@@ -1,9 +1,24 @@
 export const cookieName = {
   currentEmailAddress: 'currentEmailAddress',
   notificationList: 'notificationList',
+  grantLabel: 'grantLabel',
+  grantId: 'grantIdCookieValue',
+};
+
+export const NOTIFICATION_TYPES = {
+  NEWSLETTER: 'newsletter',
+  SAVED_SEARCH: 'saved-search',
+  SUBSCRIPTION: 'subscription',
+};
+
+export const LOGIN_NOTICE_TYPES = {
+  ...NOTIFICATION_TYPES,
+  MANAGE_NOTIFICATIONS: 'manage-notifications',
+  SUBSCRIPTION_NOTIFICATIONS: 'subscription-notifications',
 };
 
 export const notificationRoutes = {
+  loginNotice: '/login-notice/',
   emailSaveSearch: '/save-search/email',
   checkEmail: '/notifications/check-email',
   addSubscription: '/api/notification-signup/',
@@ -14,6 +29,7 @@ export const notificationRoutes = {
   notificationsHome: '/notifications',
   deleteSaveSearch: '/notifications/delete-saved-search',
   home: '/',
+  subscriptionSignUp: '/subscriptions/signup',
 };
 
 export const newsletterRoutes = {
@@ -82,6 +98,13 @@ export const URL_ACTION_MESSAGES = new Map([
   [
     URL_ACTIONS.DELETE_SAVED_SEARCH,
     'You have deleted the saved search called: ',
+  ],
+]);
+
+export const URL_ACTION_SUBHEADINGS = new Map([
+  [
+    URL_ACTIONS.NEWSLETTER_SUBSCRIBE,
+    'You can now access your notifications and grant applications when you sign in with GOV.UK One Login.',
   ],
 ]);
 

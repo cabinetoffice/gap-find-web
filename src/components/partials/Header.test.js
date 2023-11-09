@@ -2,11 +2,9 @@ import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import Header from './Header';
 
-jest.mock('next/router', () => {
-  return {
-    useRouter: jest.fn(),
-  };
-});
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
 const headerComponent = <Header />;
 

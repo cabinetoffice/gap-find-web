@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSidePropsContext, NextApiRequest } from 'next';
 import Head from 'next/head';
 import React from 'react';
 import Layout from '../../src/components/partials/Layout';
@@ -15,7 +15,9 @@ import {
   NewsletterType,
 } from '../../src/types/newsletter';
 import gloss from '../../src/utils/glossary.json';
-import { getBody, getPreviousFormValues } from '../../src/utils/request';
+import { getPreviousFormValues } from '../../src/utils/request';
+import { addErrorInfo, logger } from '../../src/utils';
+import { parseBody } from 'next/dist/server/api-utils/node';
 
 const generateConfirmationUrl = (apiKey: string) => {
   return new URL(
@@ -24,16 +26,16 @@ const generateConfirmationUrl = (apiKey: string) => {
   ).toString();
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const req: any = context.req;
-  const res: any = context.res;
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+) => {
+  const req = context.req;
 
-  await getBody(req, res);
-
-  const validationErrors = validateSignupForm(req.body);
+  const body = await parseBody(req, '1mb');
+  const validationErrors = validateSignupForm(body);
   if (validationErrors.length > 0) {
     const errorParam = generateSignupErrorsRedirectParam(validationErrors);
-    const previousFormValues = getPreviousFormValues(req.body);
+    const previousFormValues = getPreviousFormValues(body);
     const redirectPath = `/newsletter/signup?${errorParam}&${previousFormValues}`;
     return {
       props: {},
@@ -44,7 +46,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const signedUpEmail: string = req.body.user_email;
+  const signedUpEmail: string = body.user_email;
 
   const newsletterSubscription: NewsletterSubscription = {
     email: signedUpEmail,
@@ -63,9 +65,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_NEWSLETTER_TEMPLATE,
     );
   } catch (e) {
-    console.error(e);
+    logger.error(
+      'error sending newsletter signup confirmation email',
+      addErrorInfo(e, req as NextApiRequest),
+    );
   }
-
   return {
     props: {
       signedUpEmail,

@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -37,7 +36,7 @@ const grantDetail = {
 
 const component = <Grant grantDetail={grantDetail} />;
 
-global.window = Object.create(window);
+global.window ??= Object.create(window);
 Object.defineProperty(window, 'GOVUKFrontend', {
   value: {
     initAll: jest.fn(),
@@ -66,7 +65,7 @@ describe('grants-pid page', () => {
     it('Should render a Get Updates heading.', () => {
       render(component);
       expect(
-        screen.getByRole('heading', { name: 'Get updates about this grant' })
+        screen.getByRole('heading', { name: 'Get updates about this grant' }),
       ).toBeDefined();
     });
 
@@ -78,11 +77,11 @@ describe('grants-pid page', () => {
       expect(screen.getByRole('link', { name: 'Dates' })).toBeDefined();
       expect(screen.getByRole('link', { name: 'How to apply' })).toBeDefined();
       expect(
-        screen.getByRole('link', { name: 'Supporting information' })
+        screen.getByRole('link', { name: 'Supporting information' }),
       ).toBeDefined();
       expect(screen.getByRole('link', { name: 'FAQs' })).toBeDefined();
       expect(
-        screen.getByRole('link', { name: 'Awarded grants' })
+        screen.getByRole('link', { name: 'Awarded grants' }),
       ).toBeDefined();
     });
 
@@ -91,17 +90,17 @@ describe('grants-pid page', () => {
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#fileType')
+          .some((link) => link.getAttribute('href') === '#fileType'),
       ).toBe(false);
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#emptyTab')
+          .some((link) => link.getAttribute('href') === '#emptyTab'),
       ).toBe(false);
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#test_pipeline')
+          .some((link) => link.getAttribute('href') === '#test_pipeline'),
       ).toBe(false);
     });
 
@@ -111,7 +110,7 @@ describe('grants-pid page', () => {
           grantDetail={grantDetail}
           enableFAQTab="true"
           enableAwardsTab="false"
-        />
+        />,
       );
       expect(screen.getByRole('link', { name: 'FAQs' })).toBeDefined();
     });
@@ -122,12 +121,12 @@ describe('grants-pid page', () => {
           grantDetail={grantDetail}
           enableFAQTab="false"
           enableAwardsTab="false"
-        />
+        />,
       );
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#faqs')
+          .some((link) => link.getAttribute('href') === '#faqs'),
       ).toBe(false);
     });
 
@@ -137,10 +136,10 @@ describe('grants-pid page', () => {
           grantDetail={grantDetail}
           enableFAQTab="false"
           enableAwardsTab="true"
-        />
+        />,
       );
       expect(
-        screen.getByRole('link', { name: 'Awarded grants' })
+        screen.getByRole('link', { name: 'Awarded grants' }),
       ).toBeDefined();
     });
 
@@ -150,19 +149,19 @@ describe('grants-pid page', () => {
           grantDetail={grantDetail}
           enableFAQTab="false"
           enableAwardsTab="false"
-        />
+        />,
       );
       expect(
         screen
           .queryAllByRole('link')
-          .some((link) => link.getAttribute('href') === '#awarded')
+          .some((link) => link.getAttribute('href') === '#awarded'),
       ).toBe(false);
     });
 
     it('Should render summary tab content by default', () => {
       render(component);
       expect(
-        screen.getByText('Some text that should be rendered')
+        screen.getByText('Some text that should be rendered'),
       ).toBeDefined();
     });
   });
@@ -172,10 +171,9 @@ describe('grants-pid page', () => {
 
     const props = {
       props: {
-        grantDetail: 'test-grant',
+        grantDetail: { sys: { id: '123' } },
       },
     };
-
     beforeEach(() => {
       jest.clearAllMocks();
     });
@@ -205,9 +203,11 @@ describe('grants-pid page', () => {
     it('should return the correct props with true when both ENABLE TABS envs are set to true', async () => {
       process.env.ENABLE_AWARDS_TAB = true;
       process.env.ENABLE_FAQ_TAB = true;
+      process.env.ONE_LOGIN_ENABLED = false;
+
       fetchEntry.mockResolvedValue({
         props: {
-          grantDetail: 'test-grant',
+          grantDetail: { sys: { id: '123' } },
         },
       });
 
@@ -217,7 +217,12 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'true',
           enableFAQTab: 'true',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });
@@ -225,6 +230,8 @@ describe('grants-pid page', () => {
     it('should return the correct props with false when both ENABLE TABS envs are set to false', async () => {
       process.env.ENABLE_AWARDS_TAB = false;
       process.env.ENABLE_FAQ_TAB = false;
+      process.env.ONE_LOGIN_ENABLED = false;
+
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -233,7 +240,12 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'false',
           enableFAQTab: 'false',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });
@@ -241,6 +253,7 @@ describe('grants-pid page', () => {
     it('should return the correct props when Awards is set to false in the env and faq is set to true respectively', async () => {
       process.env.ENABLE_AWARDS_TAB = false;
       process.env.ENABLE_FAQ_TAB = true;
+      process.env.ONE_LOGIN_ENABLED = false;
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -249,7 +262,12 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'false',
           enableFAQTab: 'true',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });
@@ -257,6 +275,7 @@ describe('grants-pid page', () => {
     it('should return the correct props when faq is set to false in the env and awards is set to true respectively', async () => {
       process.env.ENABLE_AWARDS_TAB = true;
       process.env.ENABLE_FAQ_TAB = false;
+      process.env.ONE_LOGIN_ENABLED = false;
       fetchEntry.mockResolvedValue(props);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
@@ -265,7 +284,12 @@ describe('grants-pid page', () => {
         props: {
           enableAwardsTab: 'true',
           enableFAQTab: 'false',
-          grantDetail: { props: { grantDetail: 'test-grant' } },
+          grantId: '123',
+          grantDetail: {
+            props: {
+              grantDetail: { sys: { id: '123' } },
+            },
+          },
         },
       });
     });

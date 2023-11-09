@@ -1,5 +1,4 @@
 import checkifCookieDoesExist from '../../src/utils/cookieChecker';
-import '@testing-library/jest-dom';
 
 import nookies from 'nookies';
 

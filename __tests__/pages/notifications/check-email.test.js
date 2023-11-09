@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
@@ -45,7 +44,7 @@ describe('Testing check-email component', () => {
     const { props } = await getServerSideProps({ query: {} });
     render(<CheckEmail {...props} />);
     const heading = screen.getAllByText(
-      /Manage notifications and saved searches/
+      /Manage notifications and saved searches/,
     );
     expect(heading).toHaveLength(1);
   });
@@ -54,7 +53,7 @@ describe('Testing check-email component', () => {
     const { props } = await getServerSideProps({ query: {} });
     render(<CheckEmail {...props} />);
     const heading = screen.getAllByText(
-      /If you have signed up for updates or saved searches, you can unsubscribe here/
+      /If you have signed up for updates or saved searches, you can unsubscribe here/,
     );
     expect(heading).toHaveLength(1);
   });
@@ -103,7 +102,7 @@ describe('Testing check-email component', () => {
     };
     render(<CheckEmail {...props} />);
     expect(screen.getByTestId('red-banner')).toHaveClass(
-      'govuk-form-group--error'
+      'govuk-form-group--error',
     );
   });
 });
@@ -143,6 +142,7 @@ describe('get server side props', () => {
     const request = {
       query: {
         id: 'a-grant-id',
+        grantLabel: 'a-grant-label',
         email,
         'errors[]': errors,
       },

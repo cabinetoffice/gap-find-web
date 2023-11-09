@@ -1,15 +1,16 @@
-import axios, { AxiosInstance } from 'axios';
+import { axios, axiosConfig } from '../../src/utils';
+import { UnsubscribeSubscriptionRequest } from '../types/subscription';
 
 export class SubscriptionService {
   private static endpoint = {
     addSubscription: ' ',
-    emailParam: 'users/',
+    userParam: 'users/',
     grantIdParam: 'grants/',
   };
 
   private static instance: SubscriptionService;
 
-  private static client: AxiosInstance = axios.create({
+  private static client = axios.create({
     baseURL: `${process.env.BACKEND_HOST}/subscriptions/`,
   });
 
@@ -34,11 +35,16 @@ export class SubscriptionService {
     return result.data;
   }
 
-  async getSubscriptionsByEmail(emailAddress: string): Promise<Response> {
+  async getSubscriptionsByEmail(
+    emailAddress: string,
+    jwt: string,
+  ): Promise<Response> {
     const endpoint: string =
-      SubscriptionService.endpoint.emailParam +
-      encodeURIComponent(emailAddress);
-    const result = await SubscriptionService.client.get(endpoint);
+      SubscriptionService.endpoint.userParam + encodeURIComponent(emailAddress);
+    const result = await SubscriptionService.client.get(
+      endpoint,
+      axiosConfig(jwt),
+    );
     return result.data;
   }
 
@@ -47,20 +53,37 @@ export class SubscriptionService {
     grantId: string,
   ): Promise<Response> {
     const endpoint: string = `${
-      SubscriptionService.endpoint.emailParam + encodeURIComponent(emailAddress)
+      SubscriptionService.endpoint.userParam + encodeURIComponent(emailAddress)
     }/${SubscriptionService.endpoint.grantIdParam + grantId}`;
     const result = await SubscriptionService.client.get(endpoint);
     return result.data;
   }
 
-  async deleteSubscriptionByEmailAndGrantId(
-    emailAddress: string,
+  async getSubscriptionBySubAndGrantId(
+    sub: string,
     grantId: string,
+    unsubscribeReference?: string,
   ): Promise<Response> {
-    const endpoint: string = `${
-      SubscriptionService.endpoint.emailParam + encodeURIComponent(emailAddress)
+    const endpoint = `${
+      SubscriptionService.endpoint.userParam + encodeURIComponent(sub)
     }/${SubscriptionService.endpoint.grantIdParam + grantId}`;
-    const result = await SubscriptionService.client.delete(endpoint);
+    const result = await SubscriptionService.client.get(
+      endpoint + '?unsubscribeReference=' + unsubscribeReference,
+    );
+    return result.data;
+  }
+
+  async deleteSubscriptionByEmailOrSubAndGrantId(
+    dto: UnsubscribeSubscriptionRequest,
+  ): Promise<Response> {
+    const id = dto.sub ? dto.sub : dto.emailAddress;
+
+    const endpoint = `${
+      SubscriptionService.endpoint.userParam + encodeURIComponent(id)
+    }/${SubscriptionService.endpoint.grantIdParam + dto.grantId}`;
+    const result = await SubscriptionService.client.delete(
+      endpoint + '?unsubscribeReference=' + dto.unsubscribeReferenceId,
+    );
     return result.data;
   }
 }

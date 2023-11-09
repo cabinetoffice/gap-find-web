@@ -10,37 +10,19 @@ export const client = createClient({
   environment,
 });
 
-export async function fetchEntries(contentIds, sortBy, paginationObj) {
-  let sortByReq;
+const sortMap = {
+  closingDate: 'fields.grantApplicationCloseDate',
+  closingDateDesc: '-fields.grantApplicationCloseDate',
+  maxValue: '-fields.grantMaximumAward',
+  maxValueDesc: 'fields.grantMaximumAward',
+  openingDate: 'fields.grantApplicationOpenDate',
+  openingDateDesc: '-fields.grantApplicationOpenDate',
+  minValue: 'fields.grantMinimumAward',
+  minValueDesc: '-fields.grantMinimumAward',
+};
 
-  switch (sortBy) {
-    case 'closingDate':
-      sortByReq = 'fields.grantApplicationCloseDate';
-      break;
-    case 'closingDateDesc':
-      sortByReq = '-fields.grantApplicationCloseDate';
-      break;
-    case 'maxValue':
-      sortByReq = '-fields.grantMaximumAward';
-      break;
-    case 'maxValueDesc':
-      sortByReq = 'fields.grantMaximumAward';
-      break;
-    case 'openingDate':
-      sortByReq = 'fields.grantApplicationOpenDate';
-      break;
-    case 'openingDateDesc':
-      sortByReq = '-fields.grantApplicationOpenDate';
-      break;
-    case 'minValue':
-      sortByReq = 'fields.grantMinimumAward';
-      break;
-    case 'minValueDesc':
-      sortByReq = '-fields.grantMinimumAward';
-      break;
-    default:
-      sortByReq = 'fields.grantApplicationOpenDate';
-  }
+export async function fetchEntries(contentIds, sortBy, paginationObj) {
+  const sortByReq = sortMap[sortBy] || 'fields.grantApplicationOpenDate';
 
   const { skip, limit } = paginationObj;
 
@@ -80,6 +62,22 @@ export async function fetchFilters() {
   if (entries.items) return entries.items[0].fields.filters;
 }
 
+type Grant = {
+  grantName: string;
+  label: string;
+  grantFunder: string;
+  grantLocation: string;
+  grantShortDescription: string;
+  grantTotalAwardAmount: number;
+  grantTotalAwardDisplay: string;
+  grantMinimumAward: number;
+  grantMinimumAwardDisplay: string;
+  grantMaximumAward: number;
+  grantMaximumAwardDisplay: string;
+  grantApplicationOpenDate: string;
+  grantApplicationCloseDate: string;
+};
+
 export async function fetchByGrantIds(Ids) {
   const query = {
     content_type: 'grantDetails',
@@ -88,7 +86,7 @@ export async function fetchByGrantIds(Ids) {
   };
   query['sys.id[in]'] = Ids.join(',');
 
-  const entries = await client.getEntries(query);
+  const entries = await client.getEntries<Grant>(query);
 
   return entries.items;
 }

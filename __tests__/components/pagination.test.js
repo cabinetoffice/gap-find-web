@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { Pagination } from '../../src/components/pagination/Pagination';
-import '@testing-library/jest-dom';
 
 import { useRouter } from 'next/router';
 
@@ -46,15 +45,15 @@ describe('Testing Pagination component behaviour', () => {
     expect(screen.queryByText(/Next/)).toBeInTheDocument();
     expect(screen.queryByText(/Next/)).toHaveAttribute(
       'href',
-      '/?skip=20&limit=10&page=3'
+      '/?skip=20&limit=10&page=3',
     );
     expect(screen.queryByText(/Previous/)).toBeInTheDocument();
     expect(screen.queryByText(/Previous/)).toHaveAttribute(
       'href',
-      '/?skip=0&limit=10&page=1'
+      '/?skip=0&limit=10&page=1',
     );
     expect(screen.queryByText('2')).toHaveClass(
-      'moj-pagination__item moj-pagination__item--active'
+      'moj-pagination__item moj-pagination__item--active',
     );
   });
 
@@ -73,10 +72,10 @@ describe('Testing Pagination component behaviour', () => {
     expect(screen.queryByText(/Previous/)).toBeInTheDocument();
     expect(screen.queryByText(/Previous/)).toHaveAttribute(
       'href',
-      '/?skip=20&limit=10&page=3'
+      '/?skip=20&limit=10&page=3',
     );
     expect(screen.queryByText('4')).toHaveClass(
-      'moj-pagination__item moj-pagination__item--active'
+      'moj-pagination__item moj-pagination__item--active',
     );
   });
 
@@ -110,7 +109,7 @@ describe('Testing Pagination component behaviour', () => {
     const items = screen.getAllByRole('listitem');
     const listItems = items.map((item) => item.textContent);
     expect(listItems).toMatchInlineSnapshot(`
-        Array [
+        [
           "Previous set of pages",
           "1",
           "...",
@@ -143,7 +142,7 @@ describe('Testing Pagination component behaviour', () => {
     const items = screen.getAllByRole('listitem');
     const listItems = items.map((item) => item.textContent);
     expect(listItems).toMatchInlineSnapshot(`
-        Array [
+        [
           "1",
           "2",
           "3",
@@ -174,7 +173,7 @@ describe('Testing Pagination component behaviour', () => {
     const items = screen.getAllByRole('listitem');
     const listItems = items.map((item) => item.textContent);
     expect(listItems).toMatchInlineSnapshot(`
-        Array [
+        [
           "Previous set of pages",
           "1",
           "...",
@@ -217,7 +216,7 @@ describe('Testing Pagination component: Covering Edge cases for 7 set of pages, 
     const items = screen.getAllByRole('listitem');
     const listItems = items.map((item) => item.textContent);
     expect(listItems).toMatchInlineSnapshot(`
-        Array [
+        [
           "1",
           "2",
           "3",
@@ -242,7 +241,7 @@ describe('Testing Pagination component: Covering Edge cases for 7 set of pages, 
     const items = screen.getAllByRole('listitem');
     const listItems = items.map((item) => item.textContent);
     expect(listItems).toMatchInlineSnapshot(`
-        Array [
+        [
           "Previous set of pages",
           "1",
           "2",
@@ -270,7 +269,7 @@ describe('Testing Pagination component: Covering Edge cases for 7 set of pages, 
     const items = screen.getAllByRole('listitem');
     const listItems = items.map((item) => item.textContent);
     expect(listItems).toMatchInlineSnapshot(`
-        Array [
+        [
           "Previous set of pages",
           "1",
           "...",

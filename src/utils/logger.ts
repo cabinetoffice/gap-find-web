@@ -1,3 +1,24 @@
+// eslint-disable-next-line @next/next/no-server-import-in-page
+import { NextRequest } from 'next/server';
+import { NextApiRequest } from 'next';
+import pino from 'pino';
+import { HEADERS } from './constants';
+
+const log = pino({
+  browser: {
+    write(obj) {
+      try {
+        console.log(JSON.stringify(obj));
+      } catch (err) {
+        if (err instanceof Error) {
+          console.log(JSON.stringify(err, ['name', 'message', 'stack']));
+        }
+        console.log(JSON.stringify({ message: 'Unknown error type' }));
+      }
+    },
+  },
+});
+
 const isProd = process.env.NODE_ENV === 'production';
 
 const CONSOLE_COLOURS = {
@@ -37,10 +58,12 @@ const withLogColour = (text: string, level: LogLevel) =>
 const formatTime = (date: Date) =>
   `${date.toLocaleTimeString()}.${date.getMilliseconds()}`;
 
-// next doesn't seem to log errors too well by default - do we need to handle logging
-// the stacktrace ourselves?
+// pino doesn't have a log.http
+const getProdLogLevel = (level: LogLevel) =>
+  level === LOG_LEVELS.HTTP ? LOG_LEVELS.INFO : level;
+
 const getLoggerWithLevel =
-  (level: LogLevel) => (logMessage: string | Error, json?: object) => {
+  (level: LogLevel) => (logMessage: string, info?: object | Error) => {
     const date = new Date();
     const time = formatTime(date);
     if (!isProd) {
@@ -48,14 +71,13 @@ const getLoggerWithLevel =
         `[${time}] ` +
           withLogColour(`${level.toUpperCase()}: ${logMessage}`, level),
       );
-      if (json) console.dir(json, { depth: null });
-    } else
-      console.log({
-        logMessage,
-        level,
-        timestamp: date.toISOString(),
-        ...json,
-      });
+      if (info) {
+        if (info instanceof Error)
+          // object spread ignores properties inherited from prototype
+          info = { ...info, message: info.message, stack: info.stack };
+        console.dir(info, { depth: null });
+      }
+    } else log[getProdLogLevel(level)](info, logMessage);
   };
 
 type Logger = Record<LogLevel, ReturnType<typeof getLoggerWithLevel>>;
@@ -64,3 +86,10 @@ export const logger = Object.values(LOG_LEVELS).reduce(
   (acc, value) => ({ ...acc, [value]: getLoggerWithLevel(value) }),
   {} as Logger,
 );
+
+export const addErrorInfo = (error, req: NextRequest | NextApiRequest) => {
+  if (req instanceof NextRequest)
+    error.correlationId = req.headers.get(HEADERS.CORRELATION_ID);
+  else error.correlationId = req.headers[HEADERS.CORRELATION_ID];
+  return error;
+};

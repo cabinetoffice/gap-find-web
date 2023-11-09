@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { savedSearches } from '../../__tests__/pages/notifications/manage-notifications.data';
 import {
   getAllSavedSearches,
@@ -7,8 +6,11 @@ import {
   updateStatus,
   deleteSaveSearch,
 } from './saved_search_service';
+import { axios } from '../../src/utils';
 
-jest.mock('axios');
+jest.mock('../../src/utils/axios', () => ({
+  axios: jest.fn(),
+}));
 
 describe('save', () => {
   it('should save and return the newly saved search', async () => {
@@ -140,7 +142,7 @@ describe('delete', () => {
 
     expect(axios).toHaveBeenCalledWith({
       method: 'post',
-      url: `${process.env.BACKEND_HOST}/saved-searches/${saveSearchId}/delete`,
+      url: `${process.env.BACKEND_HOST}/saved-searches/${saveSearchId}/delete?unsubscribeReference=undefined`,
       data: {
         email,
       },

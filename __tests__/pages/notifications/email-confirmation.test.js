@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import EmailConfirmation, {
   getServerSideProps,
 } from '../../../pages/notifications/email-confirmation';
-import '@testing-library/jest-dom';
 import { sendEmail } from '../../../src/service/gov_notify_service';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import { useRouter } from 'next/router';
@@ -151,7 +150,7 @@ describe('getServerSideProps', () => {
     expect(sendEmail).toHaveBeenCalledWith(
       email,
       expectedPersonalisation,
-      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE
+      process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE_UNSUBSCRIBE,
     );
     expect(response).toEqual({
       props: {

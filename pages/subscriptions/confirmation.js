@@ -12,7 +12,9 @@ import { sendEmail } from '../../src/service/gov_notify_service';
 import { notificationRoutes } from '../../src/utils/constants';
 import { encrypt } from '../../src/utils/encryption';
 import gloss from '../../src/utils/glossary.json';
-import { getBody, getPreviousFormValues } from '../../src/utils/request';
+import { getPreviousFormValues } from '../../src/utils/request';
+import { addErrorInfo, logger } from '../../src/utils';
+import { parseBody } from 'next/dist/server/api-utils/node';
 
 const generateConfirmationUrl = (apiKey) => {
   return new URL(
@@ -21,14 +23,14 @@ const generateConfirmationUrl = (apiKey) => {
   ).toString();
 };
 
-export async function getServerSideProps({ req, res }) {
-  await getBody(req, res);
+export async function getServerSideProps({ req }) {
+  const body = await parseBody(req, '1mb');
 
-  const validationErrors = validateSignupForm(req.body);
+  const validationErrors = validateSignupForm(body);
   if (validationErrors.length > 0) {
     const errorParam = generateSignupErrorsRedirectParam(validationErrors);
-    const previousFormValues = getPreviousFormValues(req.body);
-    const redirectPath = `/subscriptions/signup?id=${req.body.grantLabel}${errorParam}&${previousFormValues}`;
+    const previousFormValues = getPreviousFormValues(body);
+    const redirectPath = `/subscriptions/signup?id=${body.grantLabel}${errorParam}&${previousFormValues}`;
     return {
       redirect: {
         permanemt: false,
@@ -37,10 +39,10 @@ export async function getServerSideProps({ req, res }) {
     };
   }
 
-  const grantLabel = req.body.grantLabel;
-  const email = req.body.user_email;
-  const grantId = req.body.grantId;
-  const grantTitle = req.body.grantTitle;
+  const grantLabel = body.grantLabel;
+  const email = body.user_email;
+  const grantId = body.grantId;
+  const grantTitle = body.grantTitle;
 
   const apiKey = generateSignedApiKey({
     encrypted_email_address: await encrypt(email),
@@ -49,7 +51,7 @@ export async function getServerSideProps({ req, res }) {
   const confirmationUrl = generateConfirmationUrl(apiKey);
 
   try {
-    sendEmail(
+    await sendEmail(
       email,
       {
         'name of grant': grantTitle,
@@ -58,7 +60,10 @@ export async function getServerSideProps({ req, res }) {
       process.env.GOV_NOTIFY_NOTIFICATION_EMAIL_TEMPLATE,
     );
   } catch (e) {
-    console.error(e);
+    logger.error(
+      'error sending subscription confirmation email',
+      addErrorInfo(e, req),
+    );
   }
 
   return {

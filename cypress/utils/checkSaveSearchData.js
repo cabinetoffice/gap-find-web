@@ -10,7 +10,6 @@ export default function checkSaveSearchData(name, notifications_requested) {
     query: `SELECT * FROM saved_search WHERE name='${name}'`,
     connection: connection,
   }).then((queryResponse) => {
-    console.log('queried response', queryResponse);
     const response = queryResponse[0];
     expect(response.notifications).to.equal(notifications_requested);
   });

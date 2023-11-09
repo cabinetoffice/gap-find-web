@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { useRouter } from 'next/router';
 import Signup, { getServerSideProps } from '../../../pages/newsletter/signup';
 import gloss from '../../../src/utils/glossary.json';
@@ -48,7 +47,7 @@ describe('Should Render Newsletter Signup Page', () => {
 
     expect(screen.getByRole('alert')).toBeDefined();
     expect(screen.getByTestId('red-banner')).toHaveClass(
-      'govuk-form-group govuk-form-group--error'
+      'govuk-form-group govuk-form-group--error',
     );
 
     expect(screen.getByTestId('notification_privacy')).toBeChecked();
@@ -67,7 +66,7 @@ describe('getServerSideProps', () => {
       expect.objectContaining({
         errors: [{ field: 'signup_field', error: 'Error with this field' }],
         titleContent: `Error: ${gloss.title}`,
-      })
+      }),
     );
   });
 
@@ -77,7 +76,7 @@ describe('getServerSideProps', () => {
       expect.objectContaining({
         errors: [],
         titleContent: `${gloss.title}`,
-      })
+      }),
     );
   });
 

@@ -1,4 +1,4 @@
-function ConfirmationMessage({ message }) {
+function ConfirmationMessage({ heading, subheading }) {
   return (
     <div className="govuk-grid-column-one-half">
       <div
@@ -20,8 +20,9 @@ function ConfirmationMessage({ message }) {
             className="govuk-notification-banner__heading"
             data-cy="cySubscribeSuccessMessageContent"
           >
-            {message}
+            {heading}
           </h3>
+          {subheading && <p className="gov-body">{subheading}</p>}
         </div>
       </div>
     </div>

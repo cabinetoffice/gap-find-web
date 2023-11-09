@@ -23,6 +23,7 @@ import {
   addPublishedDateFilter,
   extractFiltersFields,
 } from '../../src/utils/transform';
+import { addErrorInfo, logger } from '../../src/utils';
 
 //TODO confirm if we need to show only one error at a time or not
 const validate = (requestBody) => {
@@ -140,8 +141,14 @@ export async function getServerSideProps({ query, req }) {
     };
     const savedSearch = await save(searchToSave);
 
-    //TODO depending on how the confirmation journey is supposed to work, I suspect we may need to add more data to the token
-    await sendConfirmationEmail(savedSearch, body.user_email);
+    try {
+      await sendConfirmationEmail(savedSearch, body.user_email);
+    } catch (e) {
+      logger.error(
+        'error sending saved search confirmation email',
+        addErrorInfo(e, req),
+      );
+    }
 
     return redirect(`check-email?email=${body.user_email}`);
   }

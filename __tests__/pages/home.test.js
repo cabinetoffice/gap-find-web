@@ -1,6 +1,6 @@
-import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
 import Home, { getServerSideProps } from '../../pages/index';
+import { notificationRoutes } from '../../src/utils';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -10,7 +10,11 @@ jest.mock('next/router', () => ({
 
 const applicantUrl = 'http://localhost:3002';
 const component = (
-  <Home searchTerm="specific search term" applicantUrl={applicantUrl} />
+  <Home
+    searchTerm="specific search term"
+    applicantUrl={applicantUrl}
+    oneLoginEnabled={'true'}
+  />
 );
 
 describe('Rendering the home page', () => {
@@ -37,18 +41,18 @@ describe('Rendering the home page', () => {
 
     expect(
       screen.getByText(
-        'Find a grant is a service that allows you to search government grants.'
-      )
+        'Find a grant is a service that allows you to search government grants.',
+      ),
     ).toBeDefined();
     expect(screen.getByText('You can use this service to:')).toBeDefined();
     expect(screen.getByText('access government grant funding')).toBeDefined();
     expect(
       screen.getByText(
-        'search and filter to find a grant that matches your needs'
-      )
+        'search and filter to find a grant that matches your needs',
+      ),
     ).toBeDefined();
     expect(
-      screen.getByText('find out if you are eligible to apply for a grant')
+      screen.getByText('find out if you are eligible to apply for a grant'),
     ).toBeDefined();
     expect(screen.getByText('find out how to apply for a grant')).toBeDefined();
   });
@@ -56,84 +60,84 @@ describe('Rendering the home page', () => {
   it('Should have a search button of type submit', () => {
     render(component);
     expect(
-      screen.getByRole('textbox', { name: 'Search grants' })
+      screen.getByRole('textbox', { name: 'Search grants' }),
     ).toBeDefined();
     expect(
       screen.getByText(
-        'Find government grants and check if you are eligible to apply.'
-      )
+        'Find government grants and check if you are eligible to apply.',
+      ),
     ).toBeDefined();
   });
 
   it('Should render Browse All Grants section', () => {
     render(component);
     expect(
-      screen.getByRole('heading', { name: 'Browse all grants' })
+      screen.getByRole('heading', { name: 'Browse all grants' }),
     ).toBeDefined();
     expect(
       screen.getByText(
-        'See a list of all grants. You can filter the list based on your needs.'
-      )
+        'See a list of all grants. You can filter the list based on your needs.',
+      ),
     ).toBeDefined();
     expect(
-      screen.getAllByRole('link', { name: 'Browse grants' })[1].closest('a')
+      screen.getAllByRole('link', { name: 'Browse grants' })[1].closest('a'),
     ).toHaveAttribute('href', '/grants');
   });
 
   it('Should render The future of Find a grant section', () => {
     render(component);
     expect(
-      screen.getByRole('heading', { name: 'The future of Find a grant' })
+      screen.getByRole('heading', { name: 'The future of Find a grant' }),
     ).toBeDefined();
     expect(
       screen.getByText(
-        'More grants will be added as we develop our service. We will also add new functionality to make it easier to use.'
-      )
+        'More grants will be added as we develop our service. We will also add new functionality to make it easier to use.',
+      ),
     ).toBeDefined();
   });
 
   it('Should render Manage notifications section', () => {
     render(component);
     expect(
-      screen.getByRole('heading', { name: 'Manage notifications' })
+      screen.getByRole('heading', { name: 'Manage notifications' }),
     ).toBeDefined();
     expect(
       screen.getByText(
-        'See all the grant updates you have signed up for. You can unsubscribe here too.'
-      )
+        'See all the grant updates you have signed up for. You can unsubscribe here too.',
+      ),
     ).toBeDefined();
     expect(
       screen
         .getByRole('link', { name: 'Manage notifications and saved searches' })
-        .closest('a')
-    ).toHaveAttribute('href', '/notifications/check-email');
+        .closest('a'),
+    ).toHaveAttribute('href', notificationRoutes.manageNotifications);
     expect(
       screen
         .getByRole('link', { name: 'through our feedback form' })
-        .closest('a')
+        .closest('a'),
     ).toHaveAttribute(
       'href',
-      'https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link'
+      'https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link',
     );
   });
 
   it('Should render sign in and apply section', () => {
     render(component);
     expect(
-      screen.getByRole('heading', { name: 'Sign in and apply' })
+      screen.getByRole('heading', { name: 'Sign in and apply' }),
     ).toBeDefined();
     expect(
-      screen.getByText('See your grant applications or start a new one.')
+      screen.getByText('See your grant applications or start a new one.'),
     ).toBeDefined();
     expect(
-      screen.getByRole('link', { name: 'Sign in and apply' }).closest('a')
+      screen.getByRole('link', { name: 'Sign in and apply' }).closest('a'),
     ).toHaveAttribute('href', process.env.APPLY_FOR_A_GRANT);
   });
 
   it('should render a search input with a default search value from the query params', () => {
     render(component);
     expect(
-      screen.getByDisplayValue('specific search term')
+      screen.getByDisplayValue('specific search term'),
     ).toBeInTheDocument();
   });
 });
@@ -153,14 +157,19 @@ describe('getServerSideProps', () => {
     process.env = originalEnv;
   });
   it('should return empty search params if no query params exist', () => {
+    process.env.ONE_LOGIN_ENABLED = 'true';
+
     const result = getServerSideProps({ query: {} });
-    expect(result).toStrictEqual({ props: { searchTerm: '', applicantUrl } });
+    expect(result).toStrictEqual({
+      props: { searchTerm: '', applicantUrl, oneLoginEnabled: 'true' },
+    });
   });
 
   it('should return a search term if a search term exists as a query param', () => {
+    process.env.ONE_LOGIN_ENABLED = 'false';
     const result = getServerSideProps({ query: { searchTerm: 'search' } });
     expect(result).toStrictEqual({
-      props: { searchTerm: 'search', applicantUrl },
+      props: { searchTerm: 'search', applicantUrl, oneLoginEnabled: 'false' },
     });
   });
 });

@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
@@ -57,6 +56,7 @@ const props = {
 const pushMock = jest.fn();
 
 beforeAll(async () => {
+  process.env.ONE_LOGIN_ENABLED = 'false';
   nookies.get.mockReturnValue({
     currentEmailAddress: { email: encryptedEmail },
   });
@@ -79,7 +79,7 @@ describe('Testing Unsubscribe component', () => {
   it('renders at Unsubscribe content', async () => {
     render(<Unsubscribe {...props} />);
     const heading = screen.getAllByText(
-      /You will not get any more updates about Test Grant/
+      /You will not get any more updates about Test Grant/,
     );
     expect(heading).toHaveLength(1);
   });
@@ -89,14 +89,14 @@ describe('Testing Unsubscribe component', () => {
     const button = screen.getByText(/Cancel/);
     expect(button).toHaveAttribute(
       'href',
-      '/notifications/manage-notifications'
+      '/notifications/manage-notifications',
     );
   });
 
   it('renders at Unsubscribe content with no slug', async () => {
     render(<Unsubscribe {...props} />);
     const heading = screen.getAllByText(
-      /You will not get any more updates about/
+      /You will not get any more updates about/,
     );
     expect(heading).toHaveLength(1);
   });
