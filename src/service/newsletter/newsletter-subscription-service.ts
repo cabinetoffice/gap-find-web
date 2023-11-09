@@ -1,4 +1,5 @@
-import { axios, axiosConfig } from '../../../src/utils';
+import { axios } from '../../../src/utils/axios';
+import { axiosConfig } from '../../utils';
 import { NewsletterSubscription, NewsletterType } from '../../types/newsletter';
 
 export class NewsletterSubscriptionService {

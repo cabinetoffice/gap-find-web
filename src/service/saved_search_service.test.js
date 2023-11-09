@@ -6,7 +6,7 @@ import {
   updateStatus,
   deleteSaveSearch,
 } from './saved_search_service';
-import { axios } from '../../src/utils';
+import { axios } from '../../src/utils/axios';
 
 jest.mock('../../src/utils/axios', () => ({
   axios: jest.fn(),

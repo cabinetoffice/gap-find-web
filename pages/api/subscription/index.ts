@@ -1,4 +1,4 @@
-import { axios } from '../../../src/utils';
+import { axios } from '../../../src/utils/axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 type CreateNewSubscriptionBody = {

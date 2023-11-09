@@ -15,7 +15,8 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
-import { axios, getJwtFromCookies } from '../../../src/utils';
+import { getJwtFromCookies } from '../../../src/utils';
+import { axios } from '../../../src/utils/axios';
 
 const breadcrumbsRoutes = [
   {
