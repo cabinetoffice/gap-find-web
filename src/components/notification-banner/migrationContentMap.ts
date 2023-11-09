@@ -1,4 +1,4 @@
-import { LOGIN_NOTICE_TYPES } from '../../utils';
+import { LOGIN_NOTICE_TYPES } from '../../utils/constants';
 
 export const MIGRATION_CONTENT_MAP = {
   [LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS]: () => ({

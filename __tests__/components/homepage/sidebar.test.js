@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { HomepageSidebar } from '../../../src/components/homepage/sidebar/HomepageSidebar';
-import { notificationRoutes } from '../../../src/utils';
+import { notificationRoutes } from '../../../src/utils/constants';
 
 const applicantUrl = 'http://localhost:3002';
 const component = (

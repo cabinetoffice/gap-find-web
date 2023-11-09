@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import Home, { getServerSideProps } from '../../pages/index';
-import { notificationRoutes } from '../../src/utils';
+import { notificationRoutes } from '../../src/utils/constants';
 
 jest.mock('next/router', () => ({
   useRouter() {

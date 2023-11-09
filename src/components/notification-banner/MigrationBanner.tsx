@@ -1,5 +1,5 @@
 import { MIGRATION_CONTENT_MAP, ImportantBanner } from '.';
-import { LOGIN_NOTICE_TYPES } from '../../utils';
+import { LOGIN_NOTICE_TYPES } from '../../utils/constants';
 
 const FAILED = 'FAILED';
 const SUCCEEDED = 'SUCCEEDED';

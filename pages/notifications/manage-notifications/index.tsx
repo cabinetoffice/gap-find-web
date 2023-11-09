@@ -19,6 +19,7 @@ import {
   NewsletterSubscription,
   NewsletterType,
 } from '../../../src/types/newsletter';
+import { getJwtFromCookies, logger } from '../../../src/utils';
 import {
   cookieName,
   LOGIN_NOTICE_TYPES,
@@ -26,9 +27,7 @@ import {
   tableHeadArr,
   URL_ACTION_MESSAGES,
   URL_ACTIONS,
-  getJwtFromCookies,
-  logger,
-} from '../../../src/utils';
+} from '../../../src/utils/constants';
 import {
   buildSavedSearchFilters,
   getDateFromFilters,

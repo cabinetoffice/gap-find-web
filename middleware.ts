@@ -2,15 +2,13 @@
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { v4 } from 'uuid';
 import { checkUserLoggedIn } from './src/service';
+import { logger, getJwtFromCookies, addErrorInfo } from './src/utils';
 import {
   HEADERS,
   notificationRoutes,
   newsletterRoutes,
   LOGIN_NOTICE_TYPES,
-  logger,
-  getJwtFromCookies,
-  addErrorInfo,
-} from './src/utils';
+} from './src/utils/constants';
 
 const HOST = process.env.HOST;
 const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
