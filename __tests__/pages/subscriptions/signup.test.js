@@ -3,7 +3,7 @@ import Signup, {
   getServerSideProps,
 } from '../../../pages/subscriptions/signup';
 import { fetchEntry } from '../../../src/utils/contentFulPage';
-import { client } from '../../../src/utils';
+import { client } from '../../../src/utils/axios';
 
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('next/router', () => ({
