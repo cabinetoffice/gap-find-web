@@ -113,17 +113,21 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
     ),
   );
 
-  return subscriptions.map((subscription) => {
-    const foundGrant = subscribedGrants.find(
-      (grant) => subscription.contentfulGrantSubscriptionId === grant.sys.id,
-    );
+  return subscriptions
+    .map((subscription) => {
+      const foundGrant = subscribedGrants.find(
+        (grant) => subscription.contentfulGrantSubscriptionId === grant.sys.id,
+      );
+      console.log({ foundGrant });
+      if (foundGrant) {
+        subscription.grantName = foundGrant.fields.grantName;
+        return subscription;
+      }
 
-    if (foundGrant) {
-      subscription.grantName = foundGrant.fields.grantName;
-    }
-
-    return subscription;
-  });
+      // if we don't have a grant for this subscription, hide it - the grant is unpublished
+      return null;
+    })
+    .filter((subscription) => !!subscription);
 };
 
 const sortGrantSubscriptions = (a, b) =>

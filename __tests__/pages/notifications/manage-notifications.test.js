@@ -227,7 +227,7 @@ describe('get server side props for manage notifications page', () => {
       )
       .mockImplementation(() => newsletterSubscription);
 
-    fetchByGrantIds.mockReturnValue([]);
+    fetchByGrantIds.mockReturnValue(testGrants);
     const result = await management.getServerSideProps(context);
 
     expect(decrypt).toHaveBeenCalledTimes(2);
@@ -253,7 +253,7 @@ describe('get server side props for manage notifications page', () => {
       },
     };
 
-    fetchByGrantIds.mockReturnValue([]);
+    fetchByGrantIds.mockReturnValue(testGrants);
 
     const subscriptionServiceMock = jest
       .spyOn(SubscriptionService.prototype, 'getSubscriptionsByEmail')
