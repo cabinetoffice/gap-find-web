@@ -29,6 +29,15 @@ export async function getServerSideProps(ctx) {
     const grantDetails = await fetchByGrantId(
       subscription.contentfulGrantSubscriptionId,
     );
+
+    if (!grantDetails)
+      return {
+        redirect: {
+          permanent: false,
+          destination: notificationRoutes.manageNotifications,
+        },
+      };
+
     return {
       props: {
         unsubscribeGrant: JSON.stringify(subscription),
@@ -63,6 +72,15 @@ export async function getServerSideProps(ctx) {
   const grantDetails = await fetchByGrantId(
     subscription.contentfulGrantSubscriptionId,
   );
+
+  if (!grantDetails)
+    return {
+      redirect: {
+        permanent: false,
+        destination: notificationRoutes.manageNotifications,
+      },
+    };
+
   return {
     props: {
       unsubscribeGrant: JSON.stringify(subscription),
