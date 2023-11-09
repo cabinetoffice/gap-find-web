@@ -93,8 +93,7 @@ export async function fetchByGrantIds(Ids) {
 
 export async function fetchByGrantId(Id) {
   try {
-    const entry = await client.getEntry(Id);
-    return entry;
+    return await client.getEntry(Id);
   } catch (e) {
     return null;
   }
