@@ -118,7 +118,7 @@ const mergeGrantNameIntoSubscriptions = async (subscriptions) => {
       const foundGrant = subscribedGrants.find(
         (grant) => subscription.contentfulGrantSubscriptionId === grant.sys.id,
       );
-      console.log({ foundGrant });
+
       if (foundGrant) {
         subscription.grantName = foundGrant.fields.grantName;
         return subscription;
