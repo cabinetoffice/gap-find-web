@@ -6,7 +6,7 @@ import gloss from '../../src/utils/glossary.json';
 import { getJwtFromCookies } from '../../src/utils/jwt';
 import { URL_ACTIONS, notificationRoutes } from '../../src/utils/constants';
 import { fetchGrantDetail } from '../../src/utils/grantDetails';
-import { client as axios } from '../../src/utils';
+import { client as axios } from '../../src/utils/axios';
 
 export async function getServerSideProps(ctx) {
   if (process.env.ONE_LOGIN_ENABLED === 'true') {

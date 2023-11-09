@@ -1,4 +1,5 @@
-import { axios, axiosConfig } from '../../src/utils';
+import { axiosConfig } from '../../src/utils';
+import { axios } from '../../src/utils/axios';
 import { UnsubscribeSubscriptionRequest } from '../types/subscription';
 
 export class SubscriptionService {

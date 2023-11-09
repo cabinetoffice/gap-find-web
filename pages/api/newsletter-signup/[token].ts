@@ -4,7 +4,8 @@ import {
   generateSignedApiKey,
 } from '../../../src/service/api-key-service';
 import { NewsletterSubscription } from '../../../src/types/newsletter';
-import { addErrorInfo, client as axios, logger } from '../../../src/utils';
+import { addErrorInfo, logger } from '../../../src/utils';
+import { client as axios } from '../../../src/utils/axios';
 import nookies from 'nookies';
 import {
   cookieName,
