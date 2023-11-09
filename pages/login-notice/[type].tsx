@@ -6,7 +6,7 @@ import {
   LOGIN_NOTICE_TYPES,
   URL_ACTIONS,
   notificationRoutes,
-} from '../../src/utils';
+} from '../../src/utils/constants';
 import { buildQueryString } from '../save-search';
 
 const HOST = process.env.HOST;

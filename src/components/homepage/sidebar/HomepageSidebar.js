@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { notificationRoutes } from '../../../utils';
+import { notificationRoutes } from '../../../utils/constants';
 
 export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
   const manageNotificationsLink =

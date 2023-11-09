@@ -2,11 +2,8 @@ import { middleware } from '../middleware';
 // eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextRequest } from 'next/server';
 import { checkUserLoggedIn } from '../src/service';
-import {
-  getJwtFromCookies,
-  LOGIN_NOTICE_TYPES,
-  notificationRoutes,
-} from '../src/utils';
+import { getJwtFromCookies } from '../src/utils';
+import { LOGIN_NOTICE_TYPES, notificationRoutes } from '../src/utils/constants';
 
 jest.mock('../src/service');
 jest.mock('../src/utils/jwt', () => ({

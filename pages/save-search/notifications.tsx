@@ -8,7 +8,7 @@ import { parseBody } from 'next/dist/server/api-utils/node';
 import { buildQueryString } from '.';
 import gloss from '../../src/utils/glossary.json';
 import Link from 'next/link';
-import { URL_ACTIONS, notificationRoutes } from '../../src/utils';
+import { URL_ACTIONS, notificationRoutes } from '../../src/utils/constants';
 
 const validate = (saveSearchConsent) => {
   const errors = [];

@@ -9,7 +9,7 @@ import {
   newsletterRoutes,
   notificationRoutes,
   URL_ACTIONS,
-} from '../../src/utils';
+} from '../../src/utils/constants';
 
 const HOST = process.env.HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
