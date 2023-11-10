@@ -20,11 +20,7 @@ const getNewsletterPath = ({
   if (oneLoginEnabled) {
     if (!isUserLoggedIn)
       return {
-        pathname: notificationRoutes.loginNotice,
-        query: {
-          action: URL_ACTIONS.SUBSCRIBE,
-          migrationType: LOGIN_NOTICE_TYPES.NEWSLETTER,
-        },
+        pathname: `${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.NEWSLETTER}`,
       };
     else
       return {
