@@ -509,6 +509,9 @@ const ManageNotifications = ({
   );
 };
 
+const userMigratedOrSignedUp = (status) =>
+  ['SUCCEEDED', 'NEW_USER'].includes(status);
+
 const checkShouldHideConfirmationMessage = (
   migrationBannerProps: {
     migrationType: string;
@@ -525,8 +528,8 @@ const checkShouldHideConfirmationMessage = (
     return false;
 
   const migrationPassed =
-    migrationBannerProps.applyMigrationStatus === 'SUCCEEDED' ||
-    migrationBannerProps.findMigrationStatus === 'SUCCEEDED';
+    userMigratedOrSignedUp(migrationBannerProps.applyMigrationStatus) ||
+    userMigratedOrSignedUp(migrationBannerProps.findMigrationStatus);
   const noFailedMigrations =
     migrationBannerProps.applyMigrationStatus !== 'FAILED' &&
     migrationBannerProps.findMigrationStatus !== 'FAILED';
