@@ -8,6 +8,7 @@ import {
   notificationRoutes,
   newsletterRoutes,
   LOGIN_NOTICE_TYPES,
+  URL_ACTIONS,
 } from './src/utils/constants';
 
 const HOST = process.env.HOST;
@@ -66,6 +67,17 @@ type ValueOf<T> = T[keyof T];
 const getLoginNoticeUrl = (noticeType: ValueOf<typeof LOGIN_NOTICE_TYPES>) =>
   `${HOST}${notificationRoutes.loginNotice}${noticeType}`;
 
+const handleManageNotificationsRedirect = (req: NextRequest) => {
+  const action = req.nextUrl.searchParams.get('action');
+  if (action === URL_ACTIONS.NEWSLETTER_SUBSCRIBE)
+    return NextResponse.redirect(
+      getLoginNoticeUrl(LOGIN_NOTICE_TYPES.NEWSLETTER),
+    );
+  return NextResponse.redirect(
+    getLoginNoticeUrl(LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS),
+  );
+};
+
 const handleSubscriptionRedirect = (req: NextRequest) => {
   const res = NextResponse.redirect(
     `${getLoginNoticeUrl(LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS)}${
@@ -88,9 +100,7 @@ const handleSavedSearchRedirect = (req: NextRequest) => {
 
 export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
   if (manageNotificationsPattern.test({ pathname: req.nextUrl.pathname })) {
-    return NextResponse.redirect(
-      getLoginNoticeUrl(LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS),
-    );
+    return handleManageNotificationsRedirect(req);
   }
 
   if (subscriptionSignUpPattern.test({ pathname: req.nextUrl.pathname })) {
