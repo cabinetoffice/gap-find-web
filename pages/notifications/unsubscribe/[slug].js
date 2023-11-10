@@ -100,7 +100,7 @@ function notifications({ unsubscribeGrant, email, grantDetails }) {
       <Layout description="Notifications">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom-0">
           <a
-            href={`${notificationRoutes.manageNotifications}`}
+            href={notificationRoutes.manageNotifications}
             className="govuk-back-link"
           >
             Back

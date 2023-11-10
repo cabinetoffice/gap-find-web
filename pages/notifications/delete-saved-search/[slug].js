@@ -1,4 +1,3 @@
-import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import {
   cookieName,
   notificationRoutes,
@@ -17,17 +16,6 @@ import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import { getJwtFromCookies } from '../../../src/utils';
 import { axios } from '../../../src/utils/axios';
-
-const breadcrumbsRoutes = [
-  {
-    label: 'Home',
-    path: notificationRoutes['home'],
-  },
-  {
-    label: 'Notifications',
-    path: notificationRoutes['notificationsHome'],
-  },
-];
 
 const redirect = (uri) => {
   return {
@@ -106,7 +94,12 @@ function deletingSavedSearches({ saveSearchId, errorMessage }) {
       </Head>
       <Layout description="confirm">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <BreadCrumbs routes={breadcrumbsRoutes} />
+          <a
+            href={notificationRoutes.manageNotifications}
+            className="govuk-back-link"
+          >
+            Back
+          </a>
         </div>
         {errorMessage && (
           <div className="govuk-grid-row govuk-body">

@@ -1,30 +1,9 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import Layout from '../../../src/components/partials/Layout';
-import {
-  cookieName,
-  newsletterRoutes,
-  notificationRoutes,
-} from '../../../src/utils/constants';
+import { cookieName, notificationRoutes } from '../../../src/utils/constants';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import gloss from '../../../src/utils/glossary.json';
-
-//TODO GAP-560 / GAP-592
-const breadcrumbsRoutes = [
-  {
-    label: 'Home',
-    path: notificationRoutes['home'],
-  },
-  {
-    label: 'Notifications',
-    path: notificationRoutes['notificationsHome'],
-  },
-  {
-    label: 'Unsubscribe',
-    path: newsletterRoutes['unsubscribe'],
-  },
-];
 
 export async function getServerSideProps(ctx) {
   if (
@@ -52,7 +31,12 @@ function notifications() {
       </Head>
       <Layout>
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <BreadCrumbs routes={breadcrumbsRoutes} />
+          <a
+            href={notificationRoutes.manageNotifications}
+            className="govuk-back-link"
+          >
+            Back
+          </a>
         </div>
         <div className="govuk-grid-row govuk-body">
           <div className="govuk-grid-column-two-thirds">
