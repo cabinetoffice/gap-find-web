@@ -21,7 +21,7 @@ const getNewsletterPath = (oneLoginEnabled, returnParams) => {
         migrationType: LOGIN_NOTICE_TYPES.NEWSLETTER,
       },
     };
-  return { pathname: '/newsletter', query: { returnParams } };
+  return { pathname: '/newsletter', query: returnParams };
 };
 
 const NewsletterCallToAction = ({ returnParams }: NewsletterCTAProps) => {
