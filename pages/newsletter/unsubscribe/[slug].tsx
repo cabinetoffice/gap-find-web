@@ -1,12 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import Layout from '../../../src/components/partials/Layout';
-import {
-  cookieName,
-  newsletterRoutes,
-  notificationRoutes,
-} from '../../../src/utils/constants';
+import { cookieName, notificationRoutes } from '../../../src/utils/constants';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import gloss from '../../../src/utils/glossary.json';
 

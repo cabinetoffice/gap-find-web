@@ -1,4 +1,3 @@
-import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import {
   cookieName,
   notificationRoutes,
