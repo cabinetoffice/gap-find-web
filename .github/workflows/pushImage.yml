@@ -16,7 +16,7 @@ jobs:
   test:
     name: Test app
 
-    # Need to check here as create event can't be filtered by branch name...
+    # Need to check here as create event can't be filtered by branch name: https://github.com/orgs/community/discussions/54860
     if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release')
 
     runs-on: ubuntu-latest
@@ -71,6 +71,9 @@ jobs:
         run: yarn jest --ci
 
   build:
+    # Need to check here as create event can't be filtered by branch name: https://github.com/orgs/community/discussions/54860
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release')
+
     name: Build docker image
 
     runs-on: ubuntu-latest
@@ -128,6 +131,9 @@ jobs:
           retention-days: 1
 
   deploy:
+    # Need to check here as create event can't be filtered by branch name: https://github.com/orgs/community/discussions/54860
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release')
+
     name: Deploy docker image
 
     needs: [build, test]
