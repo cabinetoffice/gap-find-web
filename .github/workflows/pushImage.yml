@@ -131,9 +131,6 @@ jobs:
           retention-days: 1
 
   deploy:
-    # Need to check here as create event can't be filtered by branch name: https://github.com/orgs/community/discussions/54860
-    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release')
-
     name: Deploy docker image
 
     needs: [build, test]
