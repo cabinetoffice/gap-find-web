@@ -7,10 +7,15 @@ export function setClient(client) {
 }
 
 async function sendEmail(emailAddress, personalisation, template) {
-  await _notifyClient.sendEmail(template, emailAddress, {
-    personalisation: personalisation,
-    reference: 'test-find-grant-reference',
-  });
+  try {
+    await _notifyClient.sendEmail(template, emailAddress, {
+      personalisation: personalisation,
+      reference: 'test-find-grant-reference',
+    });
+  } catch (error) {
+    console.dir(error?.response?.data || error, { depth: null });
+    throw new Error('Error sending email');
+  }
 }
 
 export { sendEmail };
