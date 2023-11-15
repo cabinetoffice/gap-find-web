@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
-import { client } from '../../../src/utils';
 import * as management from '../../../pages/notifications/manage-notifications';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
@@ -228,7 +227,7 @@ describe('get server side props for manage notifications page', () => {
       )
       .mockImplementation(() => newsletterSubscription);
 
-    fetchByGrantIds.mockReturnValue([]);
+    fetchByGrantIds.mockReturnValue(testGrants);
     const result = await management.getServerSideProps(context);
 
     expect(decrypt).toHaveBeenCalledTimes(2);
@@ -239,18 +238,13 @@ describe('get server side props for manage notifications page', () => {
     expect(result).toStrictEqual(testResultSuccess);
   });
 
-  it('should proceed when one login is enabled', async () => {
+  it('saves new grant subscription when one login is enabled', async () => {
     process.env.ONE_LOGIN_ENABLED = 'true';
     cookieExistsAndContainsValidJwt.mockReturnValue(false);
 
     const context = {
       res: {
         setHeader: jest.fn(),
-      },
-      req: {
-        cookies: {
-          grantIdCookieValue: '12345678',
-        },
       },
       query: {
         applyMigrationStatus: 'SUCCEEDED',
@@ -259,17 +253,17 @@ describe('get server side props for manage notifications page', () => {
       },
     };
 
-    nookies.get.mockReturnValue({
-      grantIdCookieValue: 'blah',
-    });
-
-    client.post = jest.fn();
+    fetchByGrantIds.mockReturnValue(testGrants);
 
     const subscriptionServiceMock = jest
       .spyOn(SubscriptionService.prototype, 'getSubscriptionsByEmail')
       .mockImplementationOnce(() => {
         return testSubscriptionArray;
       });
+
+    const addSubscriptionMock = jest
+      .spyOn(SubscriptionService.prototype, 'addSubscription')
+      .mockImplementationOnce(() => true);
 
     getAllSavedSearches.mockReturnValue(savedSearches);
     const newsletterSubscriptionServiceMock = jest
@@ -283,8 +277,9 @@ describe('get server side props for manage notifications page', () => {
     const result = await management.getServerSideProps(context);
 
     expect(subscriptionServiceMock).toBeCalledTimes(1);
-    expect(client.post).toHaveBeenCalledTimes(1);
     expect(newsletterSubscriptionServiceMock).toHaveBeenCalledTimes(1);
+    expect(addSubscriptionMock).toHaveBeenCalledTimes(1);
+
     testResultSuccess.props.urlAction = 'subscribe';
     testResultSuccess.props.migrationBannerProps = {
       applyMigrationStatus: 'SUCCEEDED',

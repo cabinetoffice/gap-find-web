@@ -13,7 +13,10 @@ import { extractFiltersFields } from '../../../src/utils/transform';
 jest.mock('../../../pages/save-search/index');
 jest.mock('next/dist/server/api-utils/node');
 jest.mock('../../../src/utils/contentFulPage');
-jest.mock('../../../src/utils/transform');
+jest.mock('../../../src/utils/transform', () => ({
+  ...jest.requireActual('../../../src/utils/transform'),
+  extractFiltersFields: jest.fn(),
+}));
 jest.mock('../../../src/service/saved_search_service');
 jest.mock('../../../src/service/gov_notify_service');
 jest.mock('../../../src/service/api-key-service');
@@ -22,7 +25,6 @@ describe('getServerSideProps', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-
   it('should return expected props for a GET request', async () => {
     const context = {
       req: {

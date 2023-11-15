@@ -1,6 +1,6 @@
-function ConfirmationMessage({ heading, subheading }) {
+function ConfirmationMessage({ heading }) {
   return (
-    <div className="govuk-grid-column-one-half">
+    <div className="govuk-grid-column-two-thirds">
       <div
         className="govuk-notification-banner govuk-notification-banner--success"
         role="alert"
@@ -22,7 +22,6 @@ function ConfirmationMessage({ heading, subheading }) {
           >
             {heading}
           </h3>
-          {subheading && <p className="gov-body">{subheading}</p>}
         </div>
       </div>
     </div>

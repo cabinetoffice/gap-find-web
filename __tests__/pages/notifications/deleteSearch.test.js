@@ -6,7 +6,6 @@ import DeleteSaveSearch, {
 
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { useRouter } from 'next/router';
-import nookies from 'nookies';
 
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
 import {
@@ -25,21 +24,9 @@ jest.mock('../../../src/service/saved_search_service');
 const encryptedEmail = 'test-encrypted-email-string';
 const decryptedEmail = 'test-decrypted-email-string';
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
-
 jest.mock('next/router', () => {
   return {
     useRouter: jest.fn(),
-  };
-});
-
-jest.mock('nookies', () => {
-  return {
-    get: jest.fn(),
   };
 });
 
@@ -56,9 +43,6 @@ const propsWithErrorMessage = {
 const pushMock = jest.fn();
 
 beforeAll(async () => {
-  nookies.get.mockReturnValue({
-    currentEmailAddress: { email: encryptedEmail },
-  });
   useRouter.mockReturnValue({
     pathname: 'test',
     push: pushMock,
@@ -105,6 +89,9 @@ describe('get server side props', () => {
     },
     req: {
       method: 'POST',
+      cookies: {
+        currentEmailAddress: 'email@address.com',
+      },
     },
   };
 
@@ -114,8 +101,21 @@ describe('get server side props', () => {
     },
     req: {
       method: 'GET',
+      cookies: {
+        currentEmailAddress: 'email@address.com',
+      },
     },
   };
+
+  const oneLoginBackup = process.env.ONE_LOGIN_ENABLED;
+
+  beforeEach(() => {
+    process.env.ONE_LOGIN_ENABLED = 'false';
+  });
+
+  afterEach(() => {
+    process.env.ONE_LOGIN_ENABLED = oneLoginBackup;
+  });
 
   it('should work with normal data and create a correct prop for the component (get request)', async () => {
     decryptSignedApiKey.mockReturnValue({

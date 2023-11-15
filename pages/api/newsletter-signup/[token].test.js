@@ -2,7 +2,7 @@ import handler from './[token]';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { notificationRoutes, URL_ACTIONS } from '../../../src/utils/constants';
 import { encrypt } from '../../../src/utils/encryption';
-import { client } from '../../../src/utils';
+import { client } from '../../../src/utils/axios';
 
 jest.mock('../../../src/utils/axios', () => ({
   client: {

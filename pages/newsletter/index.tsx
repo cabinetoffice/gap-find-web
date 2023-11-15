@@ -5,10 +5,11 @@ import { InferGetServerSidePropsType } from 'next';
 import Layout from '../../src/components/partials/Layout';
 import gloss from '../../src/utils/glossary.json';
 import {
+  LOGIN_NOTICE_TYPES,
   newsletterRoutes,
   notificationRoutes,
   URL_ACTIONS,
-} from '../../src/utils';
+} from '../../src/utils/constants';
 
 const HOST = process.env.HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
@@ -67,7 +68,10 @@ const NewsletterLandingPage = ({
                 data-cy="cyContinueToNewsletterSignup"
                 href={
                   oneLoginEnabled
-                    ? `${userServiceHost}/v2/login?redirectUrl=${host}${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.NEWSLETTER_SUBSCRIBE}`
+                    ? `${userServiceHost}/v2/login?redirectUrl=` +
+                      encodeURIComponent(
+                        `${host}${notificationRoutes.manageNotifications}?action=${URL_ACTIONS.NEWSLETTER_SUBSCRIBE}&migrationType=${LOGIN_NOTICE_TYPES.NEWSLETTER}`,
+                      )
                     : newsletterRoutes.signup
                 }
               >

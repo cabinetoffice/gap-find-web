@@ -36,7 +36,6 @@ const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
         />
         <title>Home - Find a grant</title>
       </Head>
-
       <Layout description="Find a grant">
         <div className="govuk-width-container ">
           <div className="govuk-grid-row">

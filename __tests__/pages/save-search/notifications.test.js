@@ -6,7 +6,6 @@ import SignupSavedSearch, {
 import { RouterContext } from 'next/dist/shared/lib/router-context.js';
 import { parseBody } from 'next/dist/server/api-utils/node';
 jest.mock('next/dist/server/api-utils/node');
-
 describe('Rendering serverside props', () => {
   const queryWithNoErrors = {
     req: { method: 'GET' },
@@ -70,28 +69,77 @@ describe('Rendering serverside props', () => {
     );
   });
 
-  it('should redirect the user if the method is POST and there are no validation errors', async () => {
-    const context = {
-      req: {
-        method: 'POST',
-      },
-      query: {
-        'errors[]': '',
-      },
-    };
+  describe('One Login feature flag disabled', () => {
+    const oneLoginBackup = process.env.ONE_LOGIN_ENABLED;
 
-    const parsedBody = {
-      consent_radio: 'true',
-    };
+    beforeEach(() => {
+      process.env.ONE_LOGIN_ENABLED = 'false';
+    });
 
-    parseBody.mockResolvedValue(parsedBody);
+    afterEach(() => {
+      process.env.ONE_LOGIN_ENABLED = oneLoginBackup;
+    });
 
-    const result = await getServerSideProps(context);
-    expect(result).toEqual({
-      redirect: {
-        statusCode: 302,
-        destination: 'email?errors[]=&notifications_consent=true',
-      },
+    it('redirects user to expected URL if the method is POST and there are no validation errors', async () => {
+      const context = {
+        req: {
+          method: 'POST',
+        },
+        query: {
+          'errors[]': '',
+        },
+      };
+
+      const parsedBody = {
+        consent_radio: 'true',
+      };
+
+      parseBody.mockResolvedValue(parsedBody);
+
+      const result = await getServerSideProps(context);
+      expect(result).toEqual({
+        redirect: {
+          statusCode: 302,
+          destination: 'email?errors[]=&notifications_consent=true',
+        },
+      });
+    });
+  });
+
+  describe('One Login feature flag enabled', () => {
+    const oneLoginBackup = process.env.ONE_LOGIN_ENABLED;
+
+    beforeEach(() => {
+      process.env.ONE_LOGIN_ENABLED = 'true';
+    });
+
+    afterEach(() => {
+      process.env.ONE_LOGIN_ENABLED = oneLoginBackup;
+    });
+
+    it('redirects user to expected URL if the method is POST and there are no validation errors', async () => {
+      const context = {
+        req: {
+          method: 'POST',
+        },
+        query: {
+          'errors[]': '',
+        },
+      };
+
+      const parsedBody = {
+        consent_radio: 'true',
+      };
+
+      parseBody.mockResolvedValue(parsedBody);
+
+      const result = await getServerSideProps(context);
+      expect(result).toEqual({
+        redirect: {
+          statusCode: 302,
+          destination: `${process.env.HOST}/notifications/manage-notifications?action=save-search-subscribe&errors[]=&notifications_consent=true`,
+        },
+      });
     });
   });
 });

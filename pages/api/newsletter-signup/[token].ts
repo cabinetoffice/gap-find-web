@@ -4,7 +4,8 @@ import {
   generateSignedApiKey,
 } from '../../../src/service/api-key-service';
 import { NewsletterSubscription } from '../../../src/types/newsletter';
-import { addErrorInfo, client as axios } from '../../../src/utils';
+import { addErrorInfo, logger } from '../../../src/utils';
+import { client as axios } from '../../../src/utils/axios';
 import nookies from 'nookies';
 import {
   cookieName,
@@ -13,7 +14,6 @@ import {
   URL_ACTIONS,
 } from '../../../src/utils/constants';
 import { encrypt } from '../../../src/utils/encryption';
-import { logger } from '../../../src/utils';
 
 export default async function handler(
   req: NextApiRequest,

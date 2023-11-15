@@ -16,7 +16,6 @@ jest.mock('next/router', () => ({
     return jest.fn();
   },
 }));
-
 let props, component;
 beforeAll(async () => {
   props = {

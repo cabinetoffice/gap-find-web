@@ -1,4 +1,3 @@
-import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import {
   cookieName,
   notificationRoutes,
@@ -12,22 +11,11 @@ import {
   deleteSaveSearch,
   getBySavedSearchId,
 } from '../../../src/service/saved_search_service';
-import nookies from 'nookies';
 import { decrypt } from '../../../src/utils/encryption';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
-import { axios } from '../../../src/utils';
-
-const breadcrumbsRoutes = [
-  {
-    label: 'Home',
-    path: notificationRoutes['home'],
-  },
-  {
-    label: 'Notifications',
-    path: notificationRoutes['notificationsHome'],
-  },
-];
+import { getJwtFromCookies } from '../../../src/utils';
+import { axios } from '../../../src/utils/axios';
 
 const redirect = (uri) => {
   return {
@@ -38,8 +26,25 @@ const redirect = (uri) => {
   };
 };
 
+async function getEmailAddressFromCookies(ctx) {
+  const decodedEmailCookie = decryptSignedApiKey(
+    ctx.req.cookies['currentEmailAddress'],
+  );
+  return decrypt(decodedEmailCookie.email);
+}
+
+const getUserId = async (ctx) => {
+  if (process.env.ONE_LOGIN_ENABLED != 'true') {
+    return getEmailAddressFromCookies(ctx);
+  }
+  const { jwtPayload } = getJwtFromCookies(ctx.req);
+
+  return jwtPayload.sub;
+};
+
 export async function getServerSideProps(ctx) {
   if (
+    process.env.ONE_LOGIN_ENABLED != 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
   ) {
     return {
@@ -50,16 +55,15 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  const { currentEmailAddress } = nookies.get(ctx);
-  const decodedEmail = decryptSignedApiKey(currentEmailAddress);
-  const decryptedEmailAddress = await decrypt(decodedEmail.email);
+  const userId = await getUserId(ctx);
+
   let errorMessage = '';
   const slug = ctx.query.slug;
 
   if (ctx.req.method === 'POST') {
     try {
       const savedSearch = await getBySavedSearchId(slug);
-      await deleteSaveSearch(slug, decryptedEmailAddress);
+      await deleteSaveSearch(slug, userId);
       return redirect(
         `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.DELETE_SAVED_SEARCH}&savedSearchName=${savedSearch.name}`,
       );
@@ -90,7 +94,12 @@ function deletingSavedSearches({ saveSearchId, errorMessage }) {
       </Head>
       <Layout description="confirm">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <BreadCrumbs routes={breadcrumbsRoutes} />
+          <a
+            href={notificationRoutes.manageNotifications}
+            className="govuk-back-link"
+          >
+            Back
+          </a>
         </div>
         {errorMessage && (
           <div className="govuk-grid-row govuk-body">

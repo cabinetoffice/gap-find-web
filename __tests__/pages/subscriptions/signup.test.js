@@ -3,7 +3,7 @@ import Signup, {
   getServerSideProps,
 } from '../../../pages/subscriptions/signup';
 import { fetchEntry } from '../../../src/utils/contentFulPage';
-import { client } from '../../../src/utils';
+import { client } from '../../../src/utils/axios';
 
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('next/router', () => ({
@@ -184,7 +184,7 @@ describe('getServerSideProps', () => {
   it('should redirect to the 404 page if no grant ID is provided', async () => {
     const request = {
       query: {
-        id: undefined,
+        grantId: undefined,
       },
     };
 
@@ -215,7 +215,7 @@ describe('getServerSideProps', () => {
     process.env.ONE_LOGIN_ENABLED = 'true';
     const request = {
       query: {
-        id: 'a-grant-id',
+        grantId: 'a-grant-id',
         grantLabel: 'a-grant-label',
       },
     };
@@ -247,7 +247,7 @@ describe('getServerSideProps', () => {
 
     const request = {
       query: {
-        id: 'a-grant-id',
+        grantId: 'a-grant-id',
         grantLabel: 'a-grant-label',
         previousFormValues,
         'errors[]': errors,
@@ -277,7 +277,7 @@ describe('getServerSideProps', () => {
 
     const request = {
       query: {
-        id: 'a-grant-id',
+        grantId: 'a-grant-id',
         grantLabel: 'a-grant-label',
         previousFormValues,
         'errors[]': errors,

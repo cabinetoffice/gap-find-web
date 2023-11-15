@@ -15,12 +15,6 @@ jest.mock('../../../src/utils/jwt', () => ({
   })),
 }));
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
-
 const req = {
   body: {
     email: 'test@test.com',

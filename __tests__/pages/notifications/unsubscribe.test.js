@@ -18,12 +18,6 @@ jest.mock('../../../src/service/api-key-service');
 const encryptedEmail = 'test-encrypted-email-string';
 const decryptedEmail = 'test-decrypted-email-string';
 
-jest.mock('next/config', () => {
-  return jest.fn().mockImplementation(() => {
-    return { serverRuntimeConfig: {} };
-  });
-});
-
 jest.mock('next/router', () => {
   return {
     useRouter: jest.fn(),
@@ -115,44 +109,120 @@ describe('get server side props', () => {
     query: {
       slug: '12345678',
     },
+    req: {
+      cookies: {
+        'user-service-token': 'abcd',
+      },
+    },
   };
 
-  it('should work with normal data and create a correct prop for the component', async () => {
-    const subscriptionServiceMock = jest
-      .spyOn(SubscriptionService.prototype, 'getSubscriptionByEmailAndGrantId')
-      .mockImplementation(() => {
-        return testSubscription;
+  describe('one login disabled', () => {
+    const oneLoginBackup = process.env.ONE_LOGIN_ENABLED;
+
+    beforeEach(() => {
+      process.env.ONE_LOGIN_ENABLED = 'false';
+    });
+
+    afterEach(() => {
+      process.env.ONE_LOGIN_ENABLED = oneLoginBackup;
+    });
+
+    it('should work with normal data and create a correct prop for the component', async () => {
+      const subscriptionServiceMock = jest
+        .spyOn(
+          SubscriptionService.prototype,
+          'getSubscriptionByEmailAndGrantId',
+        )
+        .mockImplementation(() => {
+          return testSubscription;
+        });
+
+      decryptSignedApiKey.mockReturnValue({
+        email: encryptedEmail,
       });
 
-    decryptSignedApiKey.mockReturnValue({
-      email: encryptedEmail,
+      fetchByGrantId.mockReturnValue({
+        fields: {
+          grantName: 'Test Grant',
+        },
+      });
+
+      cookieExistsAndContainsValidJwt.mockReturnValue(true);
+
+      const result = await getServerSideProps(TrueContext);
+
+      expect(decrypt).toHaveBeenCalledTimes(1);
+      expect(decrypt).toHaveBeenCalledWith(encryptedEmail);
+      expect(subscriptionServiceMock).toBeCalledTimes(1);
+      expect(result).toStrictEqual(expectedTruthResult);
     });
 
-    fetchByGrantId.mockReturnValue({
-      fields: {
-        grantName: 'Test Grant',
-      },
+    it('should redirect to the check email page if a cookie is not set', async () => {
+      cookieExistsAndContainsValidJwt.mockReturnValue(false);
+
+      let result = await getServerSideProps(TrueContext);
+      expect(result).toStrictEqual({
+        redirect: {
+          destination: notificationRoutes['checkEmail'],
+          permanent: false,
+        },
+      });
     });
-
-    cookieExistsAndContainsValidJwt.mockReturnValue(true);
-
-    const result = await getServerSideProps(TrueContext);
-
-    expect(decrypt).toHaveBeenCalledTimes(1);
-    expect(decrypt).toHaveBeenCalledWith(encryptedEmail);
-    expect(subscriptionServiceMock).toBeCalledTimes(1);
-    expect(result).toStrictEqual(expectedTruthResult);
   });
 
-  it('should redirect to the check email page if a cookie is not set', async () => {
-    cookieExistsAndContainsValidJwt.mockReturnValue(false);
+  describe('one login enabled', () => {
+    const oneLoginBackup = process.env.ONE_LOGIN_ENABLED;
 
-    let result = await getServerSideProps(TrueContext);
-    expect(result).toStrictEqual({
-      redirect: {
-        destination: notificationRoutes['checkEmail'],
-        permanent: false,
-      },
+    beforeEach(() => {
+      process.env.ONE_LOGIN_ENABLED = 'true';
+    });
+
+    afterEach(() => {
+      process.env.ONE_LOGIN_ENABLED = oneLoginBackup;
+    });
+
+    it('works with normal data and create a correct prop for the component', async () => {
+      const subscriptionServiceMock = jest
+        .spyOn(SubscriptionService.prototype, 'getSubscriptionBySubAndGrantId')
+        .mockImplementation(() => {
+          return testSubscription;
+        });
+
+      fetchByGrantId.mockReturnValue({
+        fields: {
+          grantName: 'Test Grant',
+        },
+      });
+
+      const result = await getServerSideProps(TrueContext);
+
+      expect(decrypt).toHaveBeenCalledTimes(1);
+      expect(decrypt).toHaveBeenCalledWith(encryptedEmail);
+      expect(subscriptionServiceMock).toBeCalledTimes(1);
+      expect(result).toStrictEqual({
+        props: {
+          ...expectedTruthResult.props,
+          email: undefined,
+        },
+      });
+    });
+
+    it('redirects to manage notifications if subscription to delete does not exist', async () => {
+      jest
+        .spyOn(SubscriptionService.prototype, 'getSubscriptionBySubAndGrantId')
+        .mockImplementation(() => {
+          return {};
+        });
+
+      fetchByGrantId.mockReturnValue(null);
+
+      const result = await getServerSideProps(TrueContext);
+      expect(result).toStrictEqual({
+        redirect: {
+          destination: notificationRoutes.manageNotifications,
+          permanent: false,
+        },
+      });
     });
   });
 });

@@ -12,7 +12,7 @@ describe('GrantDetailsSidebar component', () => {
     ).toBeDefined();
     expect(link).toBeDefined();
     expect(link.getAttribute('href')).toBe(
-      '/subscriptions/signup?id=test&grantLabel=test',
+      '/subscriptions/signup?grantId=test&grantLabel=test',
     );
   });
 });

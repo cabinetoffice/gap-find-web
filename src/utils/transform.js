@@ -2,6 +2,25 @@ import { DateValidationError } from './transformer/date-range-transformer.errors
 import { transformQueryDateToMoment } from './transformer/date-range-transformer';
 import { logger } from './logger';
 
+export const buildSavedSearchFilters = (filterObject) => {
+  return Object.entries(filterObject)
+    .filter(([key]) => key.startsWith('fields'))
+    .flatMap(([key, value]) => {
+      return value.values.map((subFilter) => {
+        return {
+          name: key,
+          subFilterid: subFilter.id,
+          searchTerm: subFilter.search_parameter,
+          type: value.type,
+        };
+      });
+    });
+};
+
+export const getDateFromFilters = (filters, dateToFetch) => {
+  return filters.dateRange?.values[0].search_parameter[dateToFetch] ?? null;
+};
+
 export const extractFiltersFields = (query, filters) => {
   const filterObj = {};
   filterObj.errors = [];

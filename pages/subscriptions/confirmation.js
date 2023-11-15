@@ -30,7 +30,7 @@ export async function getServerSideProps({ req }) {
   if (validationErrors.length > 0) {
     const errorParam = generateSignupErrorsRedirectParam(validationErrors);
     const previousFormValues = getPreviousFormValues(body);
-    const redirectPath = `/subscriptions/signup?id=${body.grantLabel}${errorParam}&${previousFormValues}`;
+    const redirectPath = `/subscriptions/signup?grantId=${body.grantLabel}${errorParam}&${previousFormValues}`;
     return {
       redirect: {
         permanemt: false,

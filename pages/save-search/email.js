@@ -17,13 +17,15 @@ import {
   EMAIL_ADDRESS_FORMAT_VALIDATION_ERROR,
   EMAIL_ADDRESS_REGEX,
 } from '../../src/utils/constants';
-import { fetchFilters } from '../../src/utils/contentFulPage';
 import gloss from '../../src/utils/glossary.json';
 import {
-  addPublishedDateFilter,
+  buildSavedSearchFilters,
+  getDateFromFilters,
   extractFiltersFields,
+  addPublishedDateFilter,
 } from '../../src/utils/transform';
 import { addErrorInfo, logger } from '../../src/utils';
+import { fetchFilters } from '../../src/utils/contentFulPage';
 
 //TODO confirm if we need to show only one error at a time or not
 const validate = (requestBody) => {
@@ -73,25 +75,6 @@ const redirect = (uri) => {
   };
 };
 
-const buildSavedSearchFilters = (filterObject) => {
-  return Object.entries(filterObject)
-    .filter(([key]) => key.startsWith('fields'))
-    .flatMap(([key, value]) => {
-      return value.values.map((subFilter) => {
-        return {
-          name: key,
-          subFilterid: subFilter.id,
-          searchTerm: subFilter.search_parameter,
-          type: value.type,
-        };
-      });
-    });
-};
-
-const getDateFromFilters = (filters, dateToFetch) => {
-  return filters.dateRange?.values[0].search_parameter[dateToFetch] ?? null;
-};
-
 const generateConfirmationUrl = (apiKey) => {
   return new URL(
     `api/save-search/confirm/${apiKey}`,
@@ -113,6 +96,30 @@ const sendConfirmationEmail = async (savedSearch, email) => {
   );
 };
 
+const getFilterObjectFromQuery = (query, filters) => {
+  const filterObjFromQuery = extractFiltersFields(query, filters);
+  addPublishedDateFilter(query, filterObjFromQuery);
+  return filterObjFromQuery;
+};
+
+const buildSavedSearch = async (query, body) => {
+  const filterObjFromQuery = getFilterObjectFromQuery(
+    query,
+    await fetchFilters(),
+  );
+
+  return {
+    name: query.search_name,
+    search_term: query.searchTerm,
+    filters: buildSavedSearchFilters(filterObjFromQuery),
+    fromDate: getDateFromFilters(filterObjFromQuery, 'gte'),
+    toDate: getDateFromFilters(filterObjFromQuery, 'lte'),
+    status: SavedSearchStatusType.DRAFT,
+    notifications: query.notifications_consent === 'true' ? true : false,
+    email: body.user_email,
+  };
+};
+
 export async function getServerSideProps({ query, req }) {
   const queryString = buildQueryString(query);
 
@@ -124,21 +131,7 @@ export async function getServerSideProps({ query, req }) {
       return returnPostErrors(validationErrors, query, body, queryString);
     }
 
-    // save new saved search with a draft status
-    const filters = await fetchFilters();
-    let filterObjFromQuery = extractFiltersFields(query, filters);
-    addPublishedDateFilter(query, filterObjFromQuery);
-
-    const searchToSave = {
-      name: query.search_name,
-      search_term: query.searchTerm,
-      filters: buildSavedSearchFilters(filterObjFromQuery),
-      fromDate: getDateFromFilters(filterObjFromQuery, 'gte'),
-      toDate: getDateFromFilters(filterObjFromQuery, 'lte'),
-      status: SavedSearchStatusType.DRAFT,
-      notifications: query.notifications_consent === 'true' ? true : false,
-      email: body.user_email,
-    };
+    const searchToSave = await buildSavedSearch(query, body);
     const savedSearch = await save(searchToSave);
 
     try {

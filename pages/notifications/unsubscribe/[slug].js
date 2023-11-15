@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import nookies from 'nookies';
-import { BreadCrumbs } from '../../../src/components/breadcrumbs/BreadCrumbs';
 import Layout from '../../../src/components/partials/Layout';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { SubscriptionService } from '../../../src/service/subscription-service';
@@ -11,22 +10,6 @@ import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChec
 import { decrypt } from '../../../src/utils/encryption';
 import gloss from '../../../src/utils/glossary.json';
 import { getJwtFromCookies } from '../../../src/utils/jwt';
-
-//TODO GAP-560 / GAP-592
-const breadcrumbsRoutes = [
-  {
-    label: 'Home',
-    path: notificationRoutes['home'],
-  },
-  {
-    label: 'Notifications',
-    path: notificationRoutes['notificationsHome'],
-  },
-  {
-    label: 'Unsubscribe',
-    path: notificationRoutes['unsubscribe'],
-  },
-];
 
 export async function getServerSideProps(ctx) {
   const {
@@ -46,6 +29,15 @@ export async function getServerSideProps(ctx) {
     const grantDetails = await fetchByGrantId(
       subscription.contentfulGrantSubscriptionId,
     );
+
+    if (!grantDetails)
+      return {
+        redirect: {
+          permanent: false,
+          destination: notificationRoutes.manageNotifications,
+        },
+      };
+
     return {
       props: {
         unsubscribeGrant: JSON.stringify(subscription),
@@ -80,6 +72,15 @@ export async function getServerSideProps(ctx) {
   const grantDetails = await fetchByGrantId(
     subscription.contentfulGrantSubscriptionId,
   );
+
+  if (!grantDetails)
+    return {
+      redirect: {
+        permanent: false,
+        destination: notificationRoutes.manageNotifications,
+      },
+    };
+
   return {
     props: {
       unsubscribeGrant: JSON.stringify(subscription),
@@ -97,8 +98,16 @@ function notifications({ unsubscribeGrant, email, grantDetails }) {
         <title>{gloss.title}</title>
       </Head>
       <Layout description="Notifications">
-        <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <BreadCrumbs routes={breadcrumbsRoutes} />
+        <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom-0">
+          <a
+            href={notificationRoutes.manageNotifications}
+            className="govuk-back-link"
+          >
+            Back
+          </a>
+        </div>
+        <div className="govuk-width-container">
+          <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 govuk-!-padding-bottom-4"></div>
         </div>
         <div className="govuk-grid-row govuk-body">
           <div className="govuk-grid-column-full">
