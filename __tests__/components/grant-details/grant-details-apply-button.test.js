@@ -10,7 +10,7 @@ describe('GrantDetailsApplyButton component', () => {
 
     render(<GrantDetailsApplyButton grant={grantWithApplyButtonShown} />);
 
-    const link = screen.getByRole('button', { name: 'Start new application' });
+    const link = screen.getByRole('link', { name: 'Start new application' });
     const button = screen.getByText('Start new application');
 
     expect(link).toBeDefined();
@@ -29,8 +29,8 @@ describe('GrantDetailsApplyButton component', () => {
 
     render(<GrantDetailsApplyButton grant={grantHide} />);
 
-    const link = screen.queryByRole('link', { name: 'Start new application' });
-    expect(link).toBeNull();
+    const link = screen.getByRole('link', { name: 'Start new application' });
+    expect(link).toHaveAttribute('href', '#');
 
     const button = screen.getByText('Start new application');
     expect(button).toBeDefined();
