@@ -26,6 +26,13 @@ body {
   margin-left: auto;
 }
 
+@media (min-width: 40.0625em) {
+  nav .app-width-container {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+}
+
 /***** COMPONENT LEVEL, TODO: REFACTOR *****/
 
 .gap-contact-inset {
