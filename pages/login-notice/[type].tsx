@@ -97,7 +97,7 @@ const LoginNotice = ({
                 className="govuk-button"
                 href={`${userServiceHost}/v2/login?redirectUrl=${formattedRedirectUrl}`}
               >
-                Continue to One Login
+                Continue to GOV.UK One Login
               </a>
               <a
                 className="govuk-link"
