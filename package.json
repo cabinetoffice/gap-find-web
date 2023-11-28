@@ -27,7 +27,7 @@
     "cookie-parser": "^1.4.6",
     "cypress-recurse": "^1.18.0",
     "date-fns": "^2.19.0",
-    "dotenv": "^16.0.0",
+    "dotenv-safe": "8.2.0",
     "govuk-frontend": "^3.14.0",
     "gray-matter": "4.0.3",
     "imap-simple": "^5.1.0",

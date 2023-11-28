@@ -1,6 +1,7 @@
-/** @type {import('next').NextConfig} */
-
 const path = require('path');
+require('dotenv-safe').config();
+
+/** @type {import('next').NextConfig} */
 
 module.exports = {
   i18n: {
