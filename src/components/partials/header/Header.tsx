@@ -33,7 +33,7 @@ const getNavItems = ({
   applicantUrl,
   oneLoginEnabled,
 }: GetNavItemsProps) =>
-  oneLoginEnabled === 'true' && isUserLoggedIn
+  oneLoginEnabled && isUserLoggedIn
     ? getAuthenticatedNavItems(applicantUrl)
     : navItems;
 
@@ -95,7 +95,7 @@ const BetaBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
               </span>
             </p>
           </div>
-          {isUserLoggedIn && oneLoginEnabled === 'true' && <SignOut />}
+          {isUserLoggedIn && oneLoginEnabled && <SignOut />}
         </div>
       </div>
     </div>

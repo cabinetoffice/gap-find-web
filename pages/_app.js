@@ -11,6 +11,7 @@ import App from 'next/app';
 export const AuthContext = createContext({
   isUserLoggedIn: false,
 });
+
 export const AppContext = createContext({
   applicantUrl: null,
   oneLoginEnabled: null,
@@ -61,7 +62,7 @@ MyApp.getInitialProps = async (context) => {
   let applicantUrl = null;
 
   if (process?.env) {
-    oneLoginEnabled = process.env.ONE_LOGIN_ENABLED;
+    oneLoginEnabled = process.env.ONE_LOGIN_ENABLED == 'true';
     applicantUrl = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
   }
   try {
