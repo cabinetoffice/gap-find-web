@@ -75,7 +75,7 @@ export async function getServerSideProps(ctx) {
 
     return {
       redirect: {
-        permanemt: false,
+        permanent: false,
         destination: `${notificationRoutes['checkEmail']}?${errorStr}&email=${email}`,
       },
     };

@@ -32,7 +32,7 @@ describe('SearchSortBy Component', () => {
       <SearchSortBy
         sortBy={'closingDate'}
         handleSortByChange={handleSortByChange}
-      />
+      />,
     );
     const combobox = screen.getByRole('combobox', { name: 'Sort by' });
     expect(combobox.innerHTML).toBe('Closing date');
@@ -43,7 +43,7 @@ describe('SearchSortBy Component', () => {
       <SearchSortBy
         sortBy={'minValue'}
         handleSortByChange={handleSortByChange}
-      />
+      />,
     );
     const combobox = screen.getByRole('combobox', { name: 'Sort by' });
     expect(combobox.innerHTML).toBe('Grant value: Low to high');
@@ -54,7 +54,7 @@ describe('SearchSortBy Component', () => {
       <SearchSortBy
         sortBy={'maxValue'}
         handleSortByChange={handleSortByChange}
-      />
+      />,
     );
     const combobox = screen.getByRole('combobox', { name: 'Sort by' });
     expect(combobox.innerHTML).toBe('Grant value: High to low');

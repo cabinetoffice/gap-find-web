@@ -1,4 +1,3 @@
-import { recurse } from 'cypress-recurse';
 import cy_visit from '../utils/cyVisit';
 import run_accessibility from './run_accessbility';
 
@@ -18,7 +17,7 @@ export default function subscribeToGrant(userEmail) {
   cy.get('[data-cy="cySignUpCheckEmail"]').should('contain', userEmail);
   cy.get('[data-cy="cySignUpCheckSubscribedTo"]').should(
     'contain',
-    'Chargepoint Grant for people renting and living in flats'
+    'Chargepoint Grant for people renting and living in flats',
   );
 
   // Back to browse all grants

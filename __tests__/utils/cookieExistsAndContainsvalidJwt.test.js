@@ -22,7 +22,7 @@ describe('cookieExistsAndContainsValidJwt', () => {
     jwt.verify.mockReturnValue(true);
 
     expect(cookieExistsAndContainsValidJwt({}, 'currentEmailAddress')).toEqual(
-      true
+      true,
     );
   });
 
@@ -34,7 +34,7 @@ describe('cookieExistsAndContainsValidJwt', () => {
     jwt.verify.mockReturnValue(false);
 
     expect(cookieExistsAndContainsValidJwt({}, 'currentEmailAddress')).toEqual(
-      false
+      false,
     );
   });
 
@@ -43,7 +43,7 @@ describe('cookieExistsAndContainsValidJwt', () => {
     nookies.get.mockReturnValue(cookies);
 
     expect(cookieExistsAndContainsValidJwt({}, 'currentEmailAddress')).toEqual(
-      false
+      false,
     );
   });
 
@@ -56,12 +56,12 @@ describe('cookieExistsAndContainsValidJwt', () => {
     jwt.verify.mockReturnValue(true);
 
     expect(cookieExistsAndContainsValidJwt({}, 'currentEmailAddress')).toEqual(
-      true
+      true,
     );
     expect(jwt.verify).toHaveBeenLastCalledWith(
       cookies['currentEmailAddress'],
       process.env.JWT_SECRET_KEY,
-      hasValidJwt
+      hasValidJwt,
     );
   });
 });

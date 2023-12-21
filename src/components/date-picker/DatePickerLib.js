@@ -13,7 +13,7 @@
 })(this, function (exports) {
   'use strict';
 
-  var DatePickerDialog = function (cdp, fieldName) {
+  const DatePickerDialog = function (cdp, fieldName) {
     this.buttonLabelChoose = `Select ${fieldName} date`;
     this.buttonLabelChange = `Selected ${fieldName} date`;
     this.dayLabels = [
@@ -147,11 +147,11 @@
     // Create Grid of Dates
 
     this.tbodyNode.innerHTML = '';
-    for (var i = 0; i < 6; i++) {
-      var row = this.tbodyNode.insertRow(i);
+    for (let i = 0; i < 6; i++) {
+      const row = this.tbodyNode.insertRow(i);
       this.lastRowNode = row;
-      for (var j = 0; j < 7; j++) {
-        var cell = document.createElement('td');
+      for (let j = 0; j < 7; j++) {
+        const cell = document.createElement('td');
 
         cell.tabIndex = -1;
         cell.addEventListener('click', this.handleDayClick.bind(this));
@@ -172,35 +172,35 @@
 
   DatePickerDialog.prototype.isSameDay = function (day1, day2) {
     return (
-      day1.getFullYear() == day2.getFullYear() &&
-      day1.getMonth() == day2.getMonth() &&
-      day1.getDate() == day2.getDate()
+      day1.getFullYear() === day2.getFullYear() &&
+      day1.getMonth() === day2.getMonth() &&
+      day1.getDate() === day2.getDate()
     );
   };
 
   DatePickerDialog.prototype.isNotSameMonth = function (day1, day2) {
     return (
-      day1.getFullYear() != day2.getFullYear() ||
-      day1.getMonth() != day2.getMonth()
+      day1.getFullYear() !== day2.getFullYear() ||
+      day1.getMonth() !== day2.getMonth()
     );
   };
 
   DatePickerDialog.prototype.updateGrid = function () {
-    var flag;
-    var fd = this.focusDay;
+    let flag;
+    const fd = this.focusDay;
 
     this.monthYearNode.textContent =
       this.monthLabels[fd.getMonth()] + ' ' + fd.getFullYear();
 
-    var firstDayOfMonth = new Date(fd.getFullYear(), fd.getMonth(), 1);
-    var dayOfWeek = firstDayOfMonth.getDay();
+    const firstDayOfMonth = new Date(fd.getFullYear(), fd.getMonth(), 1);
+    const dayOfWeek = firstDayOfMonth.getDay();
 
     firstDayOfMonth.setDate(firstDayOfMonth.getDate() - dayOfWeek);
 
-    var d = new Date(firstDayOfMonth);
+    const d = new Date(firstDayOfMonth);
 
-    for (var i = 0; i < this.days.length; i++) {
-      flag = d.getMonth() != fd.getMonth();
+    for (let i = 0; i < this.days.length; i++) {
+      flag = d.getMonth() !== fd.getMonth();
       this.updateDate(
         this.days[i],
         flag,
@@ -226,12 +226,12 @@
     day,
     selected,
   ) {
-    var d = day.getDate().toString();
+    let d = day.getDate().toString();
     if (day.getDate() <= 9) {
       d = '0' + d;
     }
 
-    var m = day.getMonth() + 1;
+    let m = day.getMonth() + 1;
     if (day.getMonth() < 9) {
       m = '0' + m;
     }
@@ -254,13 +254,13 @@
   };
 
   DatePickerDialog.prototype.moveFocusToDay = function (day) {
-    var d = this.focusDay;
+    const d = this.focusDay;
 
     this.focusDay = day;
 
     if (
-      d.getMonth() != this.focusDay.getMonth() ||
-      d.getYear() != this.focusDay.getYear()
+      d.getMonth() !== this.focusDay.getMonth() ||
+      d.getYear() !== this.focusDay.getYear()
     ) {
       this.updateGrid();
     }
@@ -272,9 +272,9 @@
       flag = true;
     }
 
-    for (var i = 0; i < this.days.length; i++) {
-      var dayNode = this.days[i];
-      var day = this.getDayFromDataDateAttribute(dayNode);
+    for (let i = 0; i < this.days.length; i++) {
+      const dayNode = this.days[i];
+      const day = this.getDayFromDataDateAttribute(dayNode);
 
       dayNode.tabIndex = -1;
       if (this.isSameDay(day, this.focusDay)) {
@@ -333,37 +333,37 @@
   };
 
   DatePickerDialog.prototype.moveFocusToNextDay = function () {
-    var d = new Date(this.focusDay);
+    const d = new Date(this.focusDay);
     d.setDate(d.getDate() + 1);
     this.moveFocusToDay(d);
   };
 
   DatePickerDialog.prototype.moveFocusToNextWeek = function () {
-    var d = new Date(this.focusDay);
+    const d = new Date(this.focusDay);
     d.setDate(d.getDate() + 7);
     this.moveFocusToDay(d);
   };
 
   DatePickerDialog.prototype.moveFocusToPreviousDay = function () {
-    var d = new Date(this.focusDay);
+    const d = new Date(this.focusDay);
     d.setDate(d.getDate() - 1);
     this.moveFocusToDay(d);
   };
 
   DatePickerDialog.prototype.moveFocusToPreviousWeek = function () {
-    var d = new Date(this.focusDay);
+    const d = new Date(this.focusDay);
     d.setDate(d.getDate() - 7);
     this.moveFocusToDay(d);
   };
 
   DatePickerDialog.prototype.moveFocusToFirstDayOfWeek = function () {
-    var d = new Date(this.focusDay);
+    const d = new Date(this.focusDay);
     d.setDate(d.getDate() - d.getDay());
     this.moveFocusToDay(d);
   };
 
   DatePickerDialog.prototype.moveFocusToLastDayOfWeek = function () {
-    var d = new Date(this.focusDay);
+    const d = new Date(this.focusDay);
     d.setDate(d.getDate() + (6 - d.getDay()));
     this.moveFocusToDay(d);
   };
@@ -375,13 +375,13 @@
   };
 
   DatePickerDialog.prototype.getDayFromDataDateAttribute = function (domNode) {
-    var parts = domNode.getAttribute('data-date').split('-');
+    const parts = domNode.getAttribute('data-date').split('-');
     return new Date(parts[0], parseInt(parts[1]) - 1, parts[2]);
   };
   // Textbox methods
 
   DatePickerDialog.prototype.setTextboxDate = function (domNode) {
-    var d = this.focusDay;
+    let d = this.focusDay;
 
     if (domNode) {
       d = this.getDayFromDataDateAttribute(domNode);
@@ -400,9 +400,9 @@
   };
 
   DatePickerDialog.prototype.getDateFromTextbox = function () {
-    var month = parseInt(this.textboxNode[1].value);
-    var day = parseInt(this.textboxNode[0].value);
-    var year = parseInt(this.textboxNode[2].value);
+    const month = parseInt(this.textboxNode[1].value);
+    const day = parseInt(this.textboxNode[0].value);
+    let year = parseInt(this.textboxNode[2].value);
     if (
       this.textboxNode.length === 3 &&
       Number.isInteger(month) &&
@@ -415,7 +415,7 @@
       this.focusDay = new Date(year, month - 1, day);
       this.selectedDay = new Date(this.focusDay);
     } else {
-      // If not a valid date (MM/DD/YY) initialize with todays date
+      // If not a valid date (MM/DD/YY) initialize with today's date
       this.focusDay = new Date();
       this.selectedDay = new Date(0, 0, 1);
     }
@@ -428,13 +428,13 @@
       Number.isInteger(parseInt(this.textboxNode[1].value)) &&
       Number.isInteger(parseInt(this.textboxNode[2].value))
     ) {
-      var day = new Date(
+      const day = new Date(
         this.textboxNode[2].value,
         this.textboxNode[1].value - 1,
         this.textboxNode[0].value,
       );
 
-      var label = this.buttonLabelChange;
+      let label = this.buttonLabelChange;
       label += ', ' + this.dayLabels[day.getDay()];
       label += ' ' + this.monthLabels[day.getMonth()];
       label += ' ' + day.getDate();
@@ -460,7 +460,7 @@
   // Event handlers
 
   DatePickerDialog.prototype.handleOkButton = function (event) {
-    var flag = false;
+    let flag = false;
 
     switch (event.type) {
       case 'keydown':
@@ -500,7 +500,7 @@
   };
 
   DatePickerDialog.prototype.handleCancelButton = function (event) {
-    var flag = false;
+    let flag = false;
 
     switch (event.type) {
       case 'keydown':
@@ -532,7 +532,7 @@
   };
 
   DatePickerDialog.prototype.handleNextYearButton = function (event) {
-    var flag = false;
+    let flag = false;
 
     switch (event.type) {
       case 'keydown':
@@ -568,7 +568,7 @@
   };
 
   DatePickerDialog.prototype.handlePreviousYearButton = function (event) {
-    var flag = false;
+    let flag = false;
 
     switch (event.type) {
       case 'keydown':
@@ -614,7 +614,7 @@
   };
 
   DatePickerDialog.prototype.handleNextMonthButton = function (event) {
-    var flag = false;
+    let flag = false;
 
     switch (event.type) {
       case 'keydown':
@@ -650,7 +650,7 @@
   };
 
   DatePickerDialog.prototype.handlePreviousMonthButton = function (event) {
-    var flag = false;
+    let flag = false;
 
     switch (event.type) {
       case 'keydown':
@@ -687,7 +687,7 @@
   };
 
   DatePickerDialog.prototype.handleDayKeyDown = function (event) {
-    var flag = false;
+    let flag = false;
 
     switch (event.key) {
       case 'Esc':

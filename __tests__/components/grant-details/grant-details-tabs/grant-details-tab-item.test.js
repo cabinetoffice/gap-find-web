@@ -10,7 +10,7 @@ describe('GrantDetailsTabContent component', () => {
     const link = screen.getByRole('link', { name: 'Summary' });
     expect(listitem).toBeDefined();
     expect(listitem.getAttribute('class')).toBe(
-      'govuk-tabs__list-item govuk-tabs__list-item--selected'
+      'govuk-tabs__list-item govuk-tabs__list-item--selected',
     );
     expect(link).toBeDefined();
     expect(link.getAttribute('href')).toBe('#summary');

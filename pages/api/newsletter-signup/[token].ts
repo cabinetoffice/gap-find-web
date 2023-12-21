@@ -32,7 +32,7 @@ export default async function handler(
       newsletterSubscription,
     );
   } catch (e) {
-    logger.error('error subscribing to newletter', addErrorInfo(e, req));
+    logger.error('error subscribing to newsletter', addErrorInfo(e, req));
   }
 
   await addEmailAddressCookieToResponse(tokenValues, res);

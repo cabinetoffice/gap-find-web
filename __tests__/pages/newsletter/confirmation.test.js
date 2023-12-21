@@ -121,7 +121,7 @@ describe('getServerSideProps', () => {
 
     const result = await getServerSideProps({ req, res });
 
-    expect(sendEmail).rejects.toThrow(new Error('something went wrong'));
+    await expect(sendEmail).rejects.toThrow(new Error('something went wrong'));
     expect(result).toEqual({
       props: {
         signedUpEmail: req.body.user_email,

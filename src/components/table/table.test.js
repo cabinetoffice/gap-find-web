@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { Table } from '.';
 
-var mockRows = [
+const mockRows = [
   {
     cells: [
       {

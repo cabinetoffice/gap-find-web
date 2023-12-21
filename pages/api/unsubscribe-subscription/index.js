@@ -10,7 +10,7 @@ import { decrypt } from '../../../src/utils/encryption';
 
 export default async function handler(req, res) {
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
-    const { jwtPayload } = await getJwtFromCookies(req);
+    const { jwtPayload } = getJwtFromCookies(req);
     await deleteSubscriptionBySubAndGrantId(jwtPayload.sub, req.body.grantId);
   } else {
     const result = await deleteSubscriptionByEmailAndGrantId(req);

@@ -501,7 +501,7 @@ export interface ILessonFields {
   modules: (ILessonCodeSnippets | ILessonCopy | ILessonImage)[];
 }
 
-/** A educational lesson, representing one section of a course. */
+/** An educational lesson, representing one section of a course. */
 
 export interface ILesson extends Entry<ILessonFields> {
   sys: {

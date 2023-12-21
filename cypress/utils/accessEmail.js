@@ -8,7 +8,7 @@ export default function accessEmail(keepEmails) {
     {
       timeout: 15000, // retry up to 15 seconds
       delay: 5000, // wait 5 seconds between attempts
-    }
+    },
   )
     .its('html')
     .then((html) => {

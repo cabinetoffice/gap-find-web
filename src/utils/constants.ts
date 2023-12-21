@@ -69,7 +69,7 @@ export const URL_ACTIONS = {
   SUBSCRIBE: 'subscribe',
   UNSUBSCRIBE: 'unsubscribe',
   NEWSLETTER_SUBSCRIBE: 'newsletter-subscribe',
-  NEWSLETTER_UNSUBSCRIBE: 'newslettter-unsubscribe',
+  NEWSLETTER_UNSUBSCRIBE: 'newsletter-unsubscribe',
   EVERYTHING_UNSUBSCRIBE: 'unsubscribe-all',
   SAVED_SEARCH_SUBSCRIBE: 'save-search-subscribe',
   DELETE_SAVED_SEARCH: 'delete-save-search',
