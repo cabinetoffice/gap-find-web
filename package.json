@@ -34,6 +34,7 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.35",
     "next": "12.3.4",
+    "next-logger": "3.0.0",
     "nodemailer": "^6.7.3",
     "nookies": "^2.5.2",
     "notifications-node-client": "6.0.0",
