@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 const { SelectInput } = require('./SelectInput');
 
 const testOptions = [

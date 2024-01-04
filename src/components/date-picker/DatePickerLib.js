@@ -829,5 +829,6 @@
   function initialize($el, dateType) {
     new DatePickerDialog($el, dateType);
   }
+
   exports.DatePickerDialog = initialize;
 });
