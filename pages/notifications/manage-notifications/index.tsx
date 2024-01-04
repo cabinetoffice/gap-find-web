@@ -175,7 +175,7 @@ const buildSavedSearch = async (query, jwtPayload) => {
     fromDate: getDateFromFilters(filterObjFromQuery, 'gte'),
     toDate: getDateFromFilters(filterObjFromQuery, 'lte'),
     status: SavedSearchStatusType.CONFIRMED,
-    notifications: query.notifications_consent === 'true' ? true : false,
+    notifications: query.notifications_consent === 'true',
     email: jwtPayload.email,
     sub: jwtPayload.sub,
   };

@@ -46,7 +46,7 @@ export default async function handler(
 }
 async function addEmailAddressCookieToResponse(
   tokenValues: any,
-  res: NextApiResponse<any>,
+  res: NextApiResponse,
 ) {
   const encryptedEmailAddress = await encrypt(tokenValues.email);
   const emailAddressJwt = generateSignedApiKey({

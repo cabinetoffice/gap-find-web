@@ -168,9 +168,9 @@ const Header = ({ isBasic = false, isUserLoggedIn = false }) => (
 const SignOut = () => (
   <div className="govuk-grid-column-one-quarter">
     <p className="govuk-!-text-align-right govuk-!-font-size-19 govuk-!-margin-0">
-      <a className="govuk-link" href="/api/logout">
+      <Link className="govuk-link" href="/api/logout">
         Sign out
-      </a>
+      </Link>
     </p>
   </div>
 );
