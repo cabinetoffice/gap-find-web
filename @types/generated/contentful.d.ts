@@ -629,14 +629,11 @@ export interface ILessonImage extends Entry<ILessonImageFields> {
 }
 
 export interface IPageFields {
-  fields:
-    | {
-        pageName?: string | undefined;
-        body?: string | undefined;
-      }
-    | undefined;
+  /** Page Name */
+  pageName?: string | undefined;
 
-  contentTypeId: string | undefined;
+  /** body */
+  body?: Document | undefined;
 }
 
 export interface IPage extends Entry<IPageFields> {
