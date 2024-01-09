@@ -65,43 +65,43 @@
     }
   }
   .prevYear {
-    padding: 4px 4px 0px 4px;
+    padding: 4px 4px 0 4px;
     top: -1px;
     width: 1.5rem;
     height: 1.5rem;
     color: white;
     background-color: #0b0c0c;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     box-shadow: none;
   }
   .prevMonth {
-    padding: 4px 4px 0px 4px;
+    padding: 4px 4px 0 4px;
     top: -1px;
     width: 1.5rem;
     height: 1.5rem;
     color: white;
     background-color: #0b0c0c;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     box-shadow: none;
   }
   .nextMonth {
-    padding: 4px 4px 0px 4px;
+    padding: 4px 4px 0 4px;
     top: -1px;
     width: 1.5rem;
     height: 1.5rem;
     color: white;
     background-color: #0b0c0c;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     box-shadow: none;
   }
   .nextYear {
-    padding: 4px 4px 0px 4px;
+    padding: 4px 4px 0 4px;
     top: -1px;
     width: 1.5rem;
     height: 1.5rem;
     color: white;
     background-color: #0b0c0c;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     box-shadow: none;
   }
   .dialogButtonGroup {
@@ -190,7 +190,7 @@
     margin: -1px;
   }
   .icon {
-    margin-bottom: 0px;
+    margin-bottom: 0;
     box-shadow: none;
   }
 }
@@ -206,7 +206,7 @@
     .datepicker-dialog {
       button {
         text-align: center;
-        margin-left: 0px;
+        margin-left: 0;
       }
     }
     .dialogButtonGroup {

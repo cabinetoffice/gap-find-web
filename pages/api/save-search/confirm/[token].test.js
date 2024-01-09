@@ -32,7 +32,7 @@ describe('handler', () => {
 
     const savedSearch = {
       id: 12345,
-      name: 'test saved seaarch',
+      name: 'test saved search',
       filters: [
         {
           name: 'fields.grantApplicantType.en-US',

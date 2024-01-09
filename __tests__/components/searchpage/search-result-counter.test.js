@@ -14,14 +14,14 @@ describe('SearchResultCounter component', () => {
   it('should render the total amount of grants found', () => {
     render(component);
     expect(screen.getByTestId('grant-count').textContent).toBe(
-      `We’ve found 6 grants`
+      `We’ve found 6 grants`,
     );
   });
 
   it('should render the singular if only 1 grant is found instead of the plural', () => {
     render(<SearchResultCounter countGrants={1} />);
     expect(screen.getByTestId('grant-count').textContent).toBe(
-      `We’ve found 1 grant`
+      `We’ve found 1 grant`,
     );
   });
 });

@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 const arrayQuery = {
   sortBy: 'openingDate',
   'fields.grantType.en-US': ['1', '2'],

@@ -1,5 +1,6 @@
-import Link from 'next/link';
 import { isIE } from 'react-device-detect';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const GovUKHeader = () => (
   <header className="govuk-header " role="banner" data-module="govuk-header">
@@ -9,7 +10,7 @@ const GovUKHeader = () => (
           <a className="govuk-header__link govuk-header__link--homepage">
             <span className="govuk-header__logotype">
               {isIE ? (
-                <img
+                <Image
                   src="/assets/images/govuk-logotype-crown.png"
                   className="govuk-header__logotype-crown-fallback-image"
                   alt="uk government crown logo"

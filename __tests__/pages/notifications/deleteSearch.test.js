@@ -202,7 +202,7 @@ describe('get server side props', () => {
     getBySavedSearchId.mockResolvedValue({ name: 'Test Name' });
     deleteSaveSearch.mockRejectedValue(axiosError);
 
-    expect(getServerSideProps(context)).rejects.toThrowError(
+    await expect(getServerSideProps(context)).rejects.toThrowError(
       expect.objectContaining({
         message: 'Email',
       }),
@@ -221,6 +221,6 @@ describe('get server side props', () => {
     getBySavedSearchId.mockResolvedValue({ name: 'Test Name' });
     deleteSaveSearch.mockRejectedValue(error);
 
-    expect(getServerSideProps(context)).rejects.toThrowError(error);
+    await expect(getServerSideProps(context)).rejects.toThrowError(error);
   });
 });

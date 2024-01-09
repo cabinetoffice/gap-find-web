@@ -115,7 +115,7 @@ const buildSavedSearch = async (query, body) => {
     fromDate: getDateFromFilters(filterObjFromQuery, 'gte'),
     toDate: getDateFromFilters(filterObjFromQuery, 'lte'),
     status: SavedSearchStatusType.DRAFT,
-    notifications: query.notifications_consent === 'true' ? true : false,
+    notifications: query.notifications_consent === 'true',
     email: body.user_email,
   };
 };

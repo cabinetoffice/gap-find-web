@@ -41,7 +41,7 @@ describe('SearchFilterSelector component', () => {
     expect(div).toBeDefined();
     expect(div.getAttribute('id')).toBe('accordion-default-content-2');
     expect(div.getAttribute('aria-labelledby')).toBe(
-      'accordion-default-heading-2'
+      'accordion-default-heading-2',
     );
   });
 

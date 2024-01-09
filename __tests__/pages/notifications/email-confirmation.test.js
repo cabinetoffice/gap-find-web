@@ -97,7 +97,7 @@ describe('getServerSideProps', () => {
 
     expect(response).toEqual({
       redirect: {
-        permanemt: false,
+        permanent: false,
         destination:
           '/notifications/check-email?errors[]={"field":"email","error":"You must enter an email address."}&email=undefined',
       },
@@ -117,7 +117,7 @@ describe('getServerSideProps', () => {
 
     expect(response).toEqual({
       redirect: {
-        permanemt: false,
+        permanent: false,
         destination:
           '/notifications/check-email?errors[]={"field":"email","error":"Enter an email address in the correct format, like name@example.com"}&email=badly-formatted-email',
       },

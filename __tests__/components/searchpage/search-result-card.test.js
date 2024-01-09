@@ -40,8 +40,8 @@ describe('SearchResultCard', () => {
     expect(screen.getByText(item.grantApplicantType[0])).toBeDefined();
     expect(
       screen.getByText(
-        `From ${item.grantMinimumAwardDisplay} to ${item.grantMaximumAwardDisplay}`
-      )
+        `From ${item.grantMinimumAwardDisplay} to ${item.grantMaximumAwardDisplay}`,
+      ),
     ).toBeDefined();
     expect(screen.getByText(item.grantTotalAwardDisplay)).toBeDefined();
     expect(screen.getByText('21 April 2022, 2:13pm')).toBeDefined();

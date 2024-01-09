@@ -10,7 +10,7 @@ type JSSelectProps = {
 
 /**
  * Reusable accessibility focused select/dropdown field styled inline with GDS Select Component.
- * This component requires JS to be enabled so please remember to include a <noscript> alternative along side this component.
+ * This component requires JS to be enabled so please remember to include a <noscript> alternative alongside this component.
  *
  * This is adapted from the w3 accessibility combo box example:
  * https://w3c.github.io/aria-practices/examples/combobox/combobox-select-only.html

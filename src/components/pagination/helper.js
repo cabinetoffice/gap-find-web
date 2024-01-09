@@ -69,9 +69,7 @@ export const buildPaginationArr = (current, last) => {
 
   const pagesWithoutEllipsis = addNumbersToPagination(left, right, last);
 
-  const pagesWithEllipsis = addEllipsisToPagination(pagesWithoutEllipsis);
-
-  return pagesWithEllipsis;
+  return addEllipsisToPagination(pagesWithoutEllipsis);
 };
 
 export const buildPaginationListItems = (

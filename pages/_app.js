@@ -31,7 +31,7 @@ const MyApp = ({
       if (typeof window !== 'undefined' || typeof document !== 'undefined') {
         TagManager.initialize({ gtmId: 'GTM-52T2C9G' });
       } else {
-        for (var i = 0; i < Object.keys(cookies).length; i++) {
+        for (let i = 0; i < Object.keys(cookies).length; i++) {
           nookies.destroy({}, Object.keys(cookies)[i], { path: '/' });
         }
 

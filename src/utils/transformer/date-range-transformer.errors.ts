@@ -7,6 +7,7 @@ interface DateValidationErrorFields {
 export class DateValidationError extends Error {
   public fields: DateValidationErrorFields;
   public fieldName: string;
+
   constructor(message) {
     super(message);
     this.fields = {

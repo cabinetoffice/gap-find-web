@@ -32,7 +32,7 @@ beforeAll(async () => {
   );
 });
 
-describe('Rendering the terms and conidtions page', () => {
+describe('Rendering the terms and conditions page', () => {
   it('Should render a page header', () => {
     render(component);
     expect(

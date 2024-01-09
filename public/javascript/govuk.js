@@ -16,7 +16,7 @@
     if (window.NodeList.prototype.forEach) {
       return nodes.forEach(callback);
     }
-    for (var i = 0; i < nodes.length; i++) {
+    for (let i = 0; i < nodes.length; i++) {
       callback.call(window, nodes[i], i, nodes);
     }
   }
@@ -25,7 +25,7 @@
   // Them conflicting with each other.
   // https://stackoverflow.com/a/8809472
   function generateUniqueID() {
-    var d = new Date().getTime();
+    let d = new Date().getTime();
     if (
       typeof window.performance !== 'undefined' &&
       typeof window.performance.now === 'function'
@@ -35,22 +35,22 @@
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
       /[xy]/g,
       function (c) {
-        var r = (d + Math.random() * 16) % 16 | 0;
+        const r = (d + Math.random() * 16) % 16 | 0;
         d = Math.floor(d / 16);
         return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-      }
+      },
     );
   }
 
   (function (undefined) {
     // Detection from https://github.com/Financial-Times/polyfill-service/blob/master/packages/polyfill-library/polyfills/Object/defineProperty/detect.js
-    var detect =
+    const detect =
       // In IE8, defineProperty could only act on DOM elements, so full support
       // for the feature requires the ability to set a property on an arbitrary object
       'defineProperty' in Object &&
       (function () {
         try {
-          var a = {};
+          const a = {};
           Object.defineProperty(a, 'test', { value: 42 });
           return true;
         } catch (e) {
@@ -62,17 +62,17 @@
 
     // Polyfill from https://cdn.polyfill.io/v2/polyfill.js?features=Object.defineProperty&flags=always
     (function (nativeDefineProperty) {
-      var supportsAccessors =
+      const supportsAccessors =
         Object.prototype.hasOwnProperty('__defineGetter__');
-      var ERR_ACCESSORS_NOT_SUPPORTED =
+      const ERR_ACCESSORS_NOT_SUPPORTED =
         'Getters & setters cannot be defined on this javascript engine';
-      var ERR_VALUE_ACCESSORS =
+      const ERR_VALUE_ACCESSORS =
         'A property cannot both have accessors and be writable or have a value';
 
       Object.defineProperty = function defineProperty(
         object,
         property,
-        descriptor
+        descriptor,
       ) {
         // Where native support exists, assume it
         if (
@@ -96,11 +96,11 @@
           throw new TypeError('Property description must be an object');
         }
 
-        var propertyString = String(property);
-        var hasValueOrWritable =
+        const propertyString = String(property);
+        const hasValueOrWritable =
           'value' in descriptor || 'writable' in descriptor;
-        var getterType = 'get' in descriptor && typeof descriptor.get;
-        var setterType = 'set' in descriptor && typeof descriptor.set;
+        const getterType = 'get' in descriptor && typeof descriptor.get;
+        const setterType = 'set' in descriptor && typeof descriptor.set;
 
         // handle descriptor.get
         if (getterType) {
@@ -140,16 +140,16 @@
         return object;
       };
     })(Object.defineProperty);
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   (function (undefined) {
     // Detection from https://github.com/Financial-Times/polyfill-service/blob/master/packages/polyfill-library/polyfills/Function/prototype/bind/detect.js
-    var detect = 'bind' in Function.prototype;
+    const detect = 'bind' in Function.prototype;
 
     if (detect) return;
 
@@ -158,18 +158,18 @@
       value: function bind(that) {
         // .length is 1
         // add necessary es5-shim utilities
-        var $Array = Array;
-        var $Object = Object;
-        var ObjectPrototype = $Object.prototype;
-        var ArrayPrototype = $Array.prototype;
-        var Empty = function Empty() {};
-        var to_string = ObjectPrototype.toString;
-        var hasToStringTag =
+        const $Array = Array;
+        const $Object = Object;
+        const ObjectPrototype = $Object.prototype;
+        const ArrayPrototype = $Array.prototype;
+        const Empty = function Empty() {};
+        const to_string = ObjectPrototype.toString;
+        const hasToStringTag =
           typeof Symbol === 'function' &&
           typeof Symbol.toStringTag === 'symbol';
-        var isCallable;
-        /* inlined from https://npmjs.com/is-callable */ var fnToStr =
-            Function.prototype.toString,
+        let isCallable;
+        /* inlined from https://npmjs.com/is-callable */
+        const fnToStr = Function.prototype.toString,
           tryFunctionObject = function tryFunctionObject(value) {
             try {
               fnToStr.call(value);
@@ -187,27 +187,27 @@
           if (hasToStringTag) {
             return tryFunctionObject(value);
           }
-          var strClass = to_string.call(value);
+          const strClass = to_string.call(value);
           return strClass === fnClass || strClass === genClass;
         };
-        var array_slice = ArrayPrototype.slice;
-        var array_concat = ArrayPrototype.concat;
-        var array_push = ArrayPrototype.push;
-        var max = Math.max;
+        const array_slice = ArrayPrototype.slice;
+        const array_concat = ArrayPrototype.concat;
+        const array_push = ArrayPrototype.push;
+        const max = Math.max;
         // /add necessary es5-shim utilities
 
-        // 1. Let Target be the this value.
-        var target = this;
+        // 1. Let Target be the 'this' value.
+        const target = this;
         // 2. If IsCallable(Target) is false, throw a TypeError exception.
         if (!isCallable(target)) {
           throw new TypeError(
-            'Function.prototype.bind called on incompatible ' + target
+            'Function.prototype.bind called on incompatible ' + target,
           );
         }
         // 3. Let A be a new (possibly empty) internal list of all of the
-        //   argument values provided after thisArg (arg1, arg2 etc), in order.
+        //   argument values provided after thisArg (arg1, arg2 etc.), in order.
         // XXX slicedArgs will stand in for "A" if used
-        var args = array_slice.call(arguments, 1); // for normal call
+        const args = array_slice.call(arguments, 1); // for normal call
         // 4. Let F be a new native ECMAScript object.
         // 11. Set the [[Prototype]] internal property of F to the standard
         //   built-in Function prototype object as specified in 15.3.3.1.
@@ -217,8 +217,8 @@
         //   15.3.4.5.2.
         // 14. Set the [[HasInstance]] internal property of F as described in
         //   15.3.4.5.3.
-        var bound;
-        var binder = function () {
+        let bound;
+        const binder = function () {
           if (this instanceof bound) {
             // 15.3.4.5.2 [[Construct]]
             // When the [[Construct]] internal method of a function object,
@@ -236,9 +236,9 @@
             // 5. Return the result of calling the [[Construct]] internal
             //   method of target providing args as the arguments.
 
-            var result = target.apply(
+            const result = target.apply(
               this,
-              array_concat.call(args, array_slice.call(arguments))
+              array_concat.call(args, array_slice.call(arguments)),
             );
             if ($Object(result) === result) {
               return result;
@@ -248,7 +248,7 @@
             // 15.3.4.5.1 [[Call]]
             // When the [[Call]] internal method of a function object, F,
             // which was created using the bind function is called with a
-            // this value and a list of arguments ExtraArgs, the following
+            // 'this' value and a list of arguments ExtraArgs, the following
             // steps are taken:
             // 1. Let boundArgs be the value of F's [[BoundArgs]] internal
             //   property.
@@ -260,13 +260,13 @@
             //   list boundArgs in the same order followed by the same
             //   values as the list ExtraArgs in the same order.
             // 5. Return the result of calling the [[Call]] internal method
-            //   of target providing boundThis as the this value and
+            //   of target providing boundThis as the 'this' value and
             //   providing args as the arguments.
 
             // equiv: target.call(this, ...boundArgs, ...args)
             return target.apply(
               that,
-              array_concat.call(args, array_slice.call(arguments))
+              array_concat.call(args, array_slice.call(arguments)),
             );
           }
         };
@@ -277,12 +277,12 @@
         //       larger.
         // 16. Else set the length own property of F to 0.
 
-        var boundLength = max(0, target.length - args.length);
+        const boundLength = max(0, target.length - args.length);
 
         // 17. Set the attributes of the length own property of F to the values
         //   specified in 15.3.5.1.
-        var boundArgs = [];
-        for (var i = 0; i < boundLength; i++) {
+        const boundArgs = [];
+        for (let i = 0; i < boundLength; i++) {
           array_push.call(boundArgs, '$' + i);
         }
 
@@ -296,7 +296,7 @@
           'binder',
           'return function (' +
             boundArgs.join(',') +
-            '){ return binder.apply(this, arguments); }'
+            '){ return binder.apply(this, arguments); }',
         )(binder);
 
         if (target.prototype) {
@@ -330,16 +330,16 @@
         return bound;
       },
     });
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   (function (undefined) {
     // Detection from https://raw.githubusercontent.com/Financial-Times/polyfill-service/master/packages/polyfill-library/polyfills/DOMTokenList/detect.js
-    var detect =
+    const detect =
       'DOMTokenList' in this &&
       (function (x) {
         return 'classList' in x
@@ -351,7 +351,7 @@
 
     // Polyfill from https://raw.githubusercontent.com/Financial-Times/polyfill-service/master/packages/polyfill-library/polyfills/DOMTokenList/polyfill.js
     (function (global) {
-      var nativeImpl = 'DOMTokenList' in global && global.DOMTokenList;
+      const nativeImpl = 'DOMTokenList' in global && global.DOMTokenList;
 
       if (
         !nativeImpl ||
@@ -364,8 +364,8 @@
       ) {
         global.DOMTokenList = (function () {
           // eslint-disable-line no-unused-vars
-          var dpSupport = true;
-          var defineGetter = function (object, name, fn, configurable) {
+          let dpSupport = true;
+          const defineGetter = function (object, name, fn, configurable) {
             if (Object.defineProperty)
               Object.defineProperty(object, name, {
                 configurable: false === dpSupport ? true : !!configurable,
@@ -381,13 +381,13 @@
             dpSupport = false;
           }
 
-          var _DOMTokenList = function (el, prop) {
-            var that = this;
-            var tokens = [];
-            var tokenMap = {};
-            var length = 0;
-            var maxLength = 0;
-            var addIndexGetter = function (i) {
+          const _DOMTokenList = function (el, prop) {
+            const that = this;
+            let tokens = [];
+            let tokenMap = {};
+            let length = 0;
+            let maxLength = 0;
+            const addIndexGetter = function (i) {
               defineGetter(
                 that,
                 i,
@@ -395,10 +395,10 @@
                   preop();
                   return tokens[i];
                 },
-                false
+                false,
               );
             };
-            var reindex = function () {
+            const reindex = function () {
               /** Define getter functions for array-like access to the tokenList's contents. */
               if (length >= maxLength)
                 for (; maxLength < length; ++maxLength) {
@@ -407,11 +407,11 @@
             };
 
             /** Helper function called at the start of each class method. Internal use only. */
-            var preop = function () {
-              var error;
-              var i;
-              var args = arguments;
-              var rSpace = /\s+/;
+            const preop = function () {
+              let error;
+              let i;
+              const args = arguments;
+              const rSpace = /\s+/;
 
               /** Validate the token/s passed to an instance method, if any. */
               if (args.length)
@@ -422,7 +422,7 @@
                         args[i] +
                         '" ' +
                         'contains' +
-                        ' an invalid character'
+                        ' an invalid character',
                     );
                     error.code = 5;
                     error.name = 'InvalidCharacterError';
@@ -478,7 +478,7 @@
             that.add = function () {
               preop.apply(that, (args = arguments));
 
-              for (var args, token, i = 0, l = args.length; i < l; ++i) {
+              for (let args, token, i = 0, l = args.length; i < l; ++i) {
                 token = args[i];
                 if (!tokenMap[token]) {
                   tokens.push(token);
@@ -502,13 +502,13 @@
               preop.apply(that, (args = arguments));
 
               /** Build a hash of token names to compare against when recollecting our token list. */
-              for (var args, ignore = {}, i = 0, t = []; i < args.length; ++i) {
+              for (let args, ignore = {}, i = 0, t = []; i < args.length; ++i) {
                 ignore[args[i]] = true;
                 delete tokenMap[args[i]];
               }
 
               /** Run through our tokens list and reassign only those that aren't defined in the hash declared above. */
-              for (i = 0; i < tokens.length; ++i)
+              for (let i = 0; i < tokens.length; ++i)
                 if (!ignore[tokens[i]]) t.push(tokens[i]);
 
               tokens = t;
@@ -557,16 +557,16 @@
 
       // Add second argument to native DOMTokenList.toggle() if necessary
       (function () {
-        var e = document.createElement('span');
+        const e = document.createElement('span');
         if (!('classList' in e)) return;
         e.classList.toggle('x', false);
         if (!e.classList.contains('x')) return;
         e.classList.constructor.prototype.toggle = function toggle(
-          token /*, force*/
+          token /*, force*/,
         ) {
-          var force = arguments[1];
+          let force = arguments[1];
           if (force === undefined) {
-            var add = !this.contains(token);
+            const add = !this.contains(token);
             this[add ? 'add' : 'remove'](token);
             return add;
           }
@@ -578,15 +578,15 @@
 
       // Add multiple arguments to native DOMTokenList.add() if necessary
       (function () {
-        var e = document.createElement('span');
+        const e = document.createElement('span');
         if (!('classList' in e)) return;
         e.classList.add('a', 'b');
         if (e.classList.contains('b')) return;
-        var native = e.classList.constructor.prototype.add;
+        const native = e.classList.constructor.prototype.add;
         e.classList.constructor.prototype.add = function () {
-          var args = arguments;
-          var l = arguments.length;
-          for (var i = 0; i < l; i++) {
+          const args = arguments;
+          const l = arguments.length;
+          for (let i = 0; i < l; i++) {
             native.call(this, args[i]);
           }
         };
@@ -594,32 +594,32 @@
 
       // Add multiple arguments to native DOMTokenList.remove() if necessary
       (function () {
-        var e = document.createElement('span');
+        const e = document.createElement('span');
         if (!('classList' in e)) return;
         e.classList.add('a');
         e.classList.add('b');
         e.classList.remove('a', 'b');
         if (!e.classList.contains('b')) return;
-        var native = e.classList.constructor.prototype.remove;
+        const native = e.classList.constructor.prototype.remove;
         e.classList.constructor.prototype.remove = function () {
-          var args = arguments;
-          var l = arguments.length;
-          for (var i = 0; i < l; i++) {
+          const args = arguments;
+          const l = arguments.length;
+          for (let i = 0; i < l; i++) {
             native.call(this, args[i]);
           }
         };
       })();
     })(this);
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   (function (undefined) {
     // Detection from https://github.com/Financial-Times/polyfill-service/blob/master/packages/polyfill-library/polyfills/Document/detect.js
-    var detect = 'Document' in this;
+    const detect = 'Document' in this;
 
     if (detect) return;
 
@@ -642,16 +642,16 @@
         this.Document.prototype = document;
       }
     }
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   (function (undefined) {
     // Detection from https://github.com/Financial-Times/polyfill-service/blob/master/packages/polyfill-library/polyfills/Element/detect.js
-    var detect = 'Element' in this && 'HTMLElement' in this;
+    const detect = 'Element' in this && 'HTMLElement' in this;
 
     if (detect) return;
 
@@ -665,24 +665,24 @@
 
       // create Element constructor
       window.Element = window.HTMLElement = new Function(
-        'return function Element() {}'
+        'return function Element() {}',
       )();
 
       // generate sandboxed iframe
-      var vbody = document.appendChild(document.createElement('body'));
-      var frame = vbody.appendChild(document.createElement('iframe'));
+      const vbody = document.appendChild(document.createElement('body'));
+      const frame = vbody.appendChild(document.createElement('iframe'));
 
       // use sandboxed iframe to replicate Element functionality
-      var frameDocument = frame.contentWindow.document;
-      var prototype = (Element.prototype = frameDocument.appendChild(
-        frameDocument.createElement('*')
+      const frameDocument = frame.contentWindow.document;
+      const prototype = (Element.prototype = frameDocument.appendChild(
+        frameDocument.createElement('*'),
       ));
-      var cache = {};
+      const cache = {};
 
       // polyfill Element.prototype on an element
-      var shiv = function (element, deep) {
-        var childNodes = element.childNodes || [],
-          index = -1,
+      const shiv = function (element, deep) {
+        const childNodes = element.childNodes || [];
+        let index = -1,
           key,
           value,
           childNode;
@@ -703,17 +703,17 @@
         return element;
       };
 
-      var elements = document.getElementsByTagName('*');
-      var nativeCreateElement = document.createElement;
-      var interval;
-      var loopLimit = 100;
+      const elements = document.getElementsByTagName('*');
+      const nativeCreateElement = document.createElement;
+      let interval;
+      let loopLimit = 100;
 
       prototype.attachEvent('onpropertychange', function (event) {
-        var propertyName = event.propertyName,
+        const propertyName = event.propertyName,
           nonValue = !cache.hasOwnProperty(propertyName),
           newValue = prototype[propertyName],
-          oldValue = cache[propertyName],
-          index = -1,
+          oldValue = cache[propertyName];
+        let index = -1,
           element;
 
         while ((element = elements[++index])) {
@@ -757,29 +757,29 @@
 
       // Apply to any new elements created after load
       document.createElement = function createElement(nodeName) {
-        var element = nativeCreateElement(String(nodeName).toLowerCase());
+        const element = nativeCreateElement(String(nodeName).toLowerCase());
         return shiv(element);
       };
 
       // remove sandboxed iframe
       document.removeChild(vbody);
     })();
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   (function (undefined) {
     // Detection from https://raw.githubusercontent.com/Financial-Times/polyfill-service/8717a9e04ac7aff99b4980fbedead98036b0929a/packages/polyfill-library/polyfills/Element/prototype/classList/detect.js
-    var detect =
+    const detect =
       'document' in this &&
       'classList' in document.documentElement &&
       'Element' in this &&
       'classList' in Element.prototype &&
       (function () {
-        var e = document.createElement('span');
+        const e = document.createElement('span');
         e.classList.add('a', 'b');
         return e.classList.contains('b');
       })();
@@ -788,8 +788,8 @@
 
     // Polyfill from https://cdn.polyfill.io/v2/polyfill.js?features=Element.prototype.classList&flags=always
     (function (global) {
-      var dpSupport = true;
-      var defineGetter = function (object, name, fn, configurable) {
+      let dpSupport = true;
+      const defineGetter = function (object, name, fn, configurable) {
         if (Object.defineProperty)
           Object.defineProperty(object, name, {
             configurable: false === dpSupport ? true : !!configurable,
@@ -804,14 +804,14 @@
         dpSupport = false;
       }
       /** Polyfills a property with a DOMTokenList */
-      var addProp = function (o, name, attr) {
+      const addProp = function (o, name, attr) {
         defineGetter(
           o.prototype,
           name,
           function () {
-            var tokenList;
+            let tokenList;
 
-            var THIS = this,
+            const THIS = this,
               /** Prevent this from firing twice for some reason. What the hell, IE. */
               gibberishProperty = '__defineGetter__' + 'DEFINE_PROPERTY' + name;
             if (THIS[gibberishProperty]) return tokenList;
@@ -826,12 +826,12 @@
              * select lists).
              */
             if (false === dpSupport) {
-              var visage;
-              var mirror = addProp.mirror || document.createElement('div');
-              var reflections = mirror.childNodes;
-              var l = reflections.length;
+              let visage;
+              const mirror = addProp.mirror || document.createElement('div');
+              const reflections = mirror.childNodes;
+              const l = reflections.length;
 
-              for (var i = 0; i < l; ++i)
+              for (let i = 0; i < l; ++i)
                 if (reflections[i]._R === THIS) {
                   visage = reflections[i];
                   break;
@@ -851,7 +851,7 @@
 
             return tokenList;
           },
-          true
+          true,
         );
       };
 
@@ -861,12 +861,12 @@
       addProp(global.HTMLAnchorElement, 'relList', 'rel');
       addProp(global.HTMLAreaElement, 'relList', 'rel');
     })(this);
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   function Accordion($module) {
     this.$module = $module;
@@ -899,7 +899,7 @@
     this.initSectionHeaders();
 
     // See if "Open all" button text should be updated
-    var areAllSectionsOpen = this.checkIfAllSectionsOpen();
+    const areAllSectionsOpen = this.checkIfAllSectionsOpen();
     this.updateOpenAllButton(areAllSectionsOpen);
   };
 
@@ -915,7 +915,7 @@
     this.$openAllButton.setAttribute('type', 'button');
 
     // Create control wrapper and add controls to it
-    var accordionControls = document.createElement('div');
+    const accordionControls = document.createElement('div');
     accordionControls.setAttribute('class', this.controlsClass);
     accordionControls.appendChild(this.$openAllButton);
     this.$module.insertBefore(accordionControls, this.$module.firstChild);
@@ -923,7 +923,7 @@
     // Handle events for the controls
     this.$openAllButton.addEventListener(
       'click',
-      this.onOpenOrCloseAllToggle.bind(this)
+      this.onOpenOrCloseAllToggle.bind(this),
     );
   };
 
@@ -934,7 +934,7 @@
       this.$sections,
       function ($section, i) {
         // Set header attributes
-        var header = $section.querySelector('.' + this.sectionHeaderClass);
+        const header = $section.querySelector('.' + this.sectionHeaderClass);
         this.initHeaderAttributes(header, i);
 
         this.setExpanded(this.isExpanded($section), $section);
@@ -942,35 +942,39 @@
         // Handle events
         header.addEventListener(
           'click',
-          this.onSectionToggle.bind(this, $section)
+          this.onSectionToggle.bind(this, $section),
         );
 
         // See if there is any state stored in sessionStorage and set the sections to
         // open or closed.
         this.setInitialState($section);
-      }.bind(this)
+      }.bind(this),
     );
   };
 
   // Set individual header attributes
   Accordion.prototype.initHeaderAttributes = function ($headerWrapper, index) {
-    var $module = this;
-    var $span = $headerWrapper.querySelector('.' + this.sectionButtonClass);
-    var $heading = $headerWrapper.querySelector('.' + this.sectionHeadingClass);
-    var $summary = $headerWrapper.querySelector('.' + this.sectionSummaryClass);
+    const $module = this;
+    const $span = $headerWrapper.querySelector('.' + this.sectionButtonClass);
+    const $heading = $headerWrapper.querySelector(
+      '.' + this.sectionHeadingClass,
+    );
+    const $summary = $headerWrapper.querySelector(
+      '.' + this.sectionSummaryClass,
+    );
 
     // Copy existing span element to an actual button element, for improved accessibility.
-    var $button = document.createElement('button');
+    const $button = document.createElement('button');
     $button.setAttribute('type', 'button');
     $button.setAttribute('id', this.moduleId + '-heading-' + (index + 1));
     $button.setAttribute(
       'aria-controls',
-      this.moduleId + '-content-' + (index + 1)
+      this.moduleId + '-content-' + (index + 1),
     );
 
     // Copy all attributes (https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes) from $span to $button
-    for (var i = 0; i < $span.attributes.length; i++) {
-      var attr = $span.attributes.item(i);
+    for (let i = 0; i < $span.attributes.length; i++) {
+      const attr = $span.attributes.item(i);
       $button.setAttribute(attr.nodeName, attr.nodeValue);
     }
 
@@ -989,7 +993,7 @@
     if (typeof $summary !== 'undefined' && $summary !== null) {
       $button.setAttribute(
         'aria-describedby',
-        this.moduleId + '-summary-' + (index + 1)
+        this.moduleId + '-summary-' + (index + 1),
       );
     }
 
@@ -1000,7 +1004,7 @@
     $heading.appendChild($button);
 
     // Add "+/-" icon
-    var icon = document.createElement('span');
+    const icon = document.createElement('span');
     icon.className = this.iconClass;
     icon.setAttribute('aria-hidden', 'true');
 
@@ -1009,7 +1013,7 @@
 
   // When section toggled, set and store state
   Accordion.prototype.onSectionToggle = function ($section) {
-    var expanded = this.isExpanded($section);
+    const expanded = this.isExpanded($section);
     this.setExpanded(!expanded, $section);
 
     // Store the state in sessionStorage when a change is triggered
@@ -1018,10 +1022,10 @@
 
   // When Open/Close All toggled, set and store state
   Accordion.prototype.onOpenOrCloseAllToggle = function () {
-    var $module = this;
-    var $sections = this.$sections;
+    const $module = this;
+    const $sections = this.$sections;
 
-    var nowExpanded = !this.checkIfAllSectionsOpen();
+    const nowExpanded = !this.checkIfAllSectionsOpen();
 
     nodeListForEach($sections, function ($section) {
       $module.setExpanded(nowExpanded, $section);
@@ -1034,7 +1038,7 @@
 
   // Set section attributes when opened/closed
   Accordion.prototype.setExpanded = function (expanded, $section) {
-    var $button = $section.querySelector('.' + this.sectionButtonClass);
+    const $button = $section.querySelector('.' + this.sectionButtonClass);
     $button.setAttribute('aria-expanded', expanded);
 
     if (expanded) {
@@ -1044,7 +1048,7 @@
     }
 
     // See if "Open all" button text should be updated
-    var areAllSectionsOpen = this.checkIfAllSectionsOpen();
+    const areAllSectionsOpen = this.checkIfAllSectionsOpen();
     this.updateOpenAllButton(areAllSectionsOpen);
   };
 
@@ -1056,29 +1060,29 @@
   // Check if all sections are open
   Accordion.prototype.checkIfAllSectionsOpen = function () {
     // Get a count of all the Accordion sections
-    var sectionsCount = this.$sections.length;
+    const sectionsCount = this.$sections.length;
     // Get a count of all Accordion sections that are expanded
-    var expandedSectionCount = this.$module.querySelectorAll(
-      '.' + this.sectionExpandedClass
+    const expandedSectionCount = this.$module.querySelectorAll(
+      '.' + this.sectionExpandedClass,
     ).length;
-    var areAllSectionsOpen = sectionsCount === expandedSectionCount;
+    const areAllSectionsOpen = sectionsCount === expandedSectionCount;
 
     return areAllSectionsOpen;
   };
 
   // Update "Open all" button
   Accordion.prototype.updateOpenAllButton = function (expanded) {
-    var newButtonText = expanded ? 'Close all' : 'Open all';
+    let newButtonText = expanded ? 'Close all' : 'Open all';
     newButtonText += '<span class="govuk-visually-hidden"> sections</span>';
     this.$openAllButton.setAttribute('aria-expanded', expanded);
     this.$openAllButton.innerHTML = newButtonText;
   };
 
   // Check for `window.sessionStorage`, and that it actually works.
-  var helper = {
+  const helper = {
     checkForSessionStorage: function () {
-      var testString = 'this is the test string';
-      var result;
+      const testString = 'this is the test string';
+      let result;
       try {
         window.sessionStorage.setItem(testString, testString);
         result =
@@ -1102,18 +1106,18 @@
       // We need a unique way of identifying each content in the accordion. Since
       // an `#id` should be unique and an `id` is required for `aria-` attributes
       // `id` can be safely used.
-      var $button = $section.querySelector('.' + this.sectionButtonClass);
+      const $button = $section.querySelector('.' + this.sectionButtonClass);
 
       if ($button) {
-        var contentId = $button.getAttribute('aria-controls');
-        var contentState = $button.getAttribute('aria-expanded');
+        const contentId = $button.getAttribute('aria-controls');
+        const contentState = $button.getAttribute('aria-expanded');
 
         if (
           typeof contentId === 'undefined' &&
           (typeof console === 'undefined' || typeof console.log === 'undefined')
         ) {
           console.error(
-            new Error('No aria controls present in accordion section heading.')
+            new Error('No aria controls present in accordion section heading.'),
           );
         }
 
@@ -1122,7 +1126,7 @@
           (typeof console === 'undefined' || typeof console.log === 'undefined')
         ) {
           console.error(
-            new Error('No aria expanded present in accordion section heading.')
+            new Error('No aria expanded present in accordion section heading.'),
           );
         }
 
@@ -1137,11 +1141,11 @@
   // Read the state of the accordions from sessionStorage
   Accordion.prototype.setInitialState = function ($section) {
     if (this.browserSupportsSessionStorage) {
-      var $button = $section.querySelector('.' + this.sectionButtonClass);
+      const $button = $section.querySelector('.' + this.sectionButtonClass);
 
       if ($button) {
-        var contentId = $button.getAttribute('aria-controls');
-        var contentState = contentId
+        const contentId = $button.getAttribute('aria-controls');
+        const contentState = contentId
           ? window.sessionStorage.getItem(contentId)
           : null;
 
@@ -1154,7 +1158,7 @@
 
   (function (undefined) {
     // Detection from https://github.com/Financial-Times/polyfill-service/blob/master/packages/polyfill-library/polyfills/Window/detect.js
-    var detect = 'Window' in this;
+    const detect = 'Window' in this;
 
     if (detect) return;
 
@@ -1172,16 +1176,16 @@
         }
       })(this);
     }
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   (function (undefined) {
     // Detection from https://github.com/Financial-Times/polyfill-service/blob/master/packages/polyfill-library/polyfills/Event/detect.js
-    var detect = (function (global) {
+    const detect = (function (global) {
       if (!('Event' in global)) return false;
       if (typeof global.Event === 'function') return true;
 
@@ -1198,7 +1202,7 @@
 
     // Polyfill from https://cdn.polyfill.io/v2/polyfill.js?features=Event&flags=always
     (function () {
-      var unlistenableWindowEvents = {
+      const unlistenableWindowEvents = {
         click: 1,
         dblclick: 1,
         keyup: 1,
@@ -1223,8 +1227,8 @@
         return;
 
       function indexOf(array, element) {
-        var index = -1,
-          length = array.length;
+        let index = -1;
+        const length = array.length;
 
         while (++index < length) {
           if (index in array && array[index] === element) {
@@ -1235,24 +1239,24 @@
         return -1;
       }
 
-      var existingProto = (window.Event && window.Event.prototype) || null;
+      const existingProto = (window.Event && window.Event.prototype) || null;
       window.Event = Window.prototype.Event = function Event(
         type,
-        eventInitDict
+        eventInitDict,
       ) {
         if (!type) {
           throw new Error('Not enough arguments');
         }
 
-        var event;
+        let event;
         // Shortcut if browser supports createEvent
         if ('createEvent' in document) {
           event = document.createEvent('Event');
-          var bubbles =
+          const bubbles =
             eventInitDict && eventInitDict.bubbles !== undefined
               ? eventInitDict.bubbles
               : false;
-          var cancelable =
+          const cancelable =
             eventInitDict && eventInitDict.cancelable !== undefined
               ? eventInitDict.cancelable
               : false;
@@ -1291,7 +1295,7 @@
           Document.prototype.addEventListener =
           Element.prototype.addEventListener =
             function addEventListener() {
-              var element = this,
+              const element = this,
                 type = arguments[0],
                 listener = arguments[1];
 
@@ -1299,7 +1303,7 @@
                 throw new Error(
                   'In IE8 the event: ' +
                     type +
-                    ' is not available on the window object. Please see https://github.com/Financial-Times/polyfill-service/issues/317 for more information.'
+                    ' is not available on the window object. Please see https://github.com/Financial-Times/polyfill-service/issues/317 for more information.',
                 );
               }
 
@@ -1309,11 +1313,11 @@
 
               if (!element._events[type]) {
                 element._events[type] = function (event) {
-                  var list = element._events[event.type].list,
-                    events = list.slice(),
-                    index = -1,
-                    length = events.length,
-                    eventElement;
+                  const list = element._events[event.type].list,
+                    events = list.slice();
+                  let index = -1;
+                  const length = events.length;
+                  let eventElement;
 
                   event.preventDefault = function preventDefault() {
                     if (event.cancelable !== false) {
@@ -1372,10 +1376,10 @@
           Document.prototype.removeEventListener =
           Element.prototype.removeEventListener =
             function removeEventListener() {
-              var element = this,
+              const element = this,
                 type = arguments[0],
-                listener = arguments[1],
-                index;
+                listener = arguments[1];
+              let index;
 
               if (
                 element._events &&
@@ -1410,19 +1414,19 @@
                 throw new Error('DOM Events Exception 0');
               }
 
-              var element = this,
-                type = event.type;
+              let element = this;
+              const type = event.type;
 
               try {
                 if (!event.bubbles) {
                   event.cancelBubble = true;
 
-                  var cancelBubbleEvent = function (event) {
+                  const cancelBubbleEvent = function (event) {
                     event.cancelBubble = true;
 
                     (element || window).detachEvent(
                       'on' + type,
-                      cancelBubbleEvent
+                      cancelBubbleEvent,
                     );
                   };
 
@@ -1463,21 +1467,21 @@
             document.dispatchEvent(
               new Event('DOMContentLoaded', {
                 bubbles: true,
-              })
+              }),
             );
           }
         });
       }
     })();
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
-  var KEY_SPACE = 32;
-  var DEBOUNCE_TIMEOUT_IN_SECONDS = 1;
+  const KEY_SPACE = 32;
+  const DEBOUNCE_TIMEOUT_IN_SECONDS = 1;
 
   function Button($module) {
     this.$module = $module;
@@ -1495,7 +1499,7 @@
    */
   Button.prototype.handleKeyDown = function (event) {
     // get the target element
-    var target = event.target;
+    const target = event.target;
     // if the element has a role='button' and the pressed key is a space, we'll simulate a click
     if (
       target.getAttribute('role') === 'button' &&
@@ -1513,7 +1517,7 @@
    * double clicking buttons.
    */
   Button.prototype.debounce = function (event) {
-    var target = event.target;
+    const target = event.target;
     // Check the button that is clicked on has the preventDoubleClick feature enabled
     if (target.getAttribute('data-prevent-double-click') !== 'true') {
       return;
@@ -1529,7 +1533,7 @@
       function () {
         this.debounceFormSubmitTimer = null;
       }.bind(this),
-      DEBOUNCE_TIMEOUT_IN_SECONDS * 1000
+      DEBOUNCE_TIMEOUT_IN_SECONDS * 1000,
     );
   };
 
@@ -1548,9 +1552,8 @@
    *
    * http://caniuse.com/#feat=details
    */
-
-  var KEY_ENTER = 13;
-  var KEY_SPACE$1 = 32;
+  const KEY_ENTER = 13;
+  const KEY_SPACE$1 = 32;
 
   function Details($module) {
     this.$module = $module;
@@ -1562,7 +1565,7 @@
     }
 
     // If there is native details support, we want to avoid running code to polyfill native behaviour.
-    var hasNativeDetails = typeof this.$module.open === 'boolean';
+    const hasNativeDetails = typeof this.$module.open === 'boolean';
 
     if (hasNativeDetails) {
       return;
@@ -1572,13 +1575,13 @@
   };
 
   Details.prototype.polyfillDetails = function () {
-    var $module = this.$module;
+    const $module = this.$module;
 
     // Save shortcuts to the inner summary and content elements
-    var $summary = (this.$summary = $module
+    const $summary = (this.$summary = $module
       .getElementsByTagName('summary')
       .item(0));
-    var $content = (this.$content = $module
+    const $content = (this.$content = $module
       .getElementsByTagName('div')
       .item(0));
 
@@ -1610,7 +1613,7 @@
     $summary.tabIndex = 0;
 
     // Detect initial open state
-    var openAttr = $module.getAttribute('open') !== null;
+    const openAttr = $module.getAttribute('open') !== null;
     if (openAttr === true) {
       $summary.setAttribute('aria-expanded', 'true');
       $content.setAttribute('aria-hidden', 'false');
@@ -1629,19 +1632,19 @@
    * @param {object} summary element
    */
   Details.prototype.polyfillSetAttributes = function () {
-    var $module = this.$module;
-    var $summary = this.$summary;
-    var $content = this.$content;
+    const $module = this.$module;
+    const $summary = this.$summary;
+    const $content = this.$content;
 
-    var expanded = $summary.getAttribute('aria-expanded') === 'true';
-    var hidden = $content.getAttribute('aria-hidden') === 'true';
+    const expanded = $summary.getAttribute('aria-expanded') === 'true';
+    const hidden = $content.getAttribute('aria-hidden') === 'true';
 
     $summary.setAttribute('aria-expanded', expanded ? 'false' : 'true');
     $content.setAttribute('aria-hidden', hidden ? 'false' : 'true');
 
     $content.style.display = expanded ? 'none' : '';
 
-    var hasOpenAttr = $module.getAttribute('open') !== null;
+    const hasOpenAttr = $module.getAttribute('open') !== null;
     if (!hasOpenAttr) {
       $module.setAttribute('open', 'open');
     } else {
@@ -1658,7 +1661,7 @@
    */
   Details.prototype.polyfillHandleInputs = function (node, callback) {
     node.addEventListener('keypress', function (event) {
-      var target = event.target;
+      const target = event.target;
       // When the key gets pressed - check if it is enter or space
       if (event.keyCode === KEY_ENTER || event.keyCode === KEY_SPACE$1) {
         if (target.nodeName.toLowerCase() === 'summary') {
@@ -1678,7 +1681,7 @@
 
     // Prevent keyup to prevent clicking twice in Firefox when using space key
     node.addEventListener('keyup', function (event) {
-      var target = event.target;
+      const target = event.target;
       if (event.keyCode === KEY_SPACE$1) {
         if (target.nodeName.toLowerCase() === 'summary') {
           event.preventDefault();
@@ -1694,7 +1697,7 @@
     this.$textarea = $module.querySelector('.govuk-js-character-count');
     if (this.$textarea) {
       this.$countMessage = $module.querySelector(
-        '[id="' + this.$textarea.id + '-info"]'
+        '[id="' + this.$textarea.id + '-info"]',
       );
     }
   }
@@ -1707,9 +1710,9 @@
   // Initialize component
   CharacterCount.prototype.init = function () {
     // Check for module
-    var $module = this.$module;
-    var $textarea = this.$textarea;
-    var $countMessage = this.$countMessage;
+    const $module = this.$module;
+    const $textarea = this.$textarea;
+    const $countMessage = this.$countMessage;
 
     if (!$textarea || !$countMessage) {
       return;
@@ -1723,7 +1726,7 @@
     this.options = this.getDataset($module);
 
     // Determine the limit attribute (characters or words)
-    var countAttribute = this.defaults.characterCountAttribute;
+    let countAttribute = this.defaults.characterCountAttribute;
     if (this.options.maxwords) {
       countAttribute = this.defaults.wordCountAttribute;
     }
@@ -1759,12 +1762,12 @@
 
   // Read data attributes
   CharacterCount.prototype.getDataset = function (element) {
-    var dataset = {};
-    var attributes = element.attributes;
+    const dataset = {};
+    const attributes = element.attributes;
     if (attributes) {
-      for (var i = 0; i < attributes.length; i++) {
-        var attribute = attributes[i];
-        var match = attribute.name.match(/^data-(.+)/);
+      for (let i = 0; i < attributes.length; i++) {
+        const attribute = attributes[i];
+        const match = attribute.name.match(/^data-(.+)/);
         if (match) {
           dataset[match[1]] = attribute.value;
         }
@@ -1775,9 +1778,9 @@
 
   // Counts characters or words in text
   CharacterCount.prototype.count = function (text) {
-    var length;
+    let length;
     if (this.options.maxwords) {
-      var tokens = text.match(/\S+/g) || []; // Matches consecutive non-whitespace chars
+      const tokens = text.match(/\S+/g) || []; // Matches consecutive non-whitespace chars
       length = tokens.length;
     } else {
       length = text.length;
@@ -1787,7 +1790,7 @@
 
   // Bind input propertychange to the elements and update based on the change
   CharacterCount.prototype.bindChangeEvents = function () {
-    var $textarea = this.$textarea;
+    const $textarea = this.$textarea;
     $textarea.addEventListener('keyup', this.checkIfValueChanged.bind(this));
 
     // Bind focus/blur events to start/stop polling
@@ -1808,18 +1811,18 @@
 
   // Update message box
   CharacterCount.prototype.updateCountMessage = function () {
-    var countElement = this.$textarea;
-    var options = this.options;
-    var countMessage = this.$countMessage;
+    const countElement = this.$textarea;
+    const options = this.options;
+    const countMessage = this.$countMessage;
 
     // Determine the remaining number of characters/words
-    var currentLength = this.count(countElement.value);
-    var maxLength = this.maxLength;
-    var remainingNumber = maxLength - currentLength;
+    const currentLength = this.count(countElement.value);
+    const maxLength = this.maxLength;
+    const remainingNumber = maxLength - currentLength;
 
     // Set threshold if presented in options
-    var thresholdPercent = options.threshold ? options.threshold : 0;
-    var thresholdValue = (maxLength * thresholdPercent) / 100;
+    const thresholdPercent = options.threshold ? options.threshold : 0;
+    const thresholdValue = (maxLength * thresholdPercent) / 100;
     if (thresholdValue > currentLength) {
       countMessage.classList.add('govuk-character-count__message--disabled');
       // Ensure threshold is hidden for users of assistive technologies
@@ -1842,9 +1845,9 @@
     }
 
     // Update message
-    var charVerb = 'remaining';
-    var charNoun = 'character';
-    var displayNumber = remainingNumber;
+    let charVerb = 'remaining';
+    let charNoun = 'character';
+    let displayNumber = remainingNumber;
     if (options.maxwords) {
       charNoun = 'word';
     }
@@ -1888,11 +1891,11 @@
    * the reveal in sync with the checkbox state.
    */
   Checkboxes.prototype.init = function () {
-    var $module = this.$module;
-    var $inputs = this.$inputs;
+    const $module = this.$module;
+    const $inputs = this.$inputs;
 
     nodeListForEach($inputs, function ($input) {
-      var target = $input.getAttribute('data-aria-controls');
+      const target = $input.getAttribute('data-aria-controls');
 
       // Skip checkboxes without data-aria-controls attributes, or where the
       // target element does not exist.
@@ -1900,7 +1903,7 @@
         return;
       }
 
-      // Promote the data-aria-controls attribute to a aria-controls attribute
+      // Promote the data-aria-controls attribute to an aria-controls attribute
       // so that the relationship is exposed in the AOM
       $input.setAttribute('aria-controls', target);
       $input.removeAttribute('data-aria-controls');
@@ -1913,12 +1916,12 @@
     if ('onpageshow' in window) {
       window.addEventListener(
         'pageshow',
-        this.syncAllConditionalReveals.bind(this)
+        this.syncAllConditionalReveals.bind(this),
       );
     } else {
       window.addEventListener(
         'DOMContentLoaded',
-        this.syncAllConditionalReveals.bind(this)
+        this.syncAllConditionalReveals.bind(this),
       );
     }
 
@@ -1936,7 +1939,7 @@
   Checkboxes.prototype.syncAllConditionalReveals = function () {
     nodeListForEach(
       this.$inputs,
-      this.syncConditionalRevealWithInputState.bind(this)
+      this.syncConditionalRevealWithInputState.bind(this),
     );
   };
 
@@ -1949,20 +1952,20 @@
    * @param {HTMLInputElement} $input Checkbox input
    */
   Checkboxes.prototype.syncConditionalRevealWithInputState = function ($input) {
-    var $target = this.$module.querySelector(
-      '#' + $input.getAttribute('aria-controls')
+    const $target = this.$module.querySelector(
+      '#' + $input.getAttribute('aria-controls'),
     );
 
     if (
       $target &&
       $target.classList.contains('govuk-checkboxes__conditional')
     ) {
-      var inputIsChecked = $input.checked;
+      const inputIsChecked = $input.checked;
 
       $input.setAttribute('aria-expanded', inputIsChecked);
       $target.classList.toggle(
         'govuk-checkboxes__conditional--hidden',
-        !inputIsChecked
+        !inputIsChecked,
       );
     }
   };
@@ -1971,15 +1974,15 @@
    * Uncheck other checkboxes
    *
    * Find any other checkbox inputs with the same name value, and uncheck them.
-   * This is useful for when a “None of these" checkbox is checked.
+   * This is useful for when a "None of these" checkbox is checked.
    */
   Checkboxes.prototype.unCheckAllInputsExcept = function ($input) {
-    var allInputsWithSameName = document.querySelectorAll(
-      'input[type="checkbox"][name="' + $input.name + '"]'
+    const allInputsWithSameName = document.querySelectorAll(
+      'input[type="checkbox"][name="' + $input.name + '"]',
     );
 
     nodeListForEach(allInputsWithSameName, function ($inputWithSameName) {
-      var hasSameFormOwner = $input.form === $inputWithSameName.form;
+      const hasSameFormOwner = $input.form === $inputWithSameName.form;
       if (hasSameFormOwner && $inputWithSameName !== $input) {
         $inputWithSameName.checked = false;
       }
@@ -1996,20 +1999,21 @@
    * "None of these" checkbox in the same fieldset.
    */
   Checkboxes.prototype.unCheckExclusiveInputs = function ($input) {
-    var allInputsWithSameNameAndExclusiveBehaviour = document.querySelectorAll(
-      'input[data-behaviour="exclusive"][type="checkbox"][name="' +
-        $input.name +
-        '"]'
-    );
+    const allInputsWithSameNameAndExclusiveBehaviour =
+      document.querySelectorAll(
+        'input[data-behaviour="exclusive"][type="checkbox"][name="' +
+          $input.name +
+          '"]',
+      );
 
     nodeListForEach(
       allInputsWithSameNameAndExclusiveBehaviour,
       function ($exclusiveInput) {
-        var hasSameFormOwner = $input.form === $exclusiveInput.form;
+        const hasSameFormOwner = $input.form === $exclusiveInput.form;
         if (hasSameFormOwner) {
           $exclusiveInput.checked = false;
         }
-      }
+      },
     );
 
     this.syncAllConditionalReveals();
@@ -2024,7 +2028,7 @@
    * @param {MouseEvent} event Click event
    */
   Checkboxes.prototype.handleClick = function (event) {
-    var $target = event.target;
+    const $target = event.target;
 
     // Ignore clicks on things that aren't checkbox inputs
     if ($target.type !== 'checkbox') {
@@ -2032,7 +2036,7 @@
     }
 
     // If the checkbox conditionally-reveals some content, sync the state
-    var hasAriaControls = $target.getAttribute('aria-controls');
+    const hasAriaControls = $target.getAttribute('aria-controls');
     if (hasAriaControls) {
       this.syncConditionalRevealWithInputState($target);
     }
@@ -2043,7 +2047,7 @@
     }
 
     // Handle 'exclusive' checkbox behaviour (ie "None of these")
-    var hasBehaviourExclusive =
+    const hasBehaviourExclusive =
       $target.getAttribute('data-behaviour') === 'exclusive';
     if (hasBehaviourExclusive) {
       this.unCheckAllInputsExcept($target);
@@ -2054,7 +2058,7 @@
 
   (function (undefined) {
     // Detection from https://raw.githubusercontent.com/Financial-Times/polyfill-service/1f3c09b402f65bf6e393f933a15ba63f1b86ef1f/packages/polyfill-library/polyfills/Element/prototype/matches/detect.js
-    var detect = 'document' in this && 'matches' in document.documentElement;
+    const detect = 'document' in this && 'matches' in document.documentElement;
 
     if (detect) return;
 
@@ -2065,11 +2069,11 @@
       Element.prototype.msMatchesSelector ||
       Element.prototype.mozMatchesSelector ||
       function matches(selector) {
-        var element = this;
-        var elements = (
+        const element = this;
+        const elements = (
           element.document || element.ownerDocument
         ).querySelectorAll(selector);
-        var index = 0;
+        let index = 0;
 
         while (elements[index] && elements[index] !== element) {
           ++index;
@@ -2077,22 +2081,22 @@
 
         return !!elements[index];
       };
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   (function (undefined) {
     // Detection from https://raw.githubusercontent.com/Financial-Times/polyfill-service/1f3c09b402f65bf6e393f933a15ba63f1b86ef1f/packages/polyfill-library/polyfills/Element/prototype/closest/detect.js
-    var detect = 'document' in this && 'closest' in document.documentElement;
+    const detect = 'document' in this && 'closest' in document.documentElement;
 
     if (detect) return;
 
     // Polyfill from https://raw.githubusercontent.com/Financial-Times/polyfill-service/1f3c09b402f65bf6e393f933a15ba63f1b86ef1f/packages/polyfill-library/polyfills/Element/prototype/closest/polyfill.js
     Element.prototype.closest = function closest(selector) {
-      var node = this;
+      let node = this;
 
       while (node) {
         if (node.matches(selector)) return node;
@@ -2105,19 +2109,19 @@
 
       return null;
     };
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   function ErrorSummary($module) {
     this.$module = $module;
   }
 
   ErrorSummary.prototype.init = function () {
-    var $module = this.$module;
+    const $module = this.$module;
     if (!$module) {
       return;
     }
@@ -2132,7 +2136,7 @@
    * @param {MouseEvent} event - Click event
    */
   ErrorSummary.prototype.handleClick = function (event) {
-    var target = event.target;
+    const target = event.target;
     if (this.focusTarget(target)) {
       event.preventDefault();
     }
@@ -2162,13 +2166,13 @@
       return false;
     }
 
-    var inputId = this.getFragmentFromUrl($target.href);
-    var $input = document.getElementById(inputId);
+    const inputId = this.getFragmentFromUrl($target.href);
+    const $input = document.getElementById(inputId);
     if (!$input) {
       return false;
     }
 
-    var $legendOrLabel = this.getAssociatedLegendOrLabel($input);
+    const $legendOrLabel = this.getAssociatedLegendOrLabel($input);
     if (!$legendOrLabel) {
       return false;
     }
@@ -2215,13 +2219,13 @@
    *                        legend or label can be found
    */
   ErrorSummary.prototype.getAssociatedLegendOrLabel = function ($input) {
-    var $fieldset = $input.closest('fieldset');
+    const $fieldset = $input.closest('fieldset');
 
     if ($fieldset) {
-      var legends = $fieldset.getElementsByTagName('legend');
+      const legends = $fieldset.getElementsByTagName('legend');
 
       if (legends.length) {
-        var $candidateLegend = legends[0];
+        const $candidateLegend = legends[0];
 
         // If the input type is radio or checkbox, always use the legend if there
         // is one.
@@ -2235,13 +2239,13 @@
         //
         // This should avoid situations where the input either ends up off the
         // screen, or obscured by a software keyboard.
-        var legendTop = $candidateLegend.getBoundingClientRect().top;
-        var inputRect = $input.getBoundingClientRect();
+        const legendTop = $candidateLegend.getBoundingClientRect().top;
+        const inputRect = $input.getBoundingClientRect();
 
         // If the browser doesn't support Element.getBoundingClientRect().height
         // or window.innerHeight (like IE8), bail and just link to the label.
         if (inputRect.height && window.innerHeight) {
-          var inputBottom = inputRect.top + inputRect.height;
+          const inputBottom = inputRect.top + inputRect.height;
 
           if (inputBottom - legendTop < window.innerHeight / 2) {
             return $candidateLegend;
@@ -2252,7 +2256,7 @@
 
     return (
       document.querySelector(
-        "label[for='" + $input.getAttribute('id') + "']"
+        "label[for='" + $input.getAttribute('id') + "']",
       ) || $input.closest('label')
     );
   };
@@ -2265,7 +2269,7 @@
    * Initialise the component
    */
   NotificationBanner.prototype.init = function () {
-    var $module = this.$module;
+    const $module = this.$module;
     // Check for module
     if (!$module) {
       return;
@@ -2285,7 +2289,7 @@
    * with another element which should be focused when the page loads.
    */
   NotificationBanner.prototype.setFocus = function () {
-    var $module = this.$module;
+    const $module = this.$module;
 
     if ($module.getAttribute('data-disable-auto-focus') === 'true') {
       return;
@@ -2316,7 +2320,7 @@
     this.$menu =
       this.$menuButton &&
       $module.querySelector(
-        '#' + this.$menuButton.getAttribute('aria-controls')
+        '#' + this.$menuButton.getAttribute('aria-controls'),
       );
   }
 
@@ -2332,11 +2336,11 @@
     }
 
     this.syncState(
-      this.$menu.classList.contains('govuk-header__navigation--open')
+      this.$menu.classList.contains('govuk-header__navigation--open'),
     );
     this.$menuButton.addEventListener(
       'click',
-      this.handleMenuButtonClick.bind(this)
+      this.handleMenuButtonClick.bind(this),
     );
   };
 
@@ -2351,7 +2355,7 @@
   Header.prototype.syncState = function (isVisible) {
     this.$menuButton.classList.toggle(
       'govuk-header__menu-button--open',
-      isVisible
+      isVisible,
     );
     this.$menuButton.setAttribute('aria-expanded', isVisible);
   };
@@ -2363,8 +2367,8 @@
    * sync the accessibility state and menu button state
    */
   Header.prototype.handleMenuButtonClick = function () {
-    var isVisible = this.$menu.classList.toggle(
-      'govuk-header__navigation--open'
+    const isVisible = this.$menu.classList.toggle(
+      'govuk-header__navigation--open',
     );
     this.syncState(isVisible);
   };
@@ -2389,11 +2393,11 @@
    * the reveal in sync with the radio state.
    */
   Radios.prototype.init = function () {
-    var $module = this.$module;
-    var $inputs = this.$inputs;
+    const $module = this.$module;
+    const $inputs = this.$inputs;
 
     nodeListForEach($inputs, function ($input) {
-      var target = $input.getAttribute('data-aria-controls');
+      const target = $input.getAttribute('data-aria-controls');
 
       // Skip radios without data-aria-controls attributes, or where the
       // target element does not exist.
@@ -2401,7 +2405,7 @@
         return;
       }
 
-      // Promote the data-aria-controls attribute to a aria-controls attribute
+      // Promote the data-aria-controls attribute to an aria-controls attribute
       // so that the relationship is exposed in the AOM
       $input.setAttribute('aria-controls', target);
       $input.removeAttribute('data-aria-controls');
@@ -2414,12 +2418,12 @@
     if ('onpageshow' in window) {
       window.addEventListener(
         'pageshow',
-        this.syncAllConditionalReveals.bind(this)
+        this.syncAllConditionalReveals.bind(this),
       );
     } else {
       window.addEventListener(
         'DOMContentLoaded',
-        this.syncAllConditionalReveals.bind(this)
+        this.syncAllConditionalReveals.bind(this),
       );
     }
 
@@ -2438,7 +2442,7 @@
   Radios.prototype.syncAllConditionalReveals = function () {
     nodeListForEach(
       this.$inputs,
-      this.syncConditionalRevealWithInputState.bind(this)
+      this.syncConditionalRevealWithInputState.bind(this),
     );
   };
 
@@ -2451,17 +2455,17 @@
    * @param {HTMLInputElement} $input Radio input
    */
   Radios.prototype.syncConditionalRevealWithInputState = function ($input) {
-    var $target = document.querySelector(
-      '#' + $input.getAttribute('aria-controls')
+    const $target = document.querySelector(
+      '#' + $input.getAttribute('aria-controls'),
     );
 
     if ($target && $target.classList.contains('govuk-radios__conditional')) {
-      var inputIsChecked = $input.checked;
+      const inputIsChecked = $input.checked;
 
       $input.setAttribute('aria-expanded', inputIsChecked);
       $target.classList.toggle(
         'govuk-radios__conditional--hidden',
-        !inputIsChecked
+        !inputIsChecked,
       );
     }
   };
@@ -2477,7 +2481,7 @@
    * @param {MouseEvent} event Click event
    */
   Radios.prototype.handleClick = function (event) {
-    var $clickedInput = event.target;
+    const $clickedInput = event.target;
 
     // Ignore clicks on things that aren't radio buttons
     if ($clickedInput.type !== 'radio') {
@@ -2486,26 +2490,26 @@
 
     // We only need to consider radios with conditional reveals, which will have
     // aria-controls attributes.
-    var $allInputs = document.querySelectorAll(
-      'input[type="radio"][aria-controls]'
+    const $allInputs = document.querySelectorAll(
+      'input[type="radio"][aria-controls]',
     );
 
     nodeListForEach(
       $allInputs,
       function ($input) {
-        var hasSameFormOwner = $input.form === $clickedInput.form;
-        var hasSameName = $input.name === $clickedInput.name;
+        const hasSameFormOwner = $input.form === $clickedInput.form;
+        const hasSameName = $input.name === $clickedInput.name;
 
         if (hasSameName && hasSameFormOwner) {
           this.syncConditionalRevealWithInputState($input);
         }
-      }.bind(this)
+      }.bind(this),
     );
   };
 
   (function (undefined) {
     // Detection from https://raw.githubusercontent.com/Financial-Times/polyfill-library/master/polyfills/Element/prototype/nextElementSibling/detect.js
-    var detect =
+    const detect =
       'document' in this && 'nextElementSibling' in document.documentElement;
 
     if (detect) return;
@@ -2513,23 +2517,23 @@
     // Polyfill from https://raw.githubusercontent.com/Financial-Times/polyfill-library/master/polyfills/Element/prototype/nextElementSibling/polyfill.js
     Object.defineProperty(Element.prototype, 'nextElementSibling', {
       get: function () {
-        var el = this.nextSibling;
+        let el = this.nextSibling;
         while (el && el.nodeType !== 1) {
           el = el.nextSibling;
         }
         return el;
       },
     });
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   (function (undefined) {
     // Detection from https://raw.githubusercontent.com/Financial-Times/polyfill-library/master/polyfills/Element/prototype/previousElementSibling/detect.js
-    var detect =
+    const detect =
       'document' in this &&
       'previousElementSibling' in document.documentElement;
 
@@ -2538,19 +2542,19 @@
     // Polyfill from https://raw.githubusercontent.com/Financial-Times/polyfill-library/master/polyfills/Element/prototype/previousElementSibling/polyfill.js
     Object.defineProperty(Element.prototype, 'previousElementSibling', {
       get: function () {
-        var el = this.previousSibling;
+        let el = this.previousSibling;
         while (el && el.nodeType !== 1) {
           el = el.previousSibling;
         }
         return el;
       },
     });
-  }.call(
+  }).call(
     ('object' === typeof window && window) ||
       ('object' === typeof self && self) ||
       ('object' === typeof global && global) ||
-      {}
-  ));
+      {},
+  );
 
   function Tabs($module) {
     this.$module = $module;
@@ -2583,10 +2587,10 @@
   };
 
   Tabs.prototype.setup = function () {
-    var $module = this.$module;
-    var $tabs = this.$tabs;
-    var $tabList = $module.querySelector('.govuk-tabs__list');
-    var $tabListItems = $module.querySelectorAll('.govuk-tabs__list-item');
+    const $module = this.$module;
+    const $tabs = this.$tabs;
+    const $tabList = $module.querySelector('.govuk-tabs__list');
+    const $tabListItems = $module.querySelectorAll('.govuk-tabs__list-item');
 
     if (!$tabs || !$tabList || !$tabListItems) {
       return;
@@ -2614,11 +2618,11 @@
 
         // Remove old active panels
         this.hideTab($tab);
-      }.bind(this)
+      }.bind(this),
     );
 
     // Show either the active tab according to the URL's hash or the first tab
-    var $activeTab = this.getTab(window.location.hash) || this.$tabs[0];
+    const $activeTab = this.getTab(window.location.hash) || this.$tabs[0];
     this.showTab($activeTab);
 
     // Handle hashchange events
@@ -2627,10 +2631,10 @@
   };
 
   Tabs.prototype.teardown = function () {
-    var $module = this.$module;
-    var $tabs = this.$tabs;
-    var $tabList = $module.querySelector('.govuk-tabs__list');
-    var $tabListItems = $module.querySelectorAll('.govuk-tabs__list-item');
+    const $module = this.$module;
+    const $tabs = this.$tabs;
+    const $tabList = $module.querySelector('.govuk-tabs__list');
+    const $tabListItems = $module.querySelectorAll('.govuk-tabs__list-item');
 
     if (!$tabs || !$tabList || !$tabListItems) {
       return;
@@ -2651,7 +2655,7 @@
 
         // Unset HTML attributes
         this.unsetAttributes($tab);
-      }.bind(this)
+      }.bind(this),
     );
 
     // Remove hashchange event handler
@@ -2659,8 +2663,8 @@
   };
 
   Tabs.prototype.onHashChange = function (e) {
-    var hash = window.location.hash;
-    var $tabWithHash = this.getTab(hash);
+    const hash = window.location.hash;
+    const $tabWithHash = this.getTab(hash);
     if (!$tabWithHash) {
       return;
     }
@@ -2672,7 +2676,7 @@
     }
 
     // Show either the active tab according to the URL's hash or the first tab
-    var $previousTab = this.getCurrentTab();
+    const $previousTab = this.getCurrentTab();
 
     this.hideTab($previousTab);
     this.showTab($tabWithHash);
@@ -2695,7 +2699,7 @@
 
   Tabs.prototype.setAttributes = function ($tab) {
     // set tab attributes
-    var panelId = this.getHref($tab).slice(1);
+    const panelId = this.getHref($tab).slice(1);
     $tab.setAttribute('id', 'tab_' + panelId);
     $tab.setAttribute('role', 'tab');
     $tab.setAttribute('aria-controls', panelId);
@@ -2703,7 +2707,7 @@
     $tab.setAttribute('tabindex', '-1');
 
     // set panel attributes
-    var $panel = this.getPanel($tab);
+    const $panel = this.getPanel($tab);
     $panel.setAttribute('role', 'tabpanel');
     $panel.setAttribute('aria-labelledby', $tab.id);
     $panel.classList.add(this.jsHiddenClass);
@@ -2718,7 +2722,7 @@
     $tab.removeAttribute('tabindex');
 
     // unset panel attributes
-    var $panel = this.getPanel($tab);
+    const $panel = this.getPanel($tab);
     $panel.removeAttribute('role');
     $panel.removeAttribute('aria-labelledby');
     $panel.classList.remove(this.jsHiddenClass);
@@ -2730,19 +2734,19 @@
       return false;
     }
     e.preventDefault();
-    var $newTab = e.target;
-    var $currentTab = this.getCurrentTab();
+    const $newTab = e.target;
+    const $currentTab = this.getCurrentTab();
     this.hideTab($currentTab);
     this.showTab($newTab);
     this.createHistoryEntry($newTab);
   };
 
   Tabs.prototype.createHistoryEntry = function ($tab) {
-    var $panel = this.getPanel($tab);
+    const $panel = this.getPanel($tab);
 
     // Save and restore the id
     // so the page doesn't jump when a user clicks a tab (which changes the hash)
-    var id = $panel.id;
+    const id = $panel.id;
     $panel.id = '';
     this.changingHash = true;
     window.location.hash = this.getHref($tab).slice(1);
@@ -2765,10 +2769,10 @@
   };
 
   Tabs.prototype.activateNextTab = function () {
-    var currentTab = this.getCurrentTab();
-    var nextTabListItem = currentTab.parentNode.nextElementSibling;
+    const currentTab = this.getCurrentTab();
+    const nextTabListItem = currentTab.parentNode.nextElementSibling;
     if (nextTabListItem) {
-      var nextTab = nextTabListItem.querySelector('.govuk-tabs__tab');
+      const nextTab = nextTabListItem.querySelector('.govuk-tabs__tab');
     }
     if (nextTab) {
       this.hideTab(currentTab);
@@ -2779,10 +2783,10 @@
   };
 
   Tabs.prototype.activatePreviousTab = function () {
-    var currentTab = this.getCurrentTab();
-    var previousTabListItem = currentTab.parentNode.previousElementSibling;
+    const currentTab = this.getCurrentTab();
+    const previousTabListItem = currentTab.parentNode.previousElementSibling;
     if (previousTabListItem) {
-      var previousTab = previousTabListItem.querySelector('.govuk-tabs__tab');
+      const previousTab = previousTabListItem.querySelector('.govuk-tabs__tab');
     }
     if (previousTab) {
       this.hideTab(currentTab);
@@ -2793,17 +2797,17 @@
   };
 
   Tabs.prototype.getPanel = function ($tab) {
-    var $panel = this.$module.querySelector(this.getHref($tab));
+    const $panel = this.$module.querySelector(this.getHref($tab));
     return $panel;
   };
 
   Tabs.prototype.showPanel = function ($tab) {
-    var $panel = this.getPanel($tab);
+    const $panel = this.getPanel($tab);
     $panel.classList.remove(this.jsHiddenClass);
   };
 
   Tabs.prototype.hidePanel = function (tab) {
-    var $panel = this.getPanel(tab);
+    const $panel = this.getPanel(tab);
     $panel.classList.add(this.jsHiddenClass);
   };
 
@@ -2821,7 +2825,7 @@
 
   Tabs.prototype.getCurrentTab = function () {
     return this.$module.querySelector(
-      '.govuk-tabs__list-item--selected .govuk-tabs__tab'
+      '.govuk-tabs__list-item--selected .govuk-tabs__tab',
     );
   };
 
@@ -2829,8 +2833,8 @@
   // should be a utility function most prob
   // http://labs.thesedays.com/blog/2010/01/08/getting-the-href-value-with-jquery-in-ie/
   Tabs.prototype.getHref = function ($tab) {
-    var href = $tab.getAttribute('href');
-    var hash = href.slice(href.indexOf('#'), href.length);
+    const href = $tab.getAttribute('href');
+    const hash = href.slice(href.indexOf('#'), href.length);
     return hash;
   };
 
@@ -2840,60 +2844,63 @@
 
     // Allow the user to initialise GOV.UK Frontend in only certain sections of the page
     // Defaults to the entire document if nothing is set.
-    var scope = typeof options.scope !== 'undefined' ? options.scope : document;
+    const scope =
+      typeof options.scope !== 'undefined' ? options.scope : document;
 
-    var $buttons = scope.querySelectorAll('[data-module="govuk-button"]');
+    const $buttons = scope.querySelectorAll('[data-module="govuk-button"]');
     nodeListForEach($buttons, function ($button) {
       new Button($button).init();
     });
 
-    var $accordions = scope.querySelectorAll('[data-module="govuk-accordion"]');
+    const $accordions = scope.querySelectorAll(
+      '[data-module="govuk-accordion"]',
+    );
     nodeListForEach($accordions, function ($accordion) {
       new Accordion($accordion).init();
     });
 
-    var $details = scope.querySelectorAll('[data-module="govuk-details"]');
+    const $details = scope.querySelectorAll('[data-module="govuk-details"]');
     nodeListForEach($details, function ($detail) {
       new Details($detail).init();
     });
 
-    var $characterCounts = scope.querySelectorAll(
-      '[data-module="govuk-character-count"]'
+    const $characterCounts = scope.querySelectorAll(
+      '[data-module="govuk-character-count"]',
     );
     nodeListForEach($characterCounts, function ($characterCount) {
       new CharacterCount($characterCount).init();
     });
 
-    var $checkboxes = scope.querySelectorAll(
-      '[data-module="govuk-checkboxes"]'
+    const $checkboxes = scope.querySelectorAll(
+      '[data-module="govuk-checkboxes"]',
     );
     nodeListForEach($checkboxes, function ($checkbox) {
       new Checkboxes($checkbox).init();
     });
 
     // Find first error summary module to enhance.
-    var $errorSummary = scope.querySelector(
-      '[data-module="govuk-error-summary"]'
+    const $errorSummary = scope.querySelector(
+      '[data-module="govuk-error-summary"]',
     );
     new ErrorSummary($errorSummary).init();
 
     // Find first header module to enhance.
-    var $toggleButton = scope.querySelector('[data-module="govuk-header"]');
+    const $toggleButton = scope.querySelector('[data-module="govuk-header"]');
     new Header($toggleButton).init();
 
-    var $notificationBanners = scope.querySelectorAll(
-      '[data-module="govuk-notification-banner"]'
+    const $notificationBanners = scope.querySelectorAll(
+      '[data-module="govuk-notification-banner"]',
     );
     nodeListForEach($notificationBanners, function ($notificationBanner) {
       new NotificationBanner($notificationBanner).init();
     });
 
-    var $radios = scope.querySelectorAll('[data-module="govuk-radios"]');
+    const $radios = scope.querySelectorAll('[data-module="govuk-radios"]');
     nodeListForEach($radios, function ($radio) {
       new Radios($radio).init();
     });
 
-    var $tabs = scope.querySelectorAll('[data-module="govuk-tabs"]');
+    const $tabs = scope.querySelectorAll('[data-module="govuk-tabs"]');
     nodeListForEach($tabs, function ($tabs) {
       new Tabs($tabs).init();
     });

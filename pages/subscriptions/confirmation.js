@@ -33,7 +33,7 @@ export async function getServerSideProps({ req }) {
     const redirectPath = `/subscriptions/signup?grantId=${body.grantLabel}${errorParam}&${previousFormValues}`;
     return {
       redirect: {
-        permanemt: false,
+        permanent: false,
         destination: redirectPath,
       },
     };

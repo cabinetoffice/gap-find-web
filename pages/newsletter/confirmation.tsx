@@ -40,7 +40,7 @@ export const getServerSideProps = async (
     return {
       props: {},
       redirect: {
-        permanemt: false,
+        permanent: false,
         destination: redirectPath,
       },
     };
