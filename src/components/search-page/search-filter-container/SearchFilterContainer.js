@@ -4,6 +4,7 @@ import { SearchFilterClearButton } from '../search-clear-filters/SearchFilterCle
 import { SearchFilterDate } from '../search-filter-date/SearchFilterDate';
 import { SearchFilterSelector } from '../search-filter-selector/SearchFilterSelector';
 import { buildQueryString } from '../../../../pages/save-search';
+import { isMobile } from 'react-device-detect';
 
 export function SearchFilterContainer({ filters, filterObj, query }) {
   useEffect(() => {
@@ -12,9 +13,21 @@ export function SearchFilterContainer({ filters, filterObj, query }) {
     );
     if ($filterAccordion && window.GOVUKFrontend !== undefined) {
       new window.GOVUKFrontend.Accordion($filterAccordion).init();
+      // TODO: Backup option
+      // if (isMobile) {
+      //   document.querySelector('.govuk-accordion__controls').click();
+      // }
     }
   }, []);
 
+  return isMobile ? (
+    <MobileContainer filters={filters} filterObj={filterObj} query={query} />
+  ) : (
+    <BaseContainer filters={filters} filterObj={filterObj} query={query} />
+  );
+}
+
+function BaseContainer({ filters, filterObj, query }) {
   return (
     <div className="govuk-grid-column-one-third">
       <div className="gap_filters govuk-!-margin-bottom-2">
@@ -77,5 +90,14 @@ export function SearchFilterContainer({ filters, filterObj, query }) {
         Saving your search will make it quicker to find relevant grants.
       </p>
     </div>
+  );
+}
+
+function MobileContainer({ filters, filterObj, query }) {
+  return (
+    // TODO: Add the collapsable container here
+    <p>
+      <BaseContainer filters={filters} filterObj={filterObj} query={query} />
+    </p>
   );
 }
