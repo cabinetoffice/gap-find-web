@@ -190,7 +190,6 @@ jobs:
           RELEASE_VERSION=V_${GITHUB_REF##*/}
           docker tag $ECR_REGISTRY/find-a-grant-client:${{ env.BUILD_VERSION }} $ECR_REGISTRY/find-a-grant-client:$RELEASE_VERSION
           docker push $ECR_REGISTRY/find-a-grant-client:$RELEASE_VERSION
-
       - name: Wait for CodePipeline
         run: |
           sleep 10
