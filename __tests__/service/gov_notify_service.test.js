@@ -18,7 +18,7 @@ describe('sendEmail', () => {
     const client = new NotifyClient();
     setClient(client);
 
-    sendEmail(emailAddress, personalisation);
+    await sendEmail(emailAddress, personalisation);
     await flushPromises();
 
     expect(client.sendEmail).toHaveBeenCalled();

@@ -1,4 +1,4 @@
-name: Security Vulnerabilites
+name: Security Vulnerabilities
 
 on:
   pull_request:

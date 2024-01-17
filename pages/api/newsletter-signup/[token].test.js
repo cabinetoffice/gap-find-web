@@ -77,7 +77,9 @@ describe('newslettersignup', () => {
 
     await handler(req, res);
 
-    expect(client.post).rejects.toThrow(new Error('Error from post request'));
+    await expect(client.post).rejects.toThrow(
+      new Error('Error from post request'),
+    );
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(
       new URL(

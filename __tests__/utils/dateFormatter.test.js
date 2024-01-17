@@ -1,4 +1,7 @@
-import { dateFormatter, formatDateTimeForSentence } from '../../src/utils/dateFormatterGDS';
+import {
+  dateFormatter,
+  formatDateTimeForSentence,
+} from '../../src/utils/dateFormatterGDS';
 
 describe('For use of formatting dates to be GDS compliant', () => {
   it('should give a correct format date when passed a timestamp', () => {

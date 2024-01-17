@@ -32,7 +32,7 @@ export default async function handler(
       newsletterSubscription,
     );
   } catch (e) {
-    logger.error('error subscribing to newletter', addErrorInfo(e, req));
+    logger.error('error subscribing to newsletter', addErrorInfo(e, req));
   }
 
   await addEmailAddressCookieToResponse(tokenValues, res);
@@ -46,7 +46,7 @@ export default async function handler(
 }
 async function addEmailAddressCookieToResponse(
   tokenValues: any,
-  res: NextApiResponse<any>,
+  res: NextApiResponse,
 ) {
   const encryptedEmailAddress = await encrypt(tokenValues.email);
   const emailAddressJwt = generateSignedApiKey({

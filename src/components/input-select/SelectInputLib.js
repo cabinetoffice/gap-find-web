@@ -130,7 +130,7 @@ function getUpdatedIndex(currentIndex, maxIndex, action) {
 
 // check if element is visible in browser view port
 function isElementInView(element) {
-  var bounding = element.getBoundingClientRect();
+  const bounding = element.getBoundingClientRect();
 
   return (
     bounding.top >= 0 &&

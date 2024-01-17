@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getSessionIdFromCookies } from '../../../src/utils/session';
+import { getSessionIdFromCookies } from '../../src/utils/session';
 import axios from 'axios';
 
 const Logout = async (req: NextApiRequest, res: NextApiResponse) => {

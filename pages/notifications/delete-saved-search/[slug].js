@@ -34,7 +34,7 @@ async function getEmailAddressFromCookies(ctx) {
 }
 
 const getUserId = async (ctx) => {
-  if (process.env.ONE_LOGIN_ENABLED != 'true') {
+  if (process.env.ONE_LOGIN_ENABLED !== 'true') {
     return getEmailAddressFromCookies(ctx);
   }
   const { jwtPayload } = getJwtFromCookies(ctx.req);
@@ -44,7 +44,7 @@ const getUserId = async (ctx) => {
 
 export async function getServerSideProps(ctx) {
   if (
-    process.env.ONE_LOGIN_ENABLED != 'true' &&
+    process.env.ONE_LOGIN_ENABLED !== 'true' &&
     !cookieExistsAndContainsValidJwt(ctx, cookieName['currentEmailAddress'])
   ) {
     return {

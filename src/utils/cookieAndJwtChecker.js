@@ -2,7 +2,7 @@ import nookies from 'nookies';
 import jwt from 'jsonwebtoken';
 
 export const hasValidJwt = (err) => {
-  return err ? false : true;
+  return !err;
 };
 
 const cookieExistsAndContainsValidJwt = (ctx, cookieName) => {

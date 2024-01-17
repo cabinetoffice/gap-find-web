@@ -3,7 +3,7 @@ import { createMockRouter } from '../../../src/utils/createMockRouter';
 import SignupSavedSearch, {
   getServerSideProps,
 } from '../../../pages/save-search/notifications';
-import { RouterContext } from 'next/dist/shared/lib/router-context.js';
+import { RouterContext } from 'next/dist/shared/lib/router-context';
 import { parseBody } from 'next/dist/server/api-utils/node';
 jest.mock('next/dist/server/api-utils/node');
 describe('Rendering serverside props', () => {

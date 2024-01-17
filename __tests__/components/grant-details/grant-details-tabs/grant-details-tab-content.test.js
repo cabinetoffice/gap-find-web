@@ -34,7 +34,7 @@ describe('GrantDetailsTabContent component', () => {
     expect(div).toBeDefined();
     expect(div.getAttribute('data-cy')).toBe('cyTabsContent_summary');
     expect(div.getAttribute('class')).toBe(
-      'govuk-tabs__panel govuk-tabs__panel--hidden'
+      'govuk-tabs__panel govuk-tabs__panel--hidden',
     );
     expect(div.getAttribute('id')).toBe('summary');
   });

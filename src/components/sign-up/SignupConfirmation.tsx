@@ -20,6 +20,7 @@ type SignupConfirmationProps = {
  * @param {string} subscribedTo
  * @param {boolean} displayBold
  * @param {ReturnParams} returnParams
+ * @param relevantLinks
  * @returns SignupConfirmation Component
  */
 const SignupConfirmation = ({
@@ -27,7 +28,7 @@ const SignupConfirmation = ({
   subscribedTo,
   displayBold,
   returnParams,
-  children: releventLinks,
+  children: relevantLinks,
 }: SignupConfirmationProps) => {
   return (
     <>
@@ -110,7 +111,7 @@ const SignupConfirmation = ({
           </a>
         </div>
 
-        {releventLinks}
+        {relevantLinks}
       </div>
     </>
   );

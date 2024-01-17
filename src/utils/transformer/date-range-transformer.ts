@@ -6,6 +6,7 @@ interface QueryDate {
   month: string;
   year: string;
 }
+
 export function transformQueryDateToMoment(
   queryDate: QueryDate,
   fieldName: string,

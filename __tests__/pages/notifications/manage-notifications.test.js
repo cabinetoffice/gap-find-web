@@ -100,7 +100,7 @@ describe('Testing manage-notifications component', () => {
     expect(banner).toBeVisible();
   });
 
-  it('hides confirmation message with a successful subsctiption notification banner', () => {
+  it('hides confirmation message with a successful subscription notification banner', () => {
     render(
       <management.default
         {...props}
@@ -118,7 +118,7 @@ describe('Testing manage-notifications component', () => {
     ).toBeNull();
   });
 
-  it('shows confirmation message with a FAILED subsctiption notification banner', () => {
+  it('shows confirmation message with a FAILED subscription notification banner', () => {
     render(
       <management.default
         {...props}

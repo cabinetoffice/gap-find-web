@@ -35,13 +35,13 @@ describe('SearchFilterInput component', () => {
     const checkbox = screen.getByRole('checkbox', { name: '' });
     expect(checkbox).toBeDefined();
     expect(checkbox.getAttribute('id')).toBe(
-      'fields.grantApplicantType.en-US1'
+      'fields.grantApplicantType.en-US1',
     );
     expect(checkbox.getAttribute('name')).toBe(
-      'fields.grantApplicantType.en-US'
+      'fields.grantApplicantType.en-US',
     );
     expect(checkbox.getAttribute('data-cy')).toBe(
-      'cyPersonal / individualCheckbox'
+      'cyPersonal / individualCheckbox',
     );
     expect(checkbox.defaultChecked).toBe(false);
     expect(checkbox.value).toBe('1');
@@ -67,18 +67,18 @@ describe('SearchFilterInput component', () => {
         filterObj={filterObj}
         index={1}
         sublevel={sublevel}
-      />
+      />,
     );
     const checkbox = screen.getByRole('checkbox', { name: '' });
     expect(checkbox).toBeDefined();
     expect(checkbox.getAttribute('id')).toBe(
-      'fields.grantApplicantType.en-US1'
+      'fields.grantApplicantType.en-US1',
     );
     expect(checkbox.getAttribute('name')).toBe(
-      'fields.grantApplicantType.en-US'
+      'fields.grantApplicantType.en-US',
     );
     expect(checkbox.getAttribute('data-cy')).toBe(
-      'cyPersonal / individualCheckbox'
+      'cyPersonal / individualCheckbox',
     );
     expect(checkbox.defaultChecked).toBe(true);
     expect(checkbox.value).toBe('1');
@@ -97,18 +97,18 @@ describe('SearchFilterInput component', () => {
         filterObj={filterObj}
         index={1}
         sublevel={sublevel}
-      />
+      />,
     );
     const checkbox = screen.getByRole('checkbox', { name: '' });
     expect(checkbox).toBeDefined();
     expect(checkbox.getAttribute('id')).toBe(
-      'fields.grantApplicantType.en-US1'
+      'fields.grantApplicantType.en-US1',
     );
     expect(checkbox.getAttribute('name')).toBe(
-      'fields.grantApplicantType.en-US'
+      'fields.grantApplicantType.en-US',
     );
     expect(checkbox.getAttribute('data-cy')).toBe(
-      'cyPersonal / individualCheckbox'
+      'cyPersonal / individualCheckbox',
     );
     expect(checkbox.defaultChecked).toBe(false);
     expect(checkbox.value).toBe('1');
@@ -133,7 +133,7 @@ describe('SearchFilterInput component', () => {
         filterObj={filterObj}
         index={1}
         sublevel={sublevel}
-      />
+      />,
     );
     const checkbox = screen.getByRole('checkbox', { name: '' });
     expect(checkbox).toBeDefined();

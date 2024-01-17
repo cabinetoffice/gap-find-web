@@ -38,8 +38,7 @@ export async function encrypt(cleartext) {
   const { result } = await encryptionClient.encrypt(keyRing, cleartext, {
     encryptionContext: context,
   });
-  const cipherText = b64Encode(result);
-  return cipherText;
+  return b64Encode(result);
 }
 
 export async function decrypt(cipherText) {

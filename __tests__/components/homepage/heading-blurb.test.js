@@ -15,7 +15,7 @@ describe('HomepageBodyText component', () => {
     expect(
       screen
         .getAllByRole('listitem')
-        .find((listitem) => listitem.textContent === blurbBulletPoint)
+        .find((listitem) => listitem.textContent === blurbBulletPoint),
     ).toBeDefined();
   });
 });

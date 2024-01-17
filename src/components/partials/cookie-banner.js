@@ -22,7 +22,7 @@ const CookieBanner = () => {
   }, [cookies]);
 
   const rejectCookies = () => {
-    for (var i = 0; i < Object.keys(cookies).length; i++) {
+    for (let i = 0; i < Object.keys(cookies).length; i++) {
       nookies.destroy({}, Object.keys(cookies)[i], { path: '/' });
     }
 

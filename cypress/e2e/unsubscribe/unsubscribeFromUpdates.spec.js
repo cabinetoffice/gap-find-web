@@ -67,7 +67,7 @@ describe('Allow unsubscription', () => {
     cy.get('[data-cy="cyManageNotificationsSubmitButton"]').click();
     cy.url().should('include', '/notifications/check-email');
 
-    // Put in checks about the page that tells you you've just submitted
+    // Put in checks about the page that tells you that you've just submitted
     cy.get('[data-cy="cyCheckUnsubscribeEmailHeading"]').contains(
       'Check your email',
     );

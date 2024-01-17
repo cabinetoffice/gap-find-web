@@ -45,7 +45,7 @@ const makeEmailAccount = async () => {
           bodies: [''],
         };
         const messages = await connection.search(searchCriteria, fetchOptions);
-        const uidsToDelete =
+        let uidsToDelete =
           keepEmails === true
             ? (uidsToDelete = [])
             : messages.map((message) => message.attributes.uid);
