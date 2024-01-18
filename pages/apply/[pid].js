@@ -11,6 +11,15 @@ export async function getServerSideProps({ params }) {
 
   const grantDetail = await fetchEntry(path);
 
+  if (grantDetail.props.grantDetail === undefined) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `${process.env.APPLICANT_HOST}/grant-is-closed`,
+      },
+    };
+  }
+
   if (grantDetail.props.grantDetail.fields.label) {
     const child = logger.child({
       action: 'apply',
