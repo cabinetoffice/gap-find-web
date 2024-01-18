@@ -134,8 +134,15 @@ For custom accordion and filters page
   .govuk-accordion {
     border-bottom: 0;
   }
+
   .govuk-accordion__section--expanded .govuk-accordion__section-content {
     display: flex;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .govuk-accordion__section--expanded .govuk-accordion__section-content {
+      display: block;
+    }
   }
 
   .gap_filters {
