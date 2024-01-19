@@ -39,6 +39,14 @@
       }
     }
   }
+  @media (min-width:641px) and (max-width:978px),
+  (min-width:223px) and (max-width:286px),
+  (max-width:175px)  {
+    .datepicker-dialog {
+      position: relative;
+      right: 0px;
+    }
+  }
   .header {
     cursor: default;
     background-color: black;
@@ -241,6 +249,12 @@
   padding-left: 1rem;
   button {
     margin: 0 1rem 1rem 0;
+  }
+}
+
+@media (max-width:640px) {
+  .dialog-ok-cancel-group {
+    padding-right: 1rem;
   }
 }
 .dialog-message {
