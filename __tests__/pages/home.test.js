@@ -1,6 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import Home, { getServerSideProps } from '../../pages/index';
-import { notificationRoutes } from '../../src/utils/constants';
+import {
+  LOGIN_NOTICE_TYPES,
+  notificationRoutes,
+} from '../../src/utils/constants';
+import { AppContext, AuthContext } from '../../pages/_app';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -9,36 +13,27 @@ jest.mock('next/router', () => ({
 }));
 
 const applicantUrl = 'http://localhost:3002';
-const component = (
-  <Home
-    searchTerm="specific search term"
-    applicantUrl={applicantUrl}
-    oneLoginEnabled={'true'}
-  />
-);
+
+const renderComponent = (overrides = {}, isUserLoggedIn = false) =>
+  render(<Home searchTerm="specific search term" />, {
+    wrapper: ({ children }) => (
+      <AppContext.Provider
+        value={{ applicantUrl, oneLoginEnabled: true, ...overrides }}
+      >
+        <AuthContext.Provider value={{ isUserLoggedIn }}>
+          {children}
+        </AuthContext.Provider>
+      </AppContext.Provider>
+    ),
+  });
 
 describe('Rendering the home page', () => {
-  const originalEnv = process.env;
+  beforeEach(jest.resetModules);
 
-  beforeEach(() => {
-    jest.resetModules();
-    process.env = {
-      ...originalEnv,
-      APPLY_FOR_A_GRANT_APPLICANT_URL: applicantUrl,
-    };
-  });
+  it('renders page header and service description', () => {
+    renderComponent();
 
-  afterEach(() => {
-    process.env = originalEnv;
-  });
-  it('Should render a page header', () => {
-    render(component);
     expect(screen.getByRole('heading', { name: 'Find a grant' })).toBeDefined();
-  });
-
-  it('Should render service description', () => {
-    render(component);
-
     expect(
       screen.getByText(
         'Find a grant is a service that allows you to search government grants.',
@@ -58,7 +53,7 @@ describe('Rendering the home page', () => {
   });
 
   it('Should have a search button of type submit', () => {
-    render(component);
+    renderComponent();
     expect(
       screen.getByRole('textbox', { name: 'Search grants' }),
     ).toBeDefined();
@@ -69,8 +64,8 @@ describe('Rendering the home page', () => {
     ).toBeDefined();
   });
 
-  it('Should render Browse All Grants section', () => {
-    render(component);
+  it('renders Browse All Grants section', () => {
+    renderComponent();
     expect(
       screen.getByRole('heading', { name: 'Browse all grants' }),
     ).toBeDefined();
@@ -84,8 +79,8 @@ describe('Rendering the home page', () => {
     ).toHaveAttribute('href', '/grants');
   });
 
-  it('Should render The future of Find a grant section', () => {
-    render(component);
+  it('renders the future of Find a grant section', () => {
+    renderComponent();
     expect(
       screen.getByRole('heading', { name: 'The future of Find a grant' }),
     ).toBeDefined();
@@ -96,8 +91,8 @@ describe('Rendering the home page', () => {
     ).toBeDefined();
   });
 
-  it('Should render Manage notifications section', () => {
-    render(component);
+  it('renders manage notifications section', () => {
+    renderComponent();
     expect(
       screen.getByRole('heading', { name: 'Manage notifications' }),
     ).toBeDefined();
@@ -110,7 +105,10 @@ describe('Rendering the home page', () => {
       screen
         .getByRole('link', { name: 'Manage notifications and saved searches' })
         .closest('a'),
-    ).toHaveAttribute('href', notificationRoutes.manageNotifications);
+    ).toHaveAttribute(
+      'href',
+      `${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS}`,
+    );
     expect(
       screen
         .getByRole('link', { name: 'through our feedback form' })
@@ -121,8 +119,17 @@ describe('Rendering the home page', () => {
     );
   });
 
-  it('Should render sign in and apply section', () => {
-    render(component);
+  it('renders manage notifications link with expected href when user logged in', () => {
+    renderComponent({}, true);
+    expect(
+      screen
+        .getByRole('link', { name: 'Manage notifications and saved searches' })
+        .closest('a'),
+    ).toHaveAttribute('href', notificationRoutes.manageNotifications);
+  });
+
+  it('renders sign in and apply section', () => {
+    renderComponent();
     expect(
       screen.getByRole('heading', { name: 'Sign in and apply' }),
     ).toBeDefined();
@@ -134,8 +141,8 @@ describe('Rendering the home page', () => {
     ).toHaveAttribute('href', process.env.APPLY_FOR_A_GRANT);
   });
 
-  it('should render a search input with a default search value from the query params', () => {
-    render(component);
+  it('renders a search input with a default search value from the query params', () => {
+    renderComponent();
     expect(
       screen.getByDisplayValue('specific search term'),
     ).toBeInTheDocument();
@@ -143,40 +150,26 @@ describe('Rendering the home page', () => {
 });
 
 describe('getServerSideProps', () => {
-  const originalEnv = process.env;
+  beforeEach(jest.resetModules);
 
-  beforeEach(() => {
-    jest.resetModules();
-    process.env = {
-      ...originalEnv,
-      APPLY_FOR_A_GRANT_APPLICANT_URL: applicantUrl,
-    };
-  });
-
-  afterEach(() => {
-    process.env = originalEnv;
-  });
-  it('should return empty search params if no query params exist', () => {
-    process.env.ONE_LOGIN_ENABLED = 'true';
-
+  it('returns empty search params if no query params exist', () => {
     const result = getServerSideProps({ query: {} });
     expect(result).toStrictEqual({
-      props: { searchTerm: '', applicantUrl, oneLoginEnabled: 'true' },
+      props: { searchTerm: '' },
     });
   });
 
-  it('should return a search term if a search term exists as a query param', () => {
-    process.env.ONE_LOGIN_ENABLED = 'false';
+  it('returns a search term if a search term exists as a query param', () => {
     const result = getServerSideProps({ query: { searchTerm: 'search' } });
     expect(result).toStrictEqual({
-      props: { searchTerm: 'search', applicantUrl, oneLoginEnabled: 'false' },
+      props: { searchTerm: 'search' },
     });
   });
 });
 
 describe('Skip to main content', () => {
-  it('should have skip to main content link', () => {
-    render(component);
+  it('renders skip to main content link', () => {
+    renderComponent();
     const skipToMainContentLink = screen.getByRole('link', {
       name: 'Skip to main content',
     });
@@ -184,8 +177,8 @@ describe('Skip to main content', () => {
     expect(skipToMainContentLink).toHaveAttribute('href', '/#main-content');
   });
 
-  it('should have an element tagged for focus', () => {
-    render(component);
+  it('renders element tagged for focus', () => {
+    renderComponent();
     const elementToFocus = document.querySelector('#main-content-focus');
     expect(elementToFocus).not.toEqual(null);
     expect(elementToFocus).toBeDefined();

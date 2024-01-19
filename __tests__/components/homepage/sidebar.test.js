@@ -1,40 +1,41 @@
 import { render, screen } from '@testing-library/react';
 import { HomepageSidebar } from '../../../src/components/homepage/sidebar/HomepageSidebar';
-import { notificationRoutes } from '../../../src/utils/constants';
+import {
+  LOGIN_NOTICE_TYPES,
+  notificationRoutes,
+} from '../../../src/utils/constants';
+import { AppContext, AuthContext } from '../../../pages/_app';
 
 const applicantUrl = 'http://localhost:3002';
-const component = (
-  <HomepageSidebar
-    header="Test"
-    applicantUrl={applicantUrl}
-    oneLoginEnabled={'true'}
-  />
-);
 
-const sidebartext =
-  'See all the grant updates you have signed up for. You can unsubscribe here too.';
+const renderComponent = (overrides = {}, isUserLoggedIn = false) =>
+  render(<HomepageSidebar header="Test" />, {
+    wrapper: ({ children }) => (
+      <AppContext.Provider
+        value={{ applicantUrl, oneLoginEnabled: true, ...overrides }}
+      >
+        <AuthContext.Provider value={{ isUserLoggedIn }}>
+          {children}
+        </AuthContext.Provider>
+      </AppContext.Provider>
+    ),
+  });
 
 describe('HomepageSidebar component', () => {
   afterEach(jest.clearAllMocks);
 
-  it('should render heading of the sidebar', () => {
-    render(component);
-    expect(screen.getAllByRole('heading', { name: 'Test' })).toBeDefined();
+  it('renders expected content', () => {
+    renderComponent();
+    expect(screen.getByRole('heading', { name: 'Test' })).toBeVisible();
+    expect(
+      screen.getByText(
+        'See all the grant updates you have signed up for. You can unsubscribe here too.',
+      ),
+    ).toBeVisible();
   });
 
-  it('should render the text to go along with the heading', () => {
-    render(component);
-    expect(screen.getByText(sidebartext)).toBeDefined();
-  });
-
-  it('should render the manage notifications link with the correct href when one login flag disabled', () => {
-    render(
-      <HomepageSidebar
-        header="Test"
-        applicantUrl={applicantUrl}
-        oneLoginEnabled={'false'}
-      />,
-    );
+  it('renders the manage notifications link with expected href when one login flag disabled', () => {
+    renderComponent({ oneLoginEnabled: false });
 
     const manageNotificationsLink = screen.getByRole('link', {
       name: 'Manage notifications and saved searches',
@@ -45,10 +46,20 @@ describe('HomepageSidebar component', () => {
     );
   });
 
-  it('should render the manage notifications link with the correct href when one login flag enabled', () => {
-    process.env.ONE_LOGIN_ENABLED = 'false';
+  it('renders the manage notifications link with expect href when one login flag enabled and user not logged in', () => {
+    renderComponent();
 
-    render(component);
+    const manageNotificationsLink = screen.getByRole('link', {
+      name: 'Manage notifications and saved searches',
+    });
+    expect(manageNotificationsLink).toBeDefined();
+    expect(manageNotificationsLink.getAttribute('href')).toBe(
+      `${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS}`,
+    );
+  });
+
+  it('renders the manage notifications link with the correct href when one login flag enabled and user logged in', () => {
+    renderComponent({}, true);
 
     const manageNotificationsLink = screen.getByRole('link', {
       name: 'Manage notifications and saved searches',
@@ -59,8 +70,8 @@ describe('HomepageSidebar component', () => {
     );
   });
 
-  it('Should render sign in and apply section', () => {
-    render(component);
+  it('renders sign in and apply section', () => {
+    renderComponent();
     expect(
       screen.getByRole('heading', { name: 'Sign in and apply' }),
     ).toBeDefined();
@@ -72,8 +83,8 @@ describe('HomepageSidebar component', () => {
     ).toHaveAttribute('href', applicantUrl);
   });
 
-  it('should render the improvement form link with the correct href', () => {
-    render(component);
+  it('renders the improvement form link with the correct href', () => {
+    renderComponent();
     const improvementFormLink = screen.getByRole('link', {
       name: 'through our feedback form',
     });

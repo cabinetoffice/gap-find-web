@@ -1,11 +1,24 @@
 import Link from 'next/link';
-import { notificationRoutes } from '../../../utils/constants';
+import {
+  LOGIN_NOTICE_TYPES,
+  notificationRoutes,
+} from '../../../utils/constants';
+import { useAppContext, useAuth } from '../../../../pages/_app';
 
-export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
-  const manageNotificationsLink =
-    oneLoginEnabled === 'true'
-      ? notificationRoutes.manageNotifications
-      : notificationRoutes.checkEmail;
+const getManageNotificationsPath = (oneLoginEnabled, isUserLoggedIn) => {
+  if (oneLoginEnabled) {
+    if (isUserLoggedIn)
+      return { pathname: notificationRoutes.manageNotifications };
+    return {
+      pathname: `${notificationRoutes.loginNotice}${LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS}`,
+    };
+  }
+  return { pathname: notificationRoutes.checkEmail };
+};
+
+export function HomepageSidebar({ header }) {
+  const { applicantUrl, oneLoginEnabled } = useAppContext();
+  const { isUserLoggedIn } = useAuth();
 
   return (
     <div className="govuk-grid-column-one-third">
@@ -16,13 +29,14 @@ export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
         here too.
       </p>
       <p>
-        <a
-          className="govuk-link govuk-body"
+        <Link
           data-cy="cyManageNotificationsHomeLink"
-          href={manageNotificationsLink}
+          href={getManageNotificationsPath(oneLoginEnabled, isUserLoggedIn)}
         >
-          Manage notifications and saved searches
-        </a>
+          <a className="govuk-link govuk-body">
+            Manage notifications and saved searches
+          </a>
+        </Link>
       </p>
       <hr className="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-2 govuk-border-colour" />
       <h2 className="govuk-heading-m" data-cy="cySignInAndApply-header">

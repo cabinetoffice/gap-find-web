@@ -3,9 +3,23 @@ import { SearchFilterButton } from '../search-apply-filters/SearchFilterButton';
 import { SearchFilterClearButton } from '../search-clear-filters/SearchFilterClearButton';
 import { SearchFilterDate } from '../search-filter-date/SearchFilterDate';
 import { SearchFilterSelector } from '../search-filter-selector/SearchFilterSelector';
-import { buildQueryString } from '../../../../pages/save-search';
+import Link from 'next/link';
+import { useAuth } from '../../../../pages/_app';
+import {
+  NOTIFICATION_TYPES,
+  notificationRoutes,
+} from '../../../utils/constants';
+
+const getSaveSearchPath = (isUserLoggedIn, query) => ({
+  pathname: isUserLoggedIn
+    ? notificationRoutes.saveSearch
+    : `${notificationRoutes.loginNotice}${NOTIFICATION_TYPES.SAVED_SEARCH}`,
+  query,
+});
 
 export function SearchFilterContainer({ filters, filterObj, query }) {
+  const { isUserLoggedIn } = useAuth();
+
   useEffect(() => {
     const $filterAccordion = document.querySelector(
       '[data-module="gap-accordion"]',
@@ -62,15 +76,16 @@ export function SearchFilterContainer({ filters, filterObj, query }) {
           Save this search
         </button>
       ) : (
-        <a
-          className="govuk-button govuk-button--secondary govuk-!-margin-top-4"
-          data-module="govuk-button"
-          role="button"
-          data-cy="cySaveSearchLink"
-          href={`/save-search?${buildQueryString(query)}`}
-        >
-          Save this search
-        </a>
+        <Link href={getSaveSearchPath(isUserLoggedIn, query)}>
+          <a
+            className="govuk-button govuk-button--secondary govuk-!-margin-top-4"
+            data-module="govuk-button"
+            role="button"
+            data-cy="cySaveSearchLink"
+          >
+            Save this search
+          </a>
+        </Link>
       )}
 
       <p className="govuk-body">

@@ -10,23 +10,20 @@ import Layout from '../src/components/partials/Layout';
 import { SearchBar } from '../src/components/search-bar/SearchBar';
 
 export function getServerSideProps({ query }) {
-  const applicantUrl = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
-  const oneLoginEnabled = process.env.ONE_LOGIN_ENABLED;
   if (!query || !query.searchTerm) {
-    return { props: { searchTerm: '', applicantUrl, oneLoginEnabled } };
+    return { props: { searchTerm: '' } };
   }
 
   const { searchTerm } = query;
+
   return {
     props: {
       searchTerm,
-      applicantUrl,
-      oneLoginEnabled,
     },
   };
 }
 
-const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
+const Home = ({ searchTerm }) => {
   return (
     <>
       <Head>
@@ -79,11 +76,7 @@ const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
                 </p>
               </HomepageBodyText>
             </div>
-            <HomepageSidebar
-              header={'Manage notifications'}
-              applicantUrl={applicantUrl}
-              oneLoginEnabled={oneLoginEnabled}
-            />
+            <HomepageSidebar header="Manage notifications" />
           </div>
 
           <div className="govuk-!-margin-top-9">

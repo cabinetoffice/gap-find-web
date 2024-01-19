@@ -9,7 +9,6 @@ export const cookieName = {
 export const NOTIFICATION_TYPES = {
   NEWSLETTER: 'newsletter',
   SAVED_SEARCH: 'saved-search',
-  SUBSCRIPTION: 'subscription',
 } as const;
 
 export const LOGIN_NOTICE_TYPES = {
