@@ -8,6 +8,9 @@ import { isMobile } from 'react-device-detect';
 
 export function SearchFilterContainer({ filters, filterObj, query }) {
   useEffect(() => {
+    if (isMobile) {
+      window.sessionStorage.setItem('accordion-default-content-1', 'false');
+    }
     const $filterAccordion = document.querySelector(
       '[data-module="gap-accordion"]',
     );
@@ -33,12 +36,44 @@ export function SearchFilterContainer({ filters, filterObj, query }) {
           aria-label="filter options"
         >
           {isMobile ? (
-            <SearchOptionsContainer filters={filters} filterObj={filterObj} />
+            <MobileSearchOptionsContainer
+              filters={filters}
+              filterObj={filterObj}
+              query={query}
+            />
           ) : (
-            <Filters filters={filters} filterObj={filterObj} />
+            <>
+              <Filters filters={filters} filterObj={filterObj} query={query} />
+            </>
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function Filters({ filters, filterObj, query }) {
+  return (
+    <>
+      {filters?.map((filter, index) => (
+        <SearchFilterSelector
+          key={index}
+          index={index}
+          filter={filter}
+          filterObj={filterObj}
+        />
+      ))}
+
+      <SearchFilterDate index={filters.length} filterObj={filterObj} />
+      <SearchButtons filterObj={filterObj} query={query} />
+    </>
+  );
+}
+
+function SearchButtons({ filterObj, query }) {
+  return (
+    <>
+      {' '}
       <div className="govuk-button-group govuk-!-margin-bottom-0 gap_filters-actions">
         <SearchFilterButton />
 
@@ -68,16 +103,15 @@ export function SearchFilterContainer({ filters, filterObj, query }) {
           Save this search
         </a>
       )}
-
       <p className="govuk-body">
         Saving your search will make it quicker to find relevant grants.
       </p>
-    </div>
+    </>
   );
 }
 
-function SearchOptionsContainer({ filters, filterObj }) {
-  const index = -1;
+function MobileSearchOptionsContainer({ filters, filterObj }) {
+  const index = filters;
   return (
     <div key={index} className="govuk-accordion__section">
       <div
@@ -99,7 +133,7 @@ function SearchOptionsContainer({ filters, filterObj }) {
             </div>
           </legend>
           <div
-            id={`accordion-default-content-0`}
+            id={`mobile-accordion-content`}
             className="govuk-accordion__section-content"
             data-testid="section-content"
             aria-labelledby={`accordion-default-heading-0`}
@@ -111,22 +145,5 @@ function SearchOptionsContainer({ filters, filterObj }) {
         </fieldset>
       </div>
     </div>
-  );
-}
-
-function Filters({ filters, filterObj }) {
-  return (
-    <>
-      {filters?.map((filter, index) => (
-        <SearchFilterSelector
-          key={index}
-          index={index}
-          filter={filter}
-          filterObj={filterObj}
-        />
-      ))}
-
-      <SearchFilterDate index={filters.length} filterObj={filterObj} />
-    </>
   );
 }
