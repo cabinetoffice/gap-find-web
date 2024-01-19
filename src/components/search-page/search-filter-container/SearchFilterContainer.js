@@ -13,11 +13,6 @@ export function SearchFilterContainer({ filters, filterObj, query }) {
     );
     if ($filterAccordion && window.GOVUKFrontend !== undefined) {
       new window.GOVUKFrontend.Accordion($filterAccordion).init();
-
-      // TODO: Backup option
-      // if (isMobile) {
-      //   document.querySelector('.govuk-accordion__controls').click();
-      // }
     }
   }, []);
 
@@ -95,8 +90,8 @@ function SearchOptionsContainer({ filters, filterObj }) {
               <h2 className="govuk-accordion__section-heading govuk-fieldset__heading">
                 <span
                   className="govuk-accordion__section-button"
-                  id={`accordion-default-heading-${index + 1}`}
-                  data-cy={`cyAccordionButton-${''}`}
+                  id={`accordion-default-heading-0`}
+                  data-cy={`cyAccordionButton-${'cyAccordionButton-mobile'}`}
                 >
                   Search options
                 </span>
@@ -104,12 +99,12 @@ function SearchOptionsContainer({ filters, filterObj }) {
             </div>
           </legend>
           <div
-            id={`accordion-default-content-${index + 1}`}
+            id={`accordion-default-content-0`}
             className="govuk-accordion__section-content"
             data-testid="section-content"
-            aria-labelledby={`accordion-default-heading-${index + 1}`}
+            aria-labelledby={`accordion-default-heading-0`}
             role="group"
-            data-cy={`cyAccordionContent-${''}`}
+            data-cy={`cyAccordionContent-${'cyAccordionContent-mobile'}`}
           >
             <Filters filters={filters} filterObj={filterObj} />
           </div>
