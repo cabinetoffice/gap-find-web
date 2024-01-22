@@ -8,6 +8,7 @@ import { HomepageSidebar } from '../src/components/homepage/sidebar/HomepageSide
 import { NewsletterCallToAction } from '../src/components/newsletter/NewsletterCallToAction';
 import Layout from '../src/components/partials/Layout';
 import { SearchBar } from '../src/components/search-bar/SearchBar';
+import FundedByGovukBanner from '../components/FundedByGovukBanner';
 
 export function getServerSideProps({ query }) {
   const applicantUrl = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
@@ -72,12 +73,20 @@ const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
                 </Link>
               </HomepageBodyText>
 
-              <HomepageBodyText heading={'The future of Find a grant'}>
-                <p className="govuk-body">
-                  More grants will be added as we develop our service. We will
-                  also add new functionality to make it easier to use.
-                </p>
-              </HomepageBodyText>
+              <div className="govuk-section-break--visible padding-bottom40">
+                <HomepageBodyText heading={'The future of Find a grant'}>
+                  <p className="govuk-body">
+                    More grants will be added as we develop our service. We will
+                    also add new functionality to make it easier to use.
+                  </p>
+                </HomepageBodyText>
+              </div>
+
+              <FundedByGovukBanner
+                text={
+                  'When you see this logo, it means that a project has been funded with UK taxpayer money.'
+                }
+              />
             </div>
             <HomepageSidebar
               header={'Manage notifications'}
@@ -86,7 +95,7 @@ const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
             />
           </div>
 
-          <div className="govuk-!-margin-top-9">
+          <div className="govuk-!-margin-top-8">
             <NewsletterCallToAction returnParams={{ href: '/', searchTerm }} />
           </div>
         </div>
