@@ -15,7 +15,7 @@ export async function getServerSideProps({ params }) {
     return {
       redirect: {
         permanent: false,
-        destination: `${process.env.APPLICANT_HOST}/grant-is-closed`,
+        destination: `${applicantUrl}/api/redirect-from-find?grantWebpageUrl=grant-is-closed`,
       },
     };
   }
