@@ -1,7 +1,7 @@
 import Image from 'next/image';
 export default function FundedByGovukBanner({ text }) {
   return (
-    <div className="govuk-border govuk-!-margin-top-8">
+    <div className="govuk-border govuk-!-margin-top-9">
       <Image
         src="/assets/images/govuk-funded-logo.png"
         alt="govuk funding logo"

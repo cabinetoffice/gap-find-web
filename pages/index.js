@@ -95,7 +95,7 @@ const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
             />
           </div>
 
-          <div className="govuk-!-margin-top-8">
+          <div className="govuk-!-margin-top-6 govuk-!-margin-left-3 govuk-!-margin-right-3">
             <NewsletterCallToAction returnParams={{ href: '/', searchTerm }} />
           </div>
         </div>
