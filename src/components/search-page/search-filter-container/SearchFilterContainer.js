@@ -42,9 +42,7 @@ export function SearchFilterContainer({ filters, filterObj, query }) {
               query={query}
             />
           ) : (
-            <>
-              <Filters filters={filters} filterObj={filterObj} query={query} />
-            </>
+            <Filters filters={filters} filterObj={filterObj} query={query} />
           )}
         </div>
       </div>
