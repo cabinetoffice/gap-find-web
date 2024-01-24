@@ -8,7 +8,7 @@ import { HomepageSidebar } from '../src/components/homepage/sidebar/HomepageSide
 import { NewsletterCallToAction } from '../src/components/newsletter/NewsletterCallToAction';
 import Layout from '../src/components/partials/Layout';
 import { SearchBar } from '../src/components/search-bar/SearchBar';
-import FundedByGovukBanner from '../src/components/homepage/FundedByGovukBanner';
+import { FundedByGovukBanner } from '../src/components/homepage/FundedByGovukBanner';
 
 export function getServerSideProps({ query }) {
   const applicantUrl = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
