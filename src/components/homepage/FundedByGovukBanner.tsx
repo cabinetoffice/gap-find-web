@@ -1,13 +1,11 @@
-import Image from 'next/image';
 export function FundedByGovukBanner({ text }) {
   return (
     <div className="govuk-border govuk-!-margin-top-9">
       <div className="govuk-!-margin-bottom-4">
-        <Image
+        <img
+          className="govuk-funded-banner"
           src="/assets/images/govuk-funded-logo.png"
           alt="Funded by UK Government banner"
-          width="350"
-          height="61"
         />
       </div>
       {text ? (
