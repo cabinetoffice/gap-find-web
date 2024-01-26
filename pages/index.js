@@ -35,6 +35,10 @@ const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
           name="google-site-verification"
           content="hy7DeFLs371VOo-XAyKeJLRsIXAlpVuoM1f3sOovqPk"
         />
+        <meta
+          name="google-site-verification"
+          content="GeXVFGpDMLVwoNYmpgH8M2kWsXNdnOAY0i16CeUvrxM"
+        />
         <title>Home - Find a grant</title>
       </Head>
       <Layout description="Find a grant">
