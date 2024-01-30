@@ -55,6 +55,10 @@ const ApplyRedirect = (props) => {
         <title>
           {grant.grantName} - {gloss.title}
         </title>
+        {/* 
+          this meta element triggers a client-side redirect, which is required
+          for analytics reporting on this page
+        */}
         <meta
           httpEquiv="Refresh"
           content={'0; URL=' + grant.grantWebpageUrl}
