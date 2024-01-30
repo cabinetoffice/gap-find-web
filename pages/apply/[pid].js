@@ -1,5 +1,5 @@
 import { fetchEntry } from '../../src/utils/contentFulPage';
-
+import axios from 'axios';
 const logger = require('pino')();
 
 export async function getServerSideProps({ params }) {
@@ -31,8 +31,25 @@ export async function getServerSideProps({ params }) {
     child.info('button clicked');
   }
 
+  const advertSummary = await getAdvertSchemeVersion(
+    grantDetail.props.grantDetail.fields.label,
+  );
+
+  if (!advertSummary.data || advertSummary.response.status === 404) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/404',
+      },
+    };
+  }
+
+  const isV1External =
+    advertSummary.data.schemeVersion === 1 &&
+    advertSummary.data.internalApplication === false;
+
   const linkHref =
-    newMandatoryQuestionsEnabled === 'true'
+    newMandatoryQuestionsEnabled === 'true' && !isV1External
       ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.props.grantDetail.fields.grantWebpageUrl}`
       : grantDetail.props.grantDetail.fields.grantWebpageUrl;
 
@@ -44,6 +61,15 @@ export async function getServerSideProps({ params }) {
   };
 }
 
+export const getAdvertSchemeVersion = async (contentfulSlug) => {
+  return await axios
+    .get(
+      `${process.env.APPLICANT_BACKEND_HOST}/grant-adverts/${contentfulSlug}/scheme-version`,
+    )
+    .catch(function (error) {
+      return error;
+    });
+};
 const ApplyRedirect = () => {
   return <></>;
 };
