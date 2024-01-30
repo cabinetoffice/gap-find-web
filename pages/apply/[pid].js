@@ -35,7 +35,7 @@ export async function getServerSideProps({ params }) {
     grantDetail.props.grantDetail.fields.label,
   );
 
-  if (!advertSummary.data || advertSummary.response.status === 404) {
+  if (!advertSummary.data || advertSummary.response?.status === 404) {
     return {
       redirect: {
         permanent: false,
