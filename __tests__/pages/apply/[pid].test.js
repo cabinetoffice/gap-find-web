@@ -48,7 +48,6 @@ describe('getServerSideProps', () => {
             grantWebpageUrl: 'https://example.com',
           },
         },
-
         redirectUrl:
           'applicantUrl/api/redirect-from-find?slug=your-path&grantWebpageUrl=https://example.com',
       },
