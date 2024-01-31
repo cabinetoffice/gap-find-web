@@ -26,12 +26,8 @@ describe('getServerSideProps', () => {
     expect(result).toEqual({
       props: {
         grantDetail: {
-          props: {
-            grantDetail: {
-              fields: {
-                grantWebpageUrl: 'https://example.com',
-              },
-            },
+          fields: {
+            grantWebpageUrl: 'https://example.com',
           },
         },
         redirectUrl: 'https://example.com',
@@ -48,14 +44,11 @@ describe('getServerSideProps', () => {
     expect(result).toEqual({
       props: {
         grantDetail: {
-          props: {
-            grantDetail: {
-              fields: {
-                grantWebpageUrl: 'https://example.com',
-              },
-            },
+          fields: {
+            grantWebpageUrl: 'https://example.com',
           },
         },
+
         redirectUrl:
           'applicantUrl/api/redirect-from-find?slug=your-path&grantWebpageUrl=https://example.com',
       },

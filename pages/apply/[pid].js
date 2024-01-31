@@ -41,7 +41,7 @@ export async function getServerSideProps({ params }) {
   return {
     props: {
       redirectUrl,
-      grantDetail,
+      grantDetail: grantDetail.props.grantDetail,
     },
   };
 }
