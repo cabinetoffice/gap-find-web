@@ -15,9 +15,9 @@ export async function fetchGrantDetail(query) {
 
   const grantDetail = await fetchEntry(label);
 
-  if (grantDetail.props.grantDetail) {
-    grantDetail.props.grantDetail.previousFormValues = query;
-    grantDetail.props.grantDetail.errors = query['errors[]']
+  if (grantDetail) {
+    grantDetail.previousFormValues = query;
+    grantDetail.errors = query['errors[]']
       ? getValidationErrorsFromQuery(query['errors[]'])
       : [];
   }

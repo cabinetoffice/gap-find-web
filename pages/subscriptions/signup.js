@@ -38,7 +38,7 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  return await fetchGrantDetail(ctx.query);
+  return { props: { grantDetail: await fetchGrantDetail(ctx.query) } };
 }
 
 const Signup = ({ grantDetail }) => {
