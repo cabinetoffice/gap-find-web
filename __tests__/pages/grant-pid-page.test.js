@@ -13,25 +13,21 @@ jest.mock('next/router', () => {
 jest.mock('../../src/utils/contentFulPage');
 
 const grantDetail = {
-  props: {
-    grantDetail: {
-      fields: {
-        grantSummaryTab: {
-          content: [
-            {
-              data: {},
-              marks: [],
-              nodeType: 'text',
-              value: 'Some text that should be rendered',
-            },
-          ],
-          nodeType: 'paragraph',
+  fields: {
+    grantSummaryTab: {
+      content: [
+        {
           data: {},
+          marks: [],
+          nodeType: 'text',
+          value: 'Some text that should be rendered',
         },
-      },
-      sys: { id: '' },
+      ],
+      nodeType: 'paragraph',
+      data: {},
     },
   },
+  sys: { id: '' },
 };
 
 const component = <Grant grantDetail={grantDetail} />;
@@ -169,11 +165,8 @@ describe('grants-pid page', () => {
   describe('getServerSideProps', () => {
     const env = process.env;
 
-    const props = {
-      props: {
-        grantDetail: { sys: { id: '123' } },
-      },
-    };
+    const props = { sys: { id: '123' } };
+
     beforeEach(() => {
       jest.clearAllMocks();
     });
@@ -184,11 +177,7 @@ describe('grants-pid page', () => {
     });
 
     it('should redirect to 404 if the pid does not match a grant ', async () => {
-      fetchEntry.mockResolvedValue({
-        props: {
-          grantDetail: null,
-        },
-      });
+      fetchEntry.mockResolvedValue(null);
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
       expect(fetchEntry).toBeCalledTimes(1);
@@ -205,11 +194,7 @@ describe('grants-pid page', () => {
       process.env.ENABLE_FAQ_TAB = true;
       process.env.ONE_LOGIN_ENABLED = false;
 
-      fetchEntry.mockResolvedValue({
-        props: {
-          grantDetail: { sys: { id: '123' } },
-        },
-      });
+      fetchEntry.mockResolvedValue({ sys: { id: '123' } });
 
       const result = await getServerSideProps({ params: { pid: '12345678' } });
       expect(fetchEntry).toBeCalledTimes(1);
@@ -218,11 +203,7 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'true',
           enableFAQTab: 'true',
           grantId: '123',
-          grantDetail: {
-            props: {
-              grantDetail: { sys: { id: '123' } },
-            },
-          },
+          grantDetail: { sys: { id: '123' } },
         },
       });
     });
@@ -241,11 +222,7 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'false',
           enableFAQTab: 'false',
           grantId: '123',
-          grantDetail: {
-            props: {
-              grantDetail: { sys: { id: '123' } },
-            },
-          },
+          grantDetail: { sys: { id: '123' } },
         },
       });
     });
@@ -263,11 +240,7 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'false',
           enableFAQTab: 'true',
           grantId: '123',
-          grantDetail: {
-            props: {
-              grantDetail: { sys: { id: '123' } },
-            },
-          },
+          grantDetail: { sys: { id: '123' } },
         },
       });
     });
@@ -285,11 +258,7 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'true',
           enableFAQTab: 'false',
           grantId: '123',
-          grantDetail: {
-            props: {
-              grantDetail: { sys: { id: '123' } },
-            },
-          },
+          grantDetail: { sys: { id: '123' } },
         },
       });
     });
