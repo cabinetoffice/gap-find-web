@@ -35,7 +35,7 @@ export async function getServerSideProps({ params }) {
 
   const redirectUrl =
     newMandatoryQuestionsEnabled === 'true'
-      ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.props.grantDetail.fields.grantWebpageUrl}`
+      ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.fields.grantWebpageUrl}`
       : grantDetail.fields.grantWebpageUrl;
 
   return {
@@ -46,8 +46,8 @@ export async function getServerSideProps({ params }) {
   };
 }
 
-const ApplyRedirect = (props) => {
-  const grant = props.grantDetail.fields;
+const ApplyRedirect = ({ grantDetail }) => {
+  const grant = grantDetail.fields;
 
   return (
     <>
