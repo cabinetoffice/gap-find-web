@@ -1,4 +1,6 @@
+import Head from 'next/head';
 import { fetchEntry } from '../../src/utils/contentFulPage';
+import gloss from '../../src/utils/glossary.json';
 
 const logger = require('pino')();
 
@@ -31,21 +33,39 @@ export async function getServerSideProps({ params }) {
     child.info('button clicked');
   }
 
-  const linkHref =
+  const redirectUrl =
     newMandatoryQuestionsEnabled === 'true'
       ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.props.grantDetail.fields.grantWebpageUrl}`
       : grantDetail.props.grantDetail.fields.grantWebpageUrl;
 
   return {
-    redirect: {
-      permanent: false,
-      destination: linkHref,
+    props: {
+      redirectUrl,
+      grantDetail,
     },
   };
 }
 
-const ApplyRedirect = () => {
-  return <></>;
+const ApplyRedirect = (props) => {
+  const grant = props.grantDetail.fields;
+
+  return (
+    <>
+      <Head>
+        <title>
+          {grant.grantName} - {gloss.title}
+        </title>
+        {/* 
+          this meta element triggers a client-side redirect, which is required
+          for analytics reporting on this page
+        */}
+        <meta
+          httpEquiv="Refresh"
+          content={'0; URL=' + grant.grantWebpageUrl}
+        ></meta>
+      </Head>
+    </>
+  );
 };
 
 export default ApplyRedirect;
