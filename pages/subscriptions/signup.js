@@ -37,8 +37,13 @@ export async function getServerSideProps(ctx) {
       },
     };
   }
+  const response = await fetchGrantDetail(ctx.query);
 
-  return await fetchGrantDetail(ctx.query);
+  if ('redirect' in response) {
+    return response;
+  }
+
+  return { props: { grantDetail: response } };
 }
 
 const Signup = ({ grantDetail }) => {

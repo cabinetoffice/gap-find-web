@@ -12,10 +12,7 @@ export async function getServerSideProps({ params }) {
   let path = params.pid;
 
   const grantDetail = await fetchEntry(path);
-  if (
-    grantDetail.props.grantDetail === null ||
-    grantDetail.props.grantDetail === undefined
-  ) {
+  if (grantDetail === null || grantDetail === undefined) {
     return {
       redirect: {
         permanent: false,
@@ -23,7 +20,7 @@ export async function getServerSideProps({ params }) {
       },
     };
   }
-  const grantId = grantDetail.props.grantDetail.sys.id;
+  const grantId = grantDetail.sys.id;
 
   return {
     props: {
@@ -41,7 +38,7 @@ export async function getServerSideProps({ params }) {
 
 const Grants = ({ grantDetail, enableFAQTab, enableAwardsTab, grantId }) => {
   const router = useRouter();
-  const grant = grantDetail.props.grantDetail.fields;
+  const grant = grantDetail.fields;
 
   const filteredOutTabs = ['fileType', 'emptyTab', 'test_pipeline'];
   if (enableFAQTab === 'false') {

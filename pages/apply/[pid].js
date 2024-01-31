@@ -13,7 +13,7 @@ export async function getServerSideProps({ params }) {
 
   const grantDetail = await fetchEntry(path);
 
-  if (grantDetail.props.grantDetail === undefined) {
+  if (grantDetail === undefined) {
     return {
       redirect: {
         permanent: false,
@@ -22,10 +22,10 @@ export async function getServerSideProps({ params }) {
     };
   }
 
-  if (grantDetail.props.grantDetail.fields.label) {
+  if (grantDetail.fields.label) {
     const child = logger.child({
       action: 'apply',
-      label: grantDetail.props.grantDetail.fields.label,
+      label: grantDetail.fields.label,
     });
     child.info('button clicked');
   } else {
@@ -35,8 +35,8 @@ export async function getServerSideProps({ params }) {
 
   const redirectUrl =
     newMandatoryQuestionsEnabled === 'true'
-      ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.props.grantDetail.fields.grantWebpageUrl}`
-      : grantDetail.props.grantDetail.fields.grantWebpageUrl;
+      ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.fields.grantWebpageUrl}`
+      : grantDetail.fields.grantWebpageUrl;
 
   return {
     props: {
@@ -46,8 +46,8 @@ export async function getServerSideProps({ params }) {
   };
 }
 
-const ApplyRedirect = (props) => {
-  const grant = props.grantDetail.fields;
+const ApplyRedirect = ({ grantDetail }) => {
+  const grant = grantDetail.fields;
 
   return (
     <>
