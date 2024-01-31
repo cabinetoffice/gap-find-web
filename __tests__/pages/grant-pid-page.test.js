@@ -222,11 +222,7 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'false',
           enableFAQTab: 'false',
           grantId: '123',
-          grantDetail: {
-            props: {
-              grantDetail: { sys: { id: '123' } },
-            },
-          },
+          grantDetail: { sys: { id: '123' } },
         },
       });
     });
@@ -244,11 +240,7 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'false',
           enableFAQTab: 'true',
           grantId: '123',
-          grantDetail: {
-            props: {
-              grantDetail: { sys: { id: '123' } },
-            },
-          },
+          grantDetail: { sys: { id: '123' } },
         },
       });
     });
@@ -266,11 +258,7 @@ describe('grants-pid page', () => {
           enableAwardsTab: 'true',
           enableFAQTab: 'false',
           grantId: '123',
-          grantDetail: {
-            props: {
-              grantDetail: { sys: { id: '123' } },
-            },
-          },
+          grantDetail: { sys: { id: '123' } },
         },
       });
     });
