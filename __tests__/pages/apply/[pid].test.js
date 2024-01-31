@@ -4,9 +4,7 @@ import { getServerSideProps } from '../../../pages/apply/[pid]'; // Import your 
 jest.mock('../../../src/utils/contentFulPage.ts', () => ({
   fetchEntry: jest.fn(() =>
     Promise.resolve({
-      props: {
-        grantDetail: { fields: { grantWebpageUrl: 'https://example.com' } },
-      },
+      fields: { grantWebpageUrl: 'https://example.com' },
     }),
   ),
 }));
