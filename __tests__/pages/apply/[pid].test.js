@@ -12,7 +12,6 @@ jest.mock('../../../src/utils/contentFulPage.ts', () => ({
         grantDetail: {
           fields: {
             grantWebpageUrl: 'https://example.com',
-            label: 'example-slug',
           },
         },
       },
