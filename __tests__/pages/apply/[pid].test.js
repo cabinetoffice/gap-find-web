@@ -1,5 +1,4 @@
 import { getServerSideProps } from '../../../pages/apply/[pid]'; // Import your module here
-
 import * as axios from 'axios';
 
 // Mock out all top level functions, such as get, put, delete and post:
@@ -28,7 +27,7 @@ process.env.APPLY_FOR_A_GRANT_APPLICANT_URL = 'applicantUrl';
 process.env.NEW_MANDATORY_QUESTION_JOURNEY_ENABLED = 'false';
 
 describe('getServerSideProps', () => {
-  it('should return a redirect object with the expected destination when new mandatory question feature flag is off ', async () => {
+  it('should return a redirectUrl with the expected destination when new mandatory question feature flag is off ', async () => {
     //this mocks getAdvertSchemeVersion()
     axios.get.mockResolvedValue({
       data: { schemeVersion: 2, internalApplication: true },
@@ -40,14 +39,22 @@ describe('getServerSideProps', () => {
     const result = await getServerSideProps(context);
 
     expect(result).toEqual({
-      redirect: {
-        permanent: false,
-        destination: 'https://example.com',
+      props: {
+        grantDetail: {
+          props: {
+            grantDetail: {
+              fields: {
+                grantWebpageUrl: 'https://example.com',
+              },
+            },
+          },
+        },
+        redirectUrl: 'https://example.com',
       },
     });
   });
 
-  it('should return a redirect object with the expected destination when new mandatory question feature flag is on ', async () => {
+  it('should return a redirectUrl with the expected destination when new mandatory question feature flag is on ', async () => {
     //this mocks getAdvertSchemeVersion()
     axios.get.mockResolvedValue({
       data: { schemeVersion: 2, internalApplication: true },
@@ -58,9 +65,17 @@ describe('getServerSideProps', () => {
     const result = await getServerSideProps(context);
 
     expect(result).toEqual({
-      redirect: {
-        permanent: false,
-        destination:
+      props: {
+        grantDetail: {
+          props: {
+            grantDetail: {
+              fields: {
+                grantWebpageUrl: 'https://example.com',
+              },
+            },
+          },
+        },
+        redirectUrl:
           'applicantUrl/api/redirect-from-find?slug=your-path&grantWebpageUrl=https://example.com',
       },
     });
