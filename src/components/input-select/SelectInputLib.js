@@ -414,4 +414,5 @@ function initialize($el, options, onChange, initialValue) {
   new Select($el, options, onChange, initialValue);
 }
 
-exports.Select = initialize;
+const _Select = initialize;
+export { _Select as Select };
