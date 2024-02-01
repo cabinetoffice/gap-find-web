@@ -71,8 +71,8 @@ export const getAdvertSchemeVersion = async (contentfulSlug) => {
     });
 };
 
-const ApplyRedirect = (props) => {
-  const grant = props.grantDetail.fields;
+const ApplyRedirect = ({ grantDetail, redirectUrl }) => {
+  const grant = grantDetail.fields;
 
   return (
     <>
@@ -84,10 +84,7 @@ const ApplyRedirect = (props) => {
           this meta element triggers a client-side redirect, which is required
           for analytics reporting on this page
         */}
-        <meta
-          httpEquiv="Refresh"
-          content={'0; URL=' + grant.grantWebpageUrl}
-        ></meta>
+        <meta httpEquiv="Refresh" content={'0; URL=' + redirectUrl}></meta>
       </Head>
     </>
   );
