@@ -13,7 +13,7 @@ export async function getServerSideProps({ params }) {
 
   const grantDetail = await fetchEntry(path);
 
-  if (grantDetail.props.grantDetail === undefined) {
+  if (grantDetail === undefined) {
     return {
       redirect: {
         permanent: false,
@@ -22,10 +22,10 @@ export async function getServerSideProps({ params }) {
     };
   }
 
-  if (grantDetail.props.grantDetail.fields.label) {
+  if (grantDetail.fields.label) {
     const child = logger.child({
       action: 'apply',
-      label: grantDetail.props.grantDetail.fields.label,
+      label: grantDetail.fields.label,
     });
     child.info('button clicked');
   } else {

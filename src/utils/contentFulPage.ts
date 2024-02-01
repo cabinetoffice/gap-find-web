@@ -49,9 +49,7 @@ export async function fetchEntry(path) {
     'fields.label': path,
   });
 
-  return {
-    props: { grantDetail: entries.items[0] },
-  };
+  return entries.items[0];
 }
 
 export async function fetchFilters() {

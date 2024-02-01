@@ -159,25 +159,21 @@ describe('Validation errors when signing up', () => {
 });
 
 describe('getServerSideProps', () => {
-  const grantDetail = {
-    props: {
-      grantDetail: {
-        fields: {
-          grantName:
-            'Chargepoint Grant for people renting and living in flats (1) ',
-          label: 'Chargepoint Grant 2',
-        },
-        sys: {
-          id: 'id',
-        },
-        errors: [],
-        previousFormValues: {},
-      },
+  const getGrantDetail = (overrides = {}) => ({
+    fields: {
+      grantName:
+        'Chargepoint Grant for people renting and living in flats (1) ',
+      label: 'Chargepoint Grant 2',
     },
-  };
+    sys: {
+      id: 'id',
+    },
+    errors: [],
+    ...overrides,
+  });
 
   beforeEach(() => {
-    fetchEntry.mockReturnValue(grantDetail);
+    fetchEntry.mockReturnValue(getGrantDetail());
     process.env.ONE_LOGIN_ENABLED = 'false';
   });
 
@@ -188,9 +184,9 @@ describe('getServerSideProps', () => {
       },
     };
 
-    const props = await getServerSideProps(request);
+    const response = await getServerSideProps(request);
 
-    expect(props).toEqual({
+    expect(response).toEqual({
       redirect: {
         permanent: false,
         destination: '/static/page-not-found',
@@ -206,9 +202,9 @@ describe('getServerSideProps', () => {
       },
     };
 
-    const props = await getServerSideProps(request);
+    const response = await getServerSideProps(request);
 
-    expect(props).toEqual(grantDetail);
+    expect(response).toEqual({ props: { grantDetail: getGrantDetail() } });
   });
 
   it('should call subscription api and redirect to manage notifications when one login is enabled', async () => {
@@ -255,10 +251,13 @@ describe('getServerSideProps', () => {
     };
 
     const expectedResponse = {
-      ...grantDetail,
+      props: {
+        grantDetail: getGrantDetail({
+          errors: [JSON.parse(errors)],
+          previousFormValues,
+        }),
+      },
     };
-    expectedResponse.props.grantDetail.errors = errors;
-    expectedResponse.props.grantDetail.previousFormValues = previousFormValues;
 
     const props = await getServerSideProps(request);
 
@@ -285,10 +284,13 @@ describe('getServerSideProps', () => {
     };
 
     const expectedResponse = {
-      ...grantDetail,
+      props: {
+        grantDetail: getGrantDetail({
+          errors: [JSON.parse(errors)],
+          previousFormValues,
+        }),
+      },
     };
-    expectedResponse.props.grantDetail.errors = errors;
-    expectedResponse.props.grantDetail.previousFormValues = previousFormValues;
 
     const props = await getServerSideProps(request);
 

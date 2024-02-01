@@ -8,13 +8,7 @@ jest.mock('axios');
 jest.mock('../../../src/utils/contentFulPage.ts', () => ({
   fetchEntry: jest.fn(() =>
     Promise.resolve({
-      props: {
-        grantDetail: {
-          fields: {
-            grantWebpageUrl: 'https://example.com',
-          },
-        },
-      },
+      fields: { grantWebpageUrl: 'https://example.com' },
     }),
   ),
 }));
@@ -40,12 +34,8 @@ describe('getServerSideProps', () => {
     expect(result).toEqual({
       props: {
         grantDetail: {
-          props: {
-            grantDetail: {
-              fields: {
-                grantWebpageUrl: 'https://example.com',
-              },
-            },
+          fields: {
+            grantWebpageUrl: 'https://example.com',
           },
         },
         redirectUrl: 'https://example.com',
@@ -66,12 +56,8 @@ describe('getServerSideProps', () => {
     expect(result).toEqual({
       props: {
         grantDetail: {
-          props: {
-            grantDetail: {
-              fields: {
-                grantWebpageUrl: 'https://example.com',
-              },
-            },
+          fields: {
+            grantWebpageUrl: 'https://example.com',
           },
         },
         redirectUrl:
