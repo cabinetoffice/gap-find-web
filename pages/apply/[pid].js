@@ -46,7 +46,7 @@ export async function getServerSideProps({ params }) {
   };
 }
 
-const ApplyRedirect = ({ grantDetail }) => {
+const ApplyRedirect = ({ grantDetail, redirectUrl }) => {
   const grant = grantDetail.fields;
 
   return (
@@ -59,10 +59,7 @@ const ApplyRedirect = ({ grantDetail }) => {
           this meta element triggers a client-side redirect, which is required
           for analytics reporting on this page
         */}
-        <meta
-          httpEquiv="Refresh"
-          content={'0; URL=' + grant.grantWebpageUrl}
-        ></meta>
+        <meta httpEquiv="Refresh" content={'0; URL=' + redirectUrl}></meta>
       </Head>
     </>
   );
