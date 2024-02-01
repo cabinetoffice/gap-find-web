@@ -33,9 +33,7 @@ export async function getServerSideProps({ params }) {
     child.info('button clicked');
   }
 
-  const advertSummary = await getAdvertSchemeVersion(
-    grantDetail.props.grantDetail.fields.label,
-  );
+  const advertSummary = await getAdvertSchemeVersion(grantDetail.fields.label);
 
   if (!advertSummary.data || advertSummary.response?.status === 404) {
     return {
@@ -52,8 +50,8 @@ export async function getServerSideProps({ params }) {
 
   const redirectUrl =
     newMandatoryQuestionsEnabled === 'true' && !isV1External
-      ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.props.grantDetail.fields.grantWebpageUrl}`
-      : grantDetail.props.grantDetail.fields.grantWebpageUrl;
+      ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.fields.grantWebpageUrl}`
+      : grantDetail.fields.grantWebpageUrl;
 
   return {
     props: {
