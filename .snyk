@@ -12,7 +12,7 @@ ignore:
     - '*':
       reason: >-
         Dev dependency - upgrade requires migration to contentful 10.4.0 which introduces breaking changes
-      expires: 2023-12-01T00:00:46.319Z
+      expires: 2024-03-01T00:00:46.319Z
       created: 2023-10-27T16:30:46.321Z
   SNYK-JS-NEXT-6032387:
     - '*':
