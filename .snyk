@@ -19,12 +19,12 @@ ignore:
     - reason: Dev dependency - upgrade requires migration to next 13
     - expires: 2023-10-31T00:00:46.319Z
     - created: 2023-10-27T16:30:46.321Z
-  JS-AXIOS-6124857:
+  SNYK-JS-AXIOS-6124857:
     - '*': null
     - reason: Dev dependency - upgrade require migration to contentful 10.4.0
     - expires: 2024-03-08T15:43:03.411Z
     - created: 2024-02-07T15:43:03.416Z
-  JS-AXIOS-6144788:
+  SNYK-JS-AXIOS-6144788:
     - '*': null
     - reason: Dev dependency - upgrade require migration to contentful 10.4.0
     - expires: 2024-03-08T15:43:45.894Z
