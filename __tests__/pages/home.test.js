@@ -96,6 +96,16 @@ describe('Rendering the home page', () => {
     ).toBeDefined();
   });
 
+  it('Should render Funded by UK Government banner', () => {
+    render(component);
+    expect(screen.getByAltText('Funded by UK Government banner')).toBeDefined();
+    expect(
+      screen.getByText(
+        'When you see this logo, it means that a project has been funded with UK taxpayer money.',
+      ),
+    ).toBeDefined();
+  });
+
   it('Should render Manage notifications section', () => {
     render(component);
     expect(
