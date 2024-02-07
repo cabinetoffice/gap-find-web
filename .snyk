@@ -24,7 +24,7 @@ ignore:
     - '*':
       reason: >-
         Dev dependency - upgrade requires migration to contentful 10.4.0
-      expires: 2024-03-08T15:43:03.411Z
+      expires: 2024-04-01T15:43:03.411Z
       created: 2024-02-07T15:43:03.416Z
   SNYK-JS-AXIOS-6144788:
     - '*': null
