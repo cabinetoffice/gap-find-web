@@ -1,7 +1,7 @@
+import axios from 'axios';
 import Head from 'next/head';
 import { fetchEntry } from '../../src/utils/contentFulPage';
 import gloss from '../../src/utils/glossary.json';
-import axios from 'axios';
 const logger = require('pino')();
 
 export async function getServerSideProps({ params }) {
@@ -48,7 +48,8 @@ export async function getServerSideProps({ params }) {
     advertSummary.data.schemeVersion === 1 &&
     advertSummary.data.internalApplication === false;
 
-  const redirectUrl = newMandatoryQuestionsEnabled === 'true' && !isV1External
+  const redirectUrl =
+    newMandatoryQuestionsEnabled === 'true' && !isV1External
       ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.fields.grantWebpageUrl}`
       : grantDetail.fields.grantWebpageUrl;
 
@@ -59,7 +60,6 @@ export async function getServerSideProps({ params }) {
     },
   };
 }
-
 
 export const getAdvertSchemeVersion = async (contentfulSlug) => {
   return await axios
