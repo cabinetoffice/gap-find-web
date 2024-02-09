@@ -1,7 +1,7 @@
+import axios from 'axios';
 import Head from 'next/head';
 import { fetchEntry } from '../../src/utils/contentFulPage';
 import gloss from '../../src/utils/glossary.json';
-import axios from 'axios';
 const logger = require('pino')();
 
 export async function getServerSideProps({ params }) {
