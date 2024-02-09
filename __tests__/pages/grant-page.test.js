@@ -179,7 +179,7 @@ describe('Rendering the browse grants page', () => {
         );
       }),
     ).toBeDefined();
-    expect(screen.getByText('3 February 2022, 12:01am')).toBeDefined();
+    expect(screen.getByText('3 February 2022')).toBeDefined();
   });
 
   it('Should render grant closing date', () => {
@@ -191,7 +191,7 @@ describe('Rendering the browse grants page', () => {
         );
       }),
     ).toBeDefined();
-    expect(screen.getByText('3 April 2022, 12:01am')).toBeDefined();
+    expect(screen.getByText('3 April 2022')).toBeDefined();
   });
 
   it('Should render a label for the search form', () => {

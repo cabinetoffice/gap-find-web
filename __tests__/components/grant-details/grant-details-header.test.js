@@ -21,8 +21,8 @@ describe('GrantDetailsHeader component', () => {
   });
 
   it('should render an opening and closing date on the screen', () => {
-    expect(screen.getByText('7 April 2022, 9:34am')).toBeDefined();
-    expect(screen.getByText('15 April 2022, 9:34am')).toBeDefined();
+    expect(screen.getByText('7 April 2022')).toBeDefined();
+    expect(screen.getByText('15 April 2022')).toBeDefined();
   });
 
   it('should render the values from glossary.json for the opening and closing dates', () => {
