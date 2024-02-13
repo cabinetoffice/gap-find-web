@@ -136,20 +136,22 @@ function notifications({ unsubscribeGrant, email, grantDetails }) {
                 value={unsubscribeGrant.contentfulGrantSubscriptionId}
               />
               <input type="hidden" name="email" value={email} />
-              <button
-                className="govuk-button"
-                data-module="govuk-button"
-                data-cy="cyUnsubscribeConfirmationButton"
-              >
-                Yes, unsubscribe
-              </button>
+              <div className="govuk-button-group">
+                <button
+                  className="govuk-button"
+                  data-module="govuk-button"
+                  data-cy="cyUnsubscribeConfirmationButton"
+                >
+                  Yes, unsubscribe
+                </button>
+                <Link href={notificationRoutes['manageNotifications']}>
+                  <a className="govuk-link" data-cy="cyCancelUnsubscribe">
+                    Cancel
+                  </a>
+                </Link>
+              </div>
             </form>
             <br />
-            <Link href={notificationRoutes['manageNotifications']}>
-              <a className="govuk-link" data-cy="cyCancelUnsubscribe">
-                Cancel
-              </a>
-            </Link>
           </div>
         </div>
       </Layout>
