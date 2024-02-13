@@ -13,7 +13,7 @@ import { notificationRoutes } from '../../src/utils/constants';
 import { encrypt } from '../../src/utils/encryption';
 import gloss from '../../src/utils/glossary.json';
 import { getPreviousFormValues } from '../../src/utils/request';
-import { addErrorInfo, logger } from '../../src/utils';
+import { logger } from '../../src/utils';
 import { parseBody } from 'next/dist/server/api-utils/node';
 
 const generateConfirmationUrl = (apiKey) => {
@@ -62,7 +62,7 @@ export async function getServerSideProps({ req }) {
   } catch (e) {
     logger.error(
       'error sending subscription confirmation email',
-      addErrorInfo(e, req),
+      logger.utils.addErrorInfo(e, req),
     );
   }
 

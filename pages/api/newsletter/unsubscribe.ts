@@ -8,7 +8,7 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
-import { addErrorInfo, getJwtFromCookies, logger } from '../../../src/utils';
+import { getJwtFromCookies, logger } from '../../../src/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -44,7 +44,10 @@ export default async function handler(
       sub,
     });
   } catch (e) {
-    logger.error('error unsubscribing from newsletter', addErrorInfo(e, req));
+    logger.error(
+      'error unsubscribing from newsletter',
+      logger.utils.addErrorInfo(e, req),
+    );
   }
 
   res.redirect(

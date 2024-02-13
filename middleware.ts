@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { v4 } from 'uuid';
 import { checkUserLoggedIn } from './src/service';
-import { logger, getJwtFromCookies, addErrorInfo } from './src/utils';
+import { logger, getJwtFromCookies } from './src/utils';
 import {
   HEADERS,
   notificationRoutes,
@@ -15,29 +15,6 @@ const HOST = process.env.HOST;
 const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
 const APPLICANT_HOST = process.env.APPLICANT_HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
-
-const asObject = (
-  entries: IterableIterator<[string, string]>,
-  keysToExclude: string[] = [],
-) =>
-  Array.from(entries)
-    .filter(([key]) => !keysToExclude.includes(key))
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {} as object);
-
-const formatRequest = (req: NextRequest) => ({
-  url: req.url,
-  method: req.method,
-  cookies: Array.from(req.cookies.values()).filter(
-    (value) => !value.startsWith('user-service-token'),
-  ),
-  headers: asObject(req.headers.entries(), ['cookie']),
-});
-
-const formatResponse = (res: NextResponse) => ({
-  url: res.url,
-  status: res.status,
-  headers: asObject(res.headers.entries(), ['cookie']),
-});
 
 const isWithinNumberOfMinsOfExpiry = (
   expiresAt: Date,
@@ -114,14 +91,6 @@ export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
   return NextResponse.redirect(redirectUri);
 }
 
-const logRequest = (req: NextRequest) => {
-  const correlationId = v4();
-  req.headers.set(HEADERS.CORRELATION_ID, correlationId);
-  logger.http('Incoming request', { ...formatRequest(req), correlationId });
-  const res = NextResponse.next();
-  logger.http('Outgoing response', { ...formatResponse(res), correlationId });
-};
-
 const authenticateRequest = async (req: NextRequest) => {
   try {
     const { jwt, jwtPayload } = getJwtFromCookies(req);
@@ -139,7 +108,10 @@ const authenticateRequest = async (req: NextRequest) => {
     }
   } catch (err) {
     logger.error(err.message);
-    logger.error('failed to authenticate request', addErrorInfo(err, req));
+    logger.error(
+      'failed to authenticate request',
+      logger.utils.addErrorInfo(err, req),
+    );
     return buildMiddlewareResponse(req, APPLICANT_HOST);
   }
 };
@@ -161,9 +133,47 @@ const isAuthenticatedPath = (pathname: string) =>
     authenticatedPath.test({ pathname }),
   );
 
-export const middleware = async (req: NextRequest) => {
+const httpLoggers = {
+  req: (req: NextRequest) => {
+    const correlationId = v4();
+    req.headers.set(HEADERS.CORRELATION_ID, correlationId);
+    logger.http('Incoming request', {
+      ...logger.utils.formatRequest(req),
+      correlationId,
+    });
+  },
+  res: (req: NextRequest, res: NextResponse) =>
+    logger.http(
+      'Outgoing response - PLEASE NOTE: this represents a snapshot of the response as it exits the middleware, changes made by other server code (eg getServerSideProps) will not be shown',
+      {
+        ...logger.utils.formatResponse(res),
+        correlationId: req.headers.get(HEADERS.CORRELATION_ID),
+      },
+    ),
+};
+
+type LoggerType = keyof typeof httpLoggers;
+
+const urlsToSkip = ['/_next/', '/assets/', '/javascript/'];
+
+const getConditionalLogger = (req, type: LoggerType) => {
   const userAgentHeader = req.headers.get('user-agent') || '';
-  if (!userAgentHeader.startsWith('ELB-HealthChecker')) logRequest(req);
-  const { pathname } = req.nextUrl;
-  if (isAuthenticatedPath(pathname)) return authenticateRequest(req);
+  return userAgentHeader.startsWith('ELB-HealthChecker') ||
+    urlsToSkip.some((url) => req.nextUrl.pathname.startsWith(url))
+    ? () => undefined
+    : httpLoggers[type];
+};
+
+export const middleware = async (req: NextRequest) => {
+  const logRequest = getConditionalLogger(req, 'req');
+  const logResponse = getConditionalLogger(req, 'res');
+  let res = NextResponse.next();
+  logRequest(req, res);
+
+  if (isAuthenticatedPath(req.nextUrl.pathname)) {
+    res = await authenticateRequest(req);
+  }
+
+  logResponse(req, res);
+  return res;
 };

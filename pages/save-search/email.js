@@ -24,7 +24,7 @@ import {
   extractFiltersFields,
   addPublishedDateFilter,
 } from '../../src/utils/transform';
-import { addErrorInfo, logger } from '../../src/utils';
+import { logger } from '../../src/utils';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 
 //TODO confirm if we need to show only one error at a time or not
@@ -139,7 +139,7 @@ export async function getServerSideProps({ query, req }) {
     } catch (e) {
       logger.error(
         'error sending saved search confirmation email',
-        addErrorInfo(e, req),
+        logger.utils.addErrorInfo(e, req),
       );
     }
 

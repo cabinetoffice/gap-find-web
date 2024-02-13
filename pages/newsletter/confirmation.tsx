@@ -16,7 +16,7 @@ import {
 } from '../../src/types/newsletter';
 import gloss from '../../src/utils/glossary.json';
 import { getPreviousFormValues } from '../../src/utils/request';
-import { addErrorInfo, logger } from '../../src/utils';
+import { logger } from '../../src/utils';
 import { parseBody } from 'next/dist/server/api-utils/node';
 
 const generateConfirmationUrl = (apiKey: string) => {
@@ -67,7 +67,7 @@ export const getServerSideProps = async (
   } catch (e) {
     logger.error(
       'error sending newsletter signup confirmation email',
-      addErrorInfo(e, req as NextApiRequest),
+      logger.utils.addErrorInfo(e, req as NextApiRequest),
     );
   }
   return {
