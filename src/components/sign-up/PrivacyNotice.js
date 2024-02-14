@@ -37,14 +37,14 @@ const PrivacyNotice = ({ errors, checked }) => {
             data-cy="cyPrivacyNoticeLabel"
           >
             I have read and understood the&nbsp;
-            <Link href="/info/privacy" passHref>
-              <a
-                target="_blank"
-                className="govuk-link"
-                data-cy="cySignUpFormPrivacyLink"
-              >
-                privacy notice
-              </a>
+            <Link
+              href="/info/privacy"
+              passHref
+              target="_blank"
+              className="govuk-link"
+              data-cy="cySignUpFormPrivacyLink"
+            >
+              privacy notice
             </Link>
           </label>
         </div>

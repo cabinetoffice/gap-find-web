@@ -16,8 +16,8 @@ const MobileLink = ({ btn, index, pathname }) => (
     id={`${btn.pageId}MobileLink`}
     data-cy={`cy${btn.pageId}PageMobileLink`}
   >
-    <Link href={btn.as} as={btn.link}>
-      <a data-topnav={btn.title}>{btn.title}</a>
+    <Link href={btn.as} as={btn.link} data-topnav={btn.title}>
+      {btn.title}
     </Link>
   </li>
 );
@@ -82,14 +82,13 @@ const BetaBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
               </strong>
               <span className="govuk-phase-banner__text">
                 This is a new service – your{' '}
-                <Link href={FEEDBACK_FORM_HREF}>
-                  <a
-                    className="govuk-link"
-                    target="_blank"
-                    data-cy="cyBetaFeedbackLinkBanner"
-                  >
-                    feedback
-                  </a>
+                <Link
+                  href={FEEDBACK_FORM_HREF}
+                  className="govuk-link"
+                  target="_blank"
+                  data-cy="cyBetaFeedbackLinkBanner"
+                >
+                  feedback
                 </Link>{' '}
                 will help us to improve it.
               </span>
@@ -122,13 +121,13 @@ const MainNavBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
         id={`${btn.pageId}DesktopLink`}
         data-cy={`cy${btn.pageId}PageLink`}
       >
-        <Link href={btn.as} as={btn.link}>
-          <a
-            className="govuk-link govuk-link--no-visited-state app-navigation__link"
-            data-topnav={btn.title}
-          >
-            {btn.title}
-          </a>
+        <Link
+          href={btn.as}
+          as={btn.link}
+          className="govuk-link govuk-link--no-visited-state app-navigation__link"
+          data-topnav={btn.title}
+        >
+          {btn.title}
         </Link>
       </li>
     );
@@ -144,15 +143,14 @@ const MainNavBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
 
 const Header = ({ isBasic = false, isUserLoggedIn = false }) => (
   <>
-    <Link href="#main-content">
-      <a
-        className="govuk-skip-link"
-        data-module="govuk-skip-link"
-        data-cy="cySkipLink"
-        onClick={skipToMainContent}
-      >
-        Skip to main content
-      </a>
+    <Link
+      href="#main-content"
+      className="govuk-skip-link"
+      data-module="govuk-skip-link"
+      data-cy="cySkipLink"
+      onClick={skipToMainContent}
+    >
+      Skip to main content
     </Link>
     <GovUKHeader />
     <MobileViewMenu isUserLoggedIn={isUserLoggedIn} />

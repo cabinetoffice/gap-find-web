@@ -104,10 +104,12 @@ const SaveSearch = ({
       </Head>
       <Layout description="Find a grant">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <Link href={{ pathname: '/grants', query: query }}>
-            <a className="govuk-back-link" data-testid="govuk-back">
-              {gloss.buttons.back}
-            </a>
+          <Link
+            href={{ pathname: '/grants', query: query }}
+            className="govuk-back-link"
+            data-testid="govuk-back"
+          >
+            {gloss.buttons.back}
           </Link>
         </div>
         <ErrorBanner errors={errors} />

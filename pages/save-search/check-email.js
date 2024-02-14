@@ -21,8 +21,8 @@ const CheckEmail = (props) => {
       </Head>
       <Layout description="Find a grant">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <Link href={{ pathname: '/grants' }}>
-            <a className="govuk-back-link">{gloss.buttons.back}</a>
+          <Link href={{ pathname: '/grants' }} className="govuk-back-link">
+            {gloss.buttons.back}
           </Link>
         </div>
         <form action="/grants" method="GET">

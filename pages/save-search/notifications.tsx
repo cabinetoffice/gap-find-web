@@ -71,10 +71,12 @@ const SignupSavedSearch = ({ validationErrors, query }) => {
       <Layout>
         <div className="govuk-width-container">
           <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-            <Link href={{ pathname: '/save-search', query: query }}>
-              <a className="govuk-back-link" data-testid="govuk-back">
-                {gloss.buttons.back}
-              </a>
+            <Link
+              href={{ pathname: '/save-search', query: query }}
+              className="govuk-back-link"
+              data-testid="govuk-back"
+            >
+              {gloss.buttons.back}
             </Link>
           </div>
         </div>

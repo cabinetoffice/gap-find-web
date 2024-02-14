@@ -163,14 +163,13 @@ const Email = ({ query, errors, privacy, user_email, queryString }) => {
       </Head>
       <Layout description="Find a grant">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <Link href={{ pathname: '/save-search/notifications', query: query }}>
-            <a
-              className="govuk-back-link"
-              data-testid="govuk-back"
-              data-cy="cy-back-link"
-            >
-              {gloss.buttons.back}
-            </a>
+          <Link
+            href={{ pathname: '/save-search/notifications', query: query }}
+            className="govuk-back-link"
+            data-testid="govuk-back"
+            data-cy="cy-back-link"
+          >
+            {gloss.buttons.back}
           </Link>
         </div>
         <ErrorBanner errors={errors} />
