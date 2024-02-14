@@ -91,7 +91,7 @@ export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
   return NextResponse.redirect(redirectUri);
 }
 
-const authenticateRequest = async (req: NextRequest) => {
+const authenticateRequest = async (req: NextRequest, res: NextResponse) => {
   try {
     const { jwt, jwtPayload } = getJwtFromCookies(req);
     const validJwtResponse = await checkUserLoggedIn(jwt);
@@ -106,6 +106,7 @@ const authenticateRequest = async (req: NextRequest) => {
         `${USER_SERVICE_HOST}/refresh-token?redirectUrl=${HOST}${req.nextUrl.pathname}`,
       );
     }
+    return res;
   } catch (err) {
     logger.error(err.message);
     logger.error(
@@ -171,7 +172,7 @@ export const middleware = async (req: NextRequest) => {
   logRequest(req, res);
 
   if (isAuthenticatedPath(req.nextUrl.pathname)) {
-    res = await authenticateRequest(req);
+    res = await authenticateRequest(req, res);
   }
 
   logResponse(req, res);
