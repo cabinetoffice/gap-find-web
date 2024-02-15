@@ -1,4 +1,3 @@
-import { parseBody } from 'next/dist/server/api-utils/node';
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
@@ -24,6 +23,7 @@ import {
   extractFiltersFields,
   addPublishedDateFilter,
 } from '../../src/utils/transform';
+import { parseBody } from '../../src/utils/parseBody';
 import { logger } from '../../src/utils';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 
@@ -120,11 +120,11 @@ const buildSavedSearch = async (query, body) => {
   };
 };
 
-export async function getServerSideProps({ query, req }) {
+export async function getServerSideProps({ query, req, res }) {
   const queryString = buildQueryString(query);
 
   if (req.method === 'POST') {
-    const body = await parseBody(req, '1mb');
+    const body = await parseBody(req, res);
     const validationErrors = validate(body);
 
     if (validationErrors.length > 0) {

@@ -1,4 +1,3 @@
-import { parseBody } from 'next/dist/server/api-utils/node';
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
@@ -11,6 +10,7 @@ import {
   addPublishedDateFilter,
   extractFiltersFields,
 } from '../../src/utils/transform';
+import { parseBody } from '../../src/utils/parseBody';
 
 function extractFiltersFromQueryString(query, filters) {
   let filterObjFromQuery = extractFiltersFields(query, filters);
@@ -52,7 +52,7 @@ const validate = (savedSearchName) => {
   return errors;
 };
 
-export async function getServerSideProps({ req, query }) {
+export async function getServerSideProps({ req, res, query }) {
   const filters = await fetchFilters();
   const filterObjFromQuery = extractFiltersFromQueryString(query, filters);
   let queryString = buildQueryString(query);
@@ -60,7 +60,7 @@ export async function getServerSideProps({ req, query }) {
   let validationErrors = [];
 
   if (req.method === 'POST') {
-    const body = await parseBody(req, '1mb');
+    const body = await parseBody(req, res);
     validationErrors = validate(body.search_name);
     savedSearchName = body.search_name;
     delete query.search_name;

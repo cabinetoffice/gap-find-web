@@ -45,12 +45,12 @@ describe('Testing Pagination component behaviour', () => {
     expect(screen.queryByText(/Next/)).toBeInTheDocument();
     expect(screen.queryByText(/Next/)).toHaveAttribute(
       'href',
-      '/?skip=20&limit=10&page=3',
+      '?skip=20&limit=10&page=3',
     );
     expect(screen.queryByText(/Previous/)).toBeInTheDocument();
     expect(screen.queryByText(/Previous/)).toHaveAttribute(
       'href',
-      '/?skip=0&limit=10&page=1',
+      '?skip=0&limit=10&page=1',
     );
     expect(screen.queryByText('2')).toHaveClass(
       'moj-pagination__item moj-pagination__item--active',
@@ -72,7 +72,7 @@ describe('Testing Pagination component behaviour', () => {
     expect(screen.queryByText(/Previous/)).toBeInTheDocument();
     expect(screen.queryByText(/Previous/)).toHaveAttribute(
       'href',
-      '/?skip=20&limit=10&page=3',
+      '?skip=20&limit=10&page=3',
     );
     expect(screen.queryByText('4')).toHaveClass(
       'moj-pagination__item moj-pagination__item--active',

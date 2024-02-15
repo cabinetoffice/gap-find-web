@@ -14,7 +14,7 @@ import { encrypt } from '../../src/utils/encryption';
 import gloss from '../../src/utils/glossary.json';
 import { getPreviousFormValues } from '../../src/utils/request';
 import { logger } from '../../src/utils';
-import { parseBody } from 'next/dist/server/api-utils/node';
+import { parseBody } from '../../src/utils/parseBody';
 
 const generateConfirmationUrl = (apiKey) => {
   return new URL(
@@ -23,8 +23,8 @@ const generateConfirmationUrl = (apiKey) => {
   ).toString();
 };
 
-export async function getServerSideProps({ req }) {
-  const body = await parseBody(req, '1mb');
+export async function getServerSideProps({ req, res }) {
+  const body = await parseBody(req, res);
 
   const validationErrors = validateSignupForm(body);
   if (validationErrors.length > 0) {
