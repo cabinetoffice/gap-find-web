@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { skipToMainContent } from '../../../utils/skipToMainContent';
 import { getAuthenticatedNavItems, navItems } from './links';
 import { GovUKHeader } from './GovUKHeader';
-import { useAppContext } from '../../../../pages/_app';
+import { useAppContext, useAuth } from '../../../../pages/_app';
 
 const FEEDBACK_FORM_HREF = `https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link`;
 
@@ -142,28 +142,31 @@ const MainNavBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
   );
 };
 
-const Header = ({ isBasic = false, isUserLoggedIn = false }) => (
-  <>
-    <Link href="#main-content">
-      <a
-        className="govuk-skip-link"
-        data-module="govuk-skip-link"
-        data-cy="cySkipLink"
-        onClick={skipToMainContent}
-      >
-        Skip to main content
-      </a>
-    </Link>
-    <GovUKHeader />
-    <MobileViewMenu isUserLoggedIn={isUserLoggedIn} />
-    {!isBasic && (
-      <>
-        <BetaBlock isUserLoggedIn={isUserLoggedIn} />
-        <MainNavBlock isUserLoggedIn={isUserLoggedIn} />
-      </>
-    )}
-  </>
-);
+const Header = ({ isBasic = false, isUserLoggedIn = false }) => {
+  const { isSuperAdmin } = useAuth();
+  return (
+    <>
+      <Link href="#main-content">
+        <a
+          className="govuk-skip-link"
+          data-module="govuk-skip-link"
+          data-cy="cySkipLink"
+          onClick={skipToMainContent}
+        >
+          Skip to main content
+        </a>
+      </Link>
+      <GovUKHeader isSuperAdmin={isSuperAdmin} />
+      <MobileViewMenu isUserLoggedIn={isUserLoggedIn} />
+      {!isBasic && (
+        <>
+          <BetaBlock isUserLoggedIn={isUserLoggedIn} />
+          <MainNavBlock isUserLoggedIn={isUserLoggedIn} />
+        </>
+      )}
+    </>
+  );
+};
 
 const SignOut = () => (
   <div className="govuk-grid-column-one-quarter">

@@ -293,4 +293,17 @@ details summary > * {
     color: #ffffff;
     background: #0b0c0c;
   }
+
+  .super-admin-link {
+    display: block;
+    white-space: pre;
+    position: absolute;
+    right: 0;
+  }
+
+  @media (max-width: 768px) {
+    .super-admin-link {
+      display: none;
+    }
+  }
 }

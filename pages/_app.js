@@ -4,12 +4,13 @@ import React, { createContext, useContext, useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 import '../src/lib/ie11_nodelist_polyfill';
 import '../styles/globals.scss';
-import { checkUserLoggedIn } from '../src/service';
+import { checkUserLoggedIn, getUserRoles } from '../src/service';
 import { getJwtFromCookies } from '../src/utils/jwt';
 import App from 'next/app';
 
 export const AuthContext = createContext({
   isUserLoggedIn: false,
+  isSuperAdmin: false,
 });
 export const AppContext = createContext({
   applicantUrl: null,
@@ -22,7 +23,7 @@ export const useAppContext = () => useContext(AppContext);
 const MyApp = ({
   Component,
   pageProps,
-  props: { isUserLoggedIn, applicantUrl, oneLoginEnabled },
+  props: { isUserLoggedIn, applicantUrl, oneLoginEnabled, isSuperAdmin },
 }) => {
   const cookies = nookies.get({});
 
@@ -47,7 +48,7 @@ const MyApp = ({
     <>
       <Script src="/javascript/govuk.js" strategy="beforeInteractive" />
       <AppContext.Provider value={{ applicantUrl, oneLoginEnabled }}>
-        <AuthContext.Provider value={{ isUserLoggedIn }}>
+        <AuthContext.Provider value={{ isUserLoggedIn, isSuperAdmin }}>
           <Component {...pageProps} />
         </AuthContext.Provider>
       </AppContext.Provider>
@@ -59,20 +60,38 @@ MyApp.getInitialProps = async (context) => {
   const ctx = await App.getInitialProps(context);
   let oneLoginEnabled = null;
   let applicantUrl = null;
+  let adminUrl = null;
+  let isSuperAdmin = null;
 
   if (process?.env) {
     oneLoginEnabled = process.env.ONE_LOGIN_ENABLED;
     applicantUrl = process.env.APPLY_FOR_A_GRANT_APPLICANT_URL;
+    adminUrl = process.env.ADMIN_HOST;
   }
   try {
     const { jwt } = getJwtFromCookies(context.ctx.req);
     const isUserLoggedIn = await checkUserLoggedIn(jwt);
-
-    return { ...ctx, props: { isUserLoggedIn, applicantUrl, oneLoginEnabled } };
+    isSuperAdmin = (await getUserRoles(jwt)).isSuperAdmin;
+    return {
+      ...ctx,
+      props: {
+        isUserLoggedIn,
+        applicantUrl,
+        adminUrl,
+        oneLoginEnabled,
+        isSuperAdmin,
+      },
+    };
   } catch (err) {
     return {
       ...ctx,
-      props: { isUserLoggedIn: false, applicantUrl, oneLoginEnabled },
+      props: {
+        isUserLoggedIn: false,
+        applicantUrl,
+        adminUrl,
+        oneLoginEnabled,
+        isSuperAdmin,
+      },
     };
   }
 };
