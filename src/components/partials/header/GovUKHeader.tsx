@@ -66,4 +66,4 @@ const GovUKHeader = ({ isSuperAdmin }) => {
   );
 };
 
-export { GovUKHeader };
+export default GovUKHeader;
