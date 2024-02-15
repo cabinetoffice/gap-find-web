@@ -1,9 +1,10 @@
 import { isIE } from 'react-device-detect';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAppContext } from '../../../../pages/_app';
 
 const GovUKHeader = ({ isSuperAdmin }) => {
-  const ADMIN_HOST = process.env.ADMIN_HOST;
+  const { adminUrl } = useAppContext();
   return (
     <header className="govuk-header " role="banner" data-module="govuk-header">
       <div className="govuk-header__container govuk-width-container">
@@ -53,7 +54,7 @@ const GovUKHeader = ({ isSuperAdmin }) => {
         {isSuperAdmin && (
           <div className={`super-admin-link govuk-!-padding-top-2`}>
             <a
-              href={`${ADMIN_HOST}/super-admin-dashboard`}
+              href={`${adminUrl}/super-admin-dashboard`}
               className="govuk-header__link   govuk-!-font-weight-bold"
             >
               Superadmin Dashboard

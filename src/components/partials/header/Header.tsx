@@ -25,20 +25,25 @@ const MobileLink = ({ btn, index, pathname }) => (
 type GetNavItemsProps = {
   isUserLoggedIn: boolean;
   applicantUrl: string;
+  adminUrl?: string;
   oneLoginEnabled: string;
+  isSuperAdmin?: boolean;
 };
 
 const getNavItems = ({
   isUserLoggedIn,
   applicantUrl,
+  adminUrl,
   oneLoginEnabled,
+  isSuperAdmin,
 }: GetNavItemsProps) =>
   oneLoginEnabled === 'true' && isUserLoggedIn
-    ? getAuthenticatedNavItems(applicantUrl)
+    ? getAuthenticatedNavItems({ applicantUrl, adminUrl, isSuperAdmin })
     : navItems;
 
 const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
-  const { applicantUrl, oneLoginEnabled } = useAppContext();
+  const { applicantUrl, adminUrl, oneLoginEnabled } = useAppContext();
+  const { isSuperAdmin } = useAuth();
 
   const { pathname } = useRouter();
 
@@ -53,16 +58,20 @@ const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
       </summary>
       <nav aria-label="menu">
         <ul>
-          {getNavItems({ isUserLoggedIn, applicantUrl, oneLoginEnabled }).map(
-            (btn, index) => (
-              <MobileLink
-                key={index}
-                btn={btn}
-                index={index}
-                pathname={pathname}
-              />
-            ),
-          )}
+          {getNavItems({
+            isUserLoggedIn,
+            applicantUrl,
+            adminUrl,
+            oneLoginEnabled,
+            isSuperAdmin,
+          }).map((btn, index) => (
+            <MobileLink
+              key={index}
+              btn={btn}
+              index={index}
+              pathname={pathname}
+            />
+          ))}
         </ul>
       </nav>
     </details>

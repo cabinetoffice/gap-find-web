@@ -14,6 +14,7 @@ export const AuthContext = createContext({
 });
 export const AppContext = createContext({
   applicantUrl: null,
+  adminUrl: null,
   oneLoginEnabled: null,
 });
 
@@ -23,7 +24,13 @@ export const useAppContext = () => useContext(AppContext);
 const MyApp = ({
   Component,
   pageProps,
-  props: { isUserLoggedIn, applicantUrl, oneLoginEnabled, isSuperAdmin },
+  props: {
+    isUserLoggedIn,
+    applicantUrl,
+    adminUrl,
+    oneLoginEnabled,
+    isSuperAdmin,
+  },
 }) => {
   const cookies = nookies.get({});
 
@@ -47,7 +54,7 @@ const MyApp = ({
   return (
     <>
       <Script src="/javascript/govuk.js" strategy="beforeInteractive" />
-      <AppContext.Provider value={{ applicantUrl, oneLoginEnabled }}>
+      <AppContext.Provider value={{ applicantUrl, adminUrl, oneLoginEnabled }}>
         <AuthContext.Provider value={{ isUserLoggedIn, isSuperAdmin }}>
           <Component {...pageProps} />
         </AuthContext.Provider>
