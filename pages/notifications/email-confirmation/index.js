@@ -11,7 +11,7 @@ import {
   EMAIL_ADDRESS_FORMAT_VALIDATION_ERROR,
 } from '../../../src/utils/constants';
 import { encrypt } from '../../../src/utils/encryption';
-import { addErrorInfo, logger } from '../../../src/utils';
+import { logger } from '../../../src/utils';
 
 const generateConfirmationUrl = (apiKey) => {
   return `${process.env.HOST}${notificationRoutes['confirmSubscription']}/${apiKey}`;
@@ -99,7 +99,7 @@ export async function getServerSideProps(ctx) {
   } catch (error) {
     logger.error(
       'error sending sign in email for manage notifications',
-      addErrorInfo(error, ctx.req),
+      logger.utils.addErrorInfo(error, ctx.req),
     );
   }
 

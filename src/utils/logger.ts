@@ -1,5 +1,5 @@
 // eslint-disable-next-line @next/next/no-server-import-in-page
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { NextApiRequest } from 'next';
 import pino from 'pino';
 import { HEADERS } from './constants';
@@ -80,16 +80,46 @@ const getLoggerWithLevel =
     } else log[getProdLogLevel(level)](info, logMessage);
   };
 
-type Logger = Record<LogLevel, ReturnType<typeof getLoggerWithLevel>>;
-
-export const logger = Object.values(LOG_LEVELS).reduce(
-  (acc, value) => ({ ...acc, [value]: getLoggerWithLevel(value) }),
-  {} as Logger,
-);
-
-export const addErrorInfo = (error, req: NextRequest | NextApiRequest) => {
+const addErrorInfo = (error, req: NextRequest | NextApiRequest) => {
   if (req instanceof NextRequest)
     error.correlationId = req.headers.get(HEADERS.CORRELATION_ID);
   else error.correlationId = req.headers[HEADERS.CORRELATION_ID];
   return error;
+};
+
+const asObject = (
+  entries: IterableIterator<[string, string]>,
+  keysToExclude: string[] = [],
+) =>
+  Object.fromEntries(
+    Array.from(entries).filter(([key]) => !keysToExclude.includes(key)),
+  );
+
+const formatRequest = (req: NextRequest) => ({
+  url: req.url,
+  method: req.method,
+  cookies: Array.from(req.cookies.values()).filter(
+    (value) => !value.startsWith('user-service-token'),
+  ),
+  headers: asObject(req.headers.entries(), ['cookie']),
+});
+
+const formatResponse = (res: NextResponse) => ({
+  url: res.url,
+  status: res.status,
+  headers: asObject(res.headers.entries(), ['cookie']),
+});
+
+type Logger = Record<LogLevel, ReturnType<typeof getLoggerWithLevel>>;
+
+export const logger = {
+  ...Object.values(LOG_LEVELS).reduce(
+    (acc, value) => ({ ...acc, [value]: getLoggerWithLevel(value) }),
+    {} as Logger,
+  ),
+  utils: {
+    addErrorInfo,
+    formatRequest,
+    formatResponse,
+  },
 };
