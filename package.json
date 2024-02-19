@@ -57,6 +57,7 @@
     "@testing-library/jest-dom": "6.4.2",
     "@testing-library/react": "14.2.1",
     "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "contentful-management": "^10.0.0",
     "contentful-typescript-codegen": "^3.2.3",
