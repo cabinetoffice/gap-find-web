@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAppContext } from '../../../../pages/_app';
 
-const GovUKHeader = ({ isSuperAdmin }) => {
+export const GovUKHeader = ({ isSuperAdmin }) => {
   const { adminUrl } = useAppContext();
   return (
     <header className="govuk-header " role="banner" data-module="govuk-header">
