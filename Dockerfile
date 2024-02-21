@@ -53,6 +53,6 @@ USER nextjs
 EXPOSE 3000
 
 ENV PORT 3000
-ENV NODE_OPTIONS "-r next-logger"
+ENV NODE_OPTIONS "-r next-logger/presets/next-only"
 
 CMD ["node", "server.js"]
