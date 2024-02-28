@@ -129,5 +129,5 @@ export const ELASTIC_GRANT_PAGE_FIELDS = [
 ];
 
 export const HEADERS = {
-  CORRELATION_ID: 'tco-correlation-id',
+  CORRELATION_ID: 'x-correlation-id',
 } as const;

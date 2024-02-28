@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { skipToMainContent } from '../../../utils/skipToMainContent';
 import { getAuthenticatedNavItems, navItems } from './links';
 import { GovUKHeader } from './GovUKHeader';
-import { useAppContext } from '../../../../pages/_app';
+import { useAppContext, useAuth } from '../../../../pages/_app';
 
 const FEEDBACK_FORM_HREF = `https://docs.google.com/forms/d/e/1FAIpQLSe6H5atE1WQzf8Fzjti_OehNmTfY0Bv_poMSO-w8BPzkOqr-A/viewform?usp=sf_link`;
 
@@ -25,20 +25,25 @@ const MobileLink = ({ btn, index, pathname }) => (
 type GetNavItemsProps = {
   isUserLoggedIn: boolean;
   applicantUrl: string;
+  adminUrl?: string;
   oneLoginEnabled: string;
+  isSuperAdmin?: boolean;
 };
 
 const getNavItems = ({
   isUserLoggedIn,
   applicantUrl,
+  adminUrl,
   oneLoginEnabled,
+  isSuperAdmin,
 }: GetNavItemsProps) =>
   oneLoginEnabled === 'true' && isUserLoggedIn
-    ? getAuthenticatedNavItems(applicantUrl)
+    ? getAuthenticatedNavItems({ applicantUrl, adminUrl, isSuperAdmin })
     : navItems;
 
 const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
-  const { applicantUrl, oneLoginEnabled } = useAppContext();
+  const { applicantUrl, adminUrl, oneLoginEnabled } = useAppContext();
+  const { isSuperAdmin } = useAuth();
 
   const { pathname } = useRouter();
 
@@ -53,16 +58,20 @@ const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
       </summary>
       <nav aria-label="menu">
         <ul>
-          {getNavItems({ isUserLoggedIn, applicantUrl, oneLoginEnabled }).map(
-            (btn, index) => (
-              <MobileLink
-                key={index}
-                btn={btn}
-                index={index}
-                pathname={pathname}
-              />
-            ),
-          )}
+          {getNavItems({
+            isUserLoggedIn,
+            applicantUrl,
+            adminUrl,
+            oneLoginEnabled,
+            isSuperAdmin,
+          }).map((btn, index) => (
+            <MobileLink
+              key={index}
+              btn={btn}
+              index={index}
+              pathname={pathname}
+            />
+          ))}
         </ul>
       </nav>
     </details>
@@ -142,28 +151,31 @@ const MainNavBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
   );
 };
 
-const Header = ({ isBasic = false, isUserLoggedIn = false }) => (
-  <>
-    <Link href="#main-content">
-      <a
-        className="govuk-skip-link"
-        data-module="govuk-skip-link"
-        data-cy="cySkipLink"
-        onClick={skipToMainContent}
-      >
-        Skip to main content
-      </a>
-    </Link>
-    <GovUKHeader />
-    <MobileViewMenu isUserLoggedIn={isUserLoggedIn} />
-    {!isBasic && (
-      <>
-        <BetaBlock isUserLoggedIn={isUserLoggedIn} />
-        <MainNavBlock isUserLoggedIn={isUserLoggedIn} />
-      </>
-    )}
-  </>
-);
+const Header = ({ isBasic = false, isUserLoggedIn = false }) => {
+  const { isSuperAdmin } = useAuth();
+  return (
+    <>
+      <Link href="#main-content">
+        <a
+          className="govuk-skip-link"
+          data-module="govuk-skip-link"
+          data-cy="cySkipLink"
+          onClick={skipToMainContent}
+        >
+          Skip to main content
+        </a>
+      </Link>
+      <GovUKHeader isSuperAdmin={isSuperAdmin} />
+      <MobileViewMenu isUserLoggedIn={isUserLoggedIn} />
+      {!isBasic && (
+        <>
+          <BetaBlock isUserLoggedIn={isUserLoggedIn} />
+          <MainNavBlock isUserLoggedIn={isUserLoggedIn} />
+        </>
+      )}
+    </>
+  );
+};
 
 const SignOut = () => (
   <div className="govuk-grid-column-one-quarter">
