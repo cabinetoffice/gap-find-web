@@ -25,6 +25,20 @@ describe('GrantDetailsHeader component', () => {
     expect(screen.getByText('15 April 2022, 9:34am')).toBeDefined();
   });
 
+  it('should render an altered opening and closing date on the screen for midnight times', () => {
+    const grantWithMidnightDates = {
+      ...grant,
+      grantApplicationOpenDate: '2022-04-07T00:00:00.000+00',
+      grantApplicationCloseDate: '2022-04-15T00:00:00.000+00',
+    };
+    const componentWithMidnightDates = (
+      <GrantDetailsHeader grant={grantWithMidnightDates} />
+    );
+    render(componentWithMidnightDates);
+    expect(screen.getByText('7 April 2022, 12:01am')).toBeDefined();
+    expect(screen.getByText('14 April 2022, 11:59pm')).toBeDefined();
+  });
+
   it('should render the values from glossary.json for the opening and closing dates', () => {
     expect(screen.getByText('Closing date:')).toBeDefined();
     expect(screen.getByText('Opening date:')).toBeDefined();
