@@ -2,8 +2,14 @@ import 'moment-timezone';
 import Moment from 'react-moment';
 import gloss from '../../../utils/glossary.json';
 import moment from 'moment';
+import { adjustDateTimes } from '../../../utils/adjustDateTimes';
 
 export function GrantDetailsHeader({ grant }) {
+  const { adjustedOpenDate, adjustedCloseDate } = adjustDateTimes(
+    grant.grantApplicationOpenDate,
+    grant.grantApplicationCloseDate,
+  );
+
   return (
     <div className="govuk-grid-column-three-quarters">
       <h1
@@ -20,7 +26,7 @@ export function GrantDetailsHeader({ grant }) {
           <strong>{gloss.grantDetails.opens}:</strong>{' '}
           <span>
             <Moment format="D MMMM YYYY, h:mma" tz="GMT">
-              {moment.utc(grant.grantApplicationOpenDate)}
+              {moment.utc(adjustedOpenDate)}
             </Moment>
           </span>
         </li>
@@ -28,7 +34,7 @@ export function GrantDetailsHeader({ grant }) {
           <strong>{gloss.grantDetails.closes}:</strong>{' '}
           <span>
             <Moment format="D MMMM YYYY, h:mma" tz="GMT">
-              {moment.utc(grant.grantApplicationCloseDate)}
+              {moment.utc(adjustedCloseDate)}
             </Moment>
           </span>
         </li>

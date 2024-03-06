@@ -1,4 +1,4 @@
-export const getAuthenticatedNavItems = (applicantUrl: string) => [
+const getDefaultAuthLinks = (applicantUrl: string) => [
   {
     pageId: 'Search grants',
     link: '/grants',
@@ -25,6 +25,28 @@ export const getAuthenticatedNavItems = (applicantUrl: string) => [
   },
 ];
 
+type GetAuthenticatedNavItemsProps = {
+  applicantUrl: string;
+  adminUrl?: string;
+  isSuperAdmin?: boolean;
+};
+
+export const getAuthenticatedNavItems = ({
+  applicantUrl,
+  adminUrl,
+  isSuperAdmin,
+}: GetAuthenticatedNavItemsProps) => {
+  const authLinks = getDefaultAuthLinks(applicantUrl);
+  if (isSuperAdmin) {
+    authLinks.unshift({
+      pageId: 'Superadmin Dashboard',
+      link: `${adminUrl}/super-admin-dashboard`,
+      as: `${adminUrl}/super-admin-dashboard`,
+      title: 'Superadmin Dashboard',
+    });
+  }
+  return authLinks;
+};
 export const navItems = [
   {
     pageId: 'home',

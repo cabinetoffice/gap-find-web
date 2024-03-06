@@ -77,6 +77,20 @@ describe('SearchResultCard', () => {
     expect(screen.queryByText(item.grantApplicantType[0])).toBeNull();
   });
 
+  it('should render an altered opening and closing date on the screen for midnight times', () => {
+    const itemWithMidnightDates = {
+      ...item,
+      grantApplicationOpenDate: '2022-04-21T00:00:00.000+00',
+      grantApplicationCloseDate: '2022-05-21T00:00:00.000+00',
+    };
+    const componentWithMidnightDates = (
+      <SearchResultCard item={itemWithMidnightDates} />
+    );
+    renderWithRouter(componentWithMidnightDates);
+    expect(screen.getByText('21 April 2022, 12:01am')).toBeDefined();
+    expect(screen.getByText('20 May 2022, 11:59pm')).toBeDefined();
+  });
+
   it('should render hr at the bottom of the list item', () => {
     renderWithRouter(component);
     expect(screen.getByRole('separator')).toBeDefined();
