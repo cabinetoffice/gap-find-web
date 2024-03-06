@@ -66,14 +66,13 @@ const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
                   See a list of all grants. You can filter the list based on
                   your needs.
                 </p>
-                <Link href="/grants/">
-                  <a
-                    className="govuk-link govuk-body"
-                    tabIndex="0"
-                    data-cy="cyBrowseGrantsHomePageTextLink"
-                  >
-                    Browse grants
-                  </a>
+                <Link
+                  href="/grants/"
+                  className="govuk-link govuk-body"
+                  tabIndex="0"
+                  data-cy="cyBrowseGrantsHomePageTextLink"
+                >
+                  Browse grants
                 </Link>
               </HomepageBodyText>
 

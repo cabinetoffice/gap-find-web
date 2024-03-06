@@ -101,8 +101,8 @@ const CookieBanner = () => {
           >
             Reject analytics cookies
           </button>
-          <Link href="/info/cookies">
-            <a className="govuk-link">View cookies</a>
+          <Link href="/info/cookies" className="govuk-link">
+            View cookies
           </Link>
         </div>
       </div>
@@ -118,8 +118,8 @@ const CookieBanner = () => {
             <div className="govuk-cookie-banner__content">
               <p className="govuk-body">
                 You’ve accepted analytics cookies. You can{' '}
-                <Link href="/info/cookies">
-                  <a className="govuk-link">change your cookie settings</a>
+                <Link href="/info/cookies" className="govuk-link">
+                  change your cookie settings
                 </Link>{' '}
                 at any time.
               </p>
@@ -149,8 +149,8 @@ const CookieBanner = () => {
             <div className="govuk-cookie-banner__content">
               <p className="govuk-body">
                 You’ve rejected analytics cookies. You can{' '}
-                <Link href="/info/cookies">
-                  <a className="govuk-link">change your cookie settings</a>
+                <Link href="/info/cookies" className="govuk-link">
+                  change your cookie settings
                 </Link>{' '}
                 at any time.
               </p>

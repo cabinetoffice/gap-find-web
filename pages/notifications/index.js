@@ -79,13 +79,10 @@ function Notifications(props) {
                     ? notificationRoutes['manageNotifications']
                     : notificationRoutes['checkEmail']
                 }
+                className="govuk-link govuk-link--no-visited-state"
+                data-cy="ct"
               >
-                <a
-                  className="govuk-link govuk-link--no-visited-state"
-                  data-cy="ct"
-                >
-                  Manage your updates
-                </a>
+                Manage your updates
               </Link>
             </p>
             <h2 className="govuk-heading-m">Get support</h2>
@@ -94,13 +91,12 @@ function Notifications(props) {
             </p>
             <p>
               If you need help signing up for an update, email <br />
-              <Link href="#">
-                <a
-                  className="govuk-link govuk-link--no-visited-state"
-                  data-cy="ct"
-                >
-                  govtgrantscommunity@cabinetoffice.gov.uk
-                </a>
+              <Link
+                href="#"
+                className="govuk-link govuk-link--no-visited-state"
+                data-cy="ct"
+              >
+                govtgrantscommunity@cabinetoffice.gov.uk
               </Link>
               .
             </p>
