@@ -154,14 +154,16 @@ const Header = ({ isBasic = false, isUserLoggedIn = false }) => {
   const { isSuperAdmin } = useAuth();
   return (
     <>
-      <a
-        className="govuk-skip-link"
-        data-module="govuk-skip-link"
-        data-cy="cySkipLink"
-        onClick={skipToMainContent}
-      >
-        Skip to main content
-      </a>
+      <Link href="#main-content">
+        <a
+          className="govuk-skip-link"
+          data-module="govuk-skip-link"
+          data-cy="cySkipLink"
+          onClick={skipToMainContent}
+        >
+          Skip to main content
+        </a>
+      </Link>
       <GovUKHeader isSuperAdmin={isSuperAdmin} />
       <MobileViewMenu isUserLoggedIn={isUserLoggedIn} />
       {!isBasic && (
