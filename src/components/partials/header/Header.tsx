@@ -154,7 +154,7 @@ const Header = ({ isBasic = false, isUserLoggedIn = false }) => {
   const { isSuperAdmin } = useAuth();
   return (
     <>
-      <Link href="#main-content">
+      <Link href="#main-content" legacyBehavior>
         <a
           className="govuk-skip-link"
           data-module="govuk-skip-link"

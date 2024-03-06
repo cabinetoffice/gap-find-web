@@ -39,7 +39,6 @@ const PrivacyNotice = ({ errors, checked }) => {
             I have read and understood the&nbsp;
             <Link
               href="/info/privacy"
-              passHref
               target="_blank"
               className="govuk-link"
               data-cy="cySignUpFormPrivacyLink"
