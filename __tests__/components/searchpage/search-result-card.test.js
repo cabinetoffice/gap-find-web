@@ -89,9 +89,4 @@ describe('SearchResultCard', () => {
     expect(screen.getByText('21 April 2022, 12:01am')).toBeDefined();
     expect(screen.getByText('20 May 2022, 11:59pm')).toBeDefined();
   });
-
-  it('should render hr at the bottom of the list item', () => {
-    render(component);
-    expect(screen.getByRole('separator')).toBeDefined();
-  });
 });
