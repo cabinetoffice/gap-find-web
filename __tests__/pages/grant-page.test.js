@@ -176,7 +176,7 @@ describe('Rendering the browse grants page', () => {
     expect(
       screen.getByText((content, element) => {
         return (
-          element.tagName.toLowerCase() === 'span' && content === 'Opening date'
+          element.tagName.toLowerCase() === 'dt' && content === 'Opening date'
         );
       }),
     ).toBeDefined();
@@ -188,7 +188,7 @@ describe('Rendering the browse grants page', () => {
     expect(
       screen.getByText((content, element) => {
         return (
-          element.tagName.toLowerCase() === 'span' && content === 'Closing date'
+          element.tagName.toLowerCase() === 'dt' && content === 'Closing date'
         );
       }),
     ).toBeDefined();
