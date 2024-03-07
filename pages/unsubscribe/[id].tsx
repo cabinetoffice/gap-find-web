@@ -163,9 +163,7 @@ const Unsubscribe = (props: undefined | { error: boolean }) => {
                 href={{ pathname: 'mailto:findagrant@cabinetoffice.gov.uk' }}
                 className="govuk-link govuk-body"
               >
-                <a className={`govuk-link govuk-link--no-visited-state`}>
-                  findagrant@cabinetoffice.gov.uk
-                </a>
+                findagrant@cabinetoffice.gov.uk
               </Link>
               .
             </p>

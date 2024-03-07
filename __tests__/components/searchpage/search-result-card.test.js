@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { SearchResultCard } from '../../../src/components/search-page/search-result-card/SearchResultCard';
 import gloss from '../../../src/utils/glossary.json';
+import { renderWithRouter } from '../../../src/utils/test/render';
 
 const item = {
   label: 'Test',
@@ -19,21 +20,21 @@ const item = {
 const component = <SearchResultCard item={item} />;
 describe('SearchResultCard', () => {
   it('should render the list item with the correct id', () => {
-    render(component);
+    renderWithRouter(component);
     const li = screen.getByRole('listitem');
     expect(li).toBeDefined();
     expect(li.getAttribute('id')).toBe('Test');
   });
 
   it('should render the heading with the correct links', () => {
-    render(component);
+    renderWithRouter(component);
     const link = screen.getByRole('link', { name: item.grantName });
     expect(link).toBeDefined();
     expect(link.getAttribute('href')).toBe('/grants/Test');
   });
 
   it('should render the required fields for the card in the correct formats from contentful', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByText(item.grantShortDescription)).toBeDefined();
     expect(screen.getByText(item.grantLocation[0])).toBeDefined();
     expect(screen.getByText(item.grantFunder)).toBeDefined();
@@ -49,7 +50,7 @@ describe('SearchResultCard', () => {
   });
 
   it('should render the required glossary fields for the component', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByText(gloss.browse.location)).toBeDefined();
     expect(screen.getByText(gloss.browse.funders)).toBeDefined();
     expect(screen.getByText(gloss.browse.whoCanApply)).toBeDefined();
@@ -71,7 +72,7 @@ describe('SearchResultCard', () => {
       grantApplicationOpenDate: '2022-04-21T14:13:26+00:00',
       grantApplicationCloseDate: '2022-05-21T14:13:26+00:00',
     };
-    render(<SearchResultCard item={blankItem} />);
+    renderWithRouter(<SearchResultCard item={blankItem} />);
     expect(screen.queryByText(item.grantLocation[0])).toBeNull();
     expect(screen.queryByText(item.grantApplicantType[0])).toBeNull();
   });
@@ -85,7 +86,7 @@ describe('SearchResultCard', () => {
     const componentWithMidnightDates = (
       <SearchResultCard item={itemWithMidnightDates} />
     );
-    render(componentWithMidnightDates);
+    renderWithRouter(componentWithMidnightDates);
     expect(screen.getByText('21 April 2022, 12:01am')).toBeDefined();
     expect(screen.getByText('20 May 2022, 11:59pm')).toBeDefined();
   });

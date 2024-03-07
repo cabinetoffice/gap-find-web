@@ -136,10 +136,12 @@ function deletingSavedSearches({ saveSearchId, errorMessage }) {
                       >
                         Yes, delete
                       </button>
-                      <Link href={notificationRoutes['manageNotifications']}>
-                        <a className="govuk-link" data-cy="cyCancelUnsubscribe">
-                          Cancel
-                        </a>
+                      <Link
+                        href={notificationRoutes['manageNotifications']}
+                        className="govuk-link"
+                        data-cy="cyCancelUnsubscribe"
+                      >
+                        Cancel
                       </Link>
                     </div>
                   </form>
