@@ -1,8 +1,10 @@
 // eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
+import cookieParser from 'cookie-parser';
 import { v4 } from 'uuid';
+import { decodeJwt } from 'jose';
 import { checkUserLoggedIn } from './src/service';
-import { logger, getJwtFromCookies } from './src/utils';
+import { logger } from './src/utils';
 import {
   HEADERS,
   notificationRoutes,
@@ -15,6 +17,7 @@ const HOST = process.env.HOST;
 const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
 const APPLICANT_HOST = process.env.APPLICANT_HOST;
 const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST;
+const USER_TOKEN_NAME = process.env.USER_TOKEN_NAME;
 
 const isWithinNumberOfMinsOfExpiry = (
   expiresAt: Date,
@@ -91,9 +94,34 @@ export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
   return NextResponse.redirect(redirectUri);
 }
 
+export const getJwtFromMiddlewareCookies = (req: NextRequest) => {
+  const COOKIE_SECRET = process.env.COOKIE_SECRET;
+
+  const userTokenCookie = req.cookies.get(USER_TOKEN_NAME);
+
+  if (!userTokenCookie)
+    throw new Error(
+      `Failed to verify signature for ${USER_TOKEN_NAME} cookie: cookie not found`,
+    );
+
+  const cookieValue = userTokenCookie.value;
+
+  // If the cookie is not a signed cookie, the parser will return the provided value
+  const unsignedCookie = cookieParser.signedCookie(cookieValue, COOKIE_SECRET);
+
+  if (!unsignedCookie || unsignedCookie === 'undefined') {
+    throw new Error(
+      `Failed to verify signature for ${USER_TOKEN_NAME} cookie: ${cookieValue}`,
+    );
+  }
+
+  return { jwt: unsignedCookie, jwtPayload: decodeJwt(unsignedCookie) };
+};
+
 const authenticateRequest = async (req: NextRequest, res: NextResponse) => {
   try {
-    const { jwt, jwtPayload } = getJwtFromCookies(req);
+    const { jwt, jwtPayload } = getJwtFromMiddlewareCookies(req);
+
     const validJwtResponse = await checkUserLoggedIn(jwt);
 
     if (!validJwtResponse) {
