@@ -179,9 +179,11 @@ const Header = ({ isBasic = false, isUserLoggedIn = false }) => {
 const SignOut = () => (
   <div className="govuk-grid-column-one-quarter">
     <p className="govuk-!-text-align-right govuk-!-font-size-19 govuk-!-margin-0">
-      <Link className="govuk-link" href="/api/logout">
+      {/* link will pre-load and log user out if we use a <Link> */}
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+      <a className="govuk-link" href="/api/logout">
         Sign out
-      </Link>
+      </a>
     </p>
   </div>
 );
