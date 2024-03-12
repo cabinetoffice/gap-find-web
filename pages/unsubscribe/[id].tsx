@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Link from 'next/link';
 import Layout from '../../src/components/partials/Layout';
 import { SubscriptionService } from '../../src/service/subscription-service';
 import { decrypt } from '../../src/utils/encryption';
@@ -153,19 +152,6 @@ const Unsubscribe = (props: undefined | { error: boolean }) => {
               data-cy="cyUnsubscribeConfirmationGrantsDetail"
             >
               We will not send you any more emails about new grants.
-            </p>
-            <p
-              className="govuk-body"
-              data-cy="cyUnsubscribeConfirmationGrantsDetail"
-            >
-              If you want to unsubscribe from all emails, contact us at{' '}
-              <Link
-                href={{ pathname: 'mailto:findagrant@cabinetoffice.gov.uk' }}
-                className="govuk-link govuk-body"
-              >
-                findagrant@cabinetoffice.gov.uk
-              </Link>
-              .
             </p>
           </div>
         </div>
