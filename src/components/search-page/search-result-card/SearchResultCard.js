@@ -2,9 +2,13 @@ import 'moment-timezone';
 import Link from 'next/link';
 import Moment from 'react-moment';
 import gloss from '../../../utils/glossary.json';
-import moment from 'moment';
+import { adjustDateTimes } from '../../../utils/adjustDateTimes';
 
 export function SearchResultCard({ item }) {
+  const { adjustedOpenDate, adjustedCloseDate } = adjustDateTimes(
+    item.grantApplicationOpenDate,
+    item.grantApplicationCloseDate,
+  );
   return (
     <li id={item.label}>
       <h2 className="govuk-heading-m">
@@ -60,7 +64,7 @@ export function SearchResultCard({ item }) {
           {gloss.browse.opens + ' '}
         </span>
         <Moment format="D MMMM YYYY, h:mma" tz="GMT">
-          {moment.utc(item.grantApplicationOpenDate)}
+          {adjustedOpenDate}
         </Moment>
       </p>
       <p className="govuk-body govuk-!-margin-bottom-5">
@@ -68,7 +72,7 @@ export function SearchResultCard({ item }) {
           {gloss.browse.closes + ' '}
         </span>
         <Moment format="D MMMM YYYY, h:mma" tz="GMT">
-          {moment.utc(item.grantApplicationCloseDate)}
+          {adjustedCloseDate}
         </Moment>
       </p>
       <div className="govuk-!-margin-bottom-5">
