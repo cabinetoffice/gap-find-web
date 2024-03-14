@@ -35,18 +35,10 @@ export async function getServerSideProps({ params }) {
 
   const advertSummary = await getAdvertSchemeVersion(grantDetail.fields.label);
 
-  if (!advertSummary.data || advertSummary.response?.status === 404) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/404',
-      },
-    };
-  }
-
   const isV1External =
-    advertSummary.data.schemeVersion === 1 &&
-    advertSummary.data.internalApplication === false;
+    !advertSummary.data ||
+    (advertSummary.data.schemeVersion === 1 &&
+      advertSummary.data.internalApplication === false);
 
   const redirectUrl =
     newMandatoryQuestionsEnabled === 'true' && !isV1External
