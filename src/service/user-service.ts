@@ -27,3 +27,15 @@ export async function getUserRoles(userToken: string) {
     );
   return response.json();
 }
+
+export function getUserRolesRelatedRedirect(
+  applicantUrl: string,
+  adminUrl: string,
+) {
+  return {
+    superAdmin: `${adminUrl}/super-admin-dashboard`,
+    admin: `${adminUrl}/dashboard`,
+    technicalSupport: `${adminUrl}/`,
+    applicant: `${applicantUrl}/dashboard`,
+  };
+}
