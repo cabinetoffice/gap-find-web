@@ -31,11 +31,9 @@ export async function getUserRoles(userToken: string) {
 export function getUserRolesRelatedRedirect(
   applicantUrl: string,
   adminUrl: string,
+  userRoles,
 ) {
-  return {
-    superAdmin: `${adminUrl}/super-admin-dashboard`,
-    admin: `${adminUrl}/dashboard`,
-    technicalSupport: `${adminUrl}/`,
-    applicant: `${applicantUrl}/dashboard`,
-  };
+  if (userRoles.isSuperAdmin) return `${adminUrl}/super-admin-dashboard`;
+  else if (userRoles.isAdmin) return `${adminUrl}/dashboard`;
+  else if (userRoles.isApplicant) return `${applicantUrl}/dashboard`;
 }

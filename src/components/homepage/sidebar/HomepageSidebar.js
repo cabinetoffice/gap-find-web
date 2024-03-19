@@ -12,12 +12,12 @@ export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
   const { roles: userRoles, isUserLoggedIn } = useAuth();
   const adminUrl = useAppContext().adminUrl;
   let redirectHref = applicantUrl;
-  if (isUserLoggedIn) {
-    const userRoleRoutes = getUserRolesRelatedRedirect(applicantUrl, adminUrl);
-    if (userRoles.isSuperAdmin) redirectHref = userRoleRoutes.superAdmin;
-    else if (userRoles.isAdmin) redirectHref = userRoleRoutes.admin;
-    else if (userRoles.isApplicant) redirectHref = userRoleRoutes.applicant;
-  }
+  if (isUserLoggedIn)
+    redirectHref = getUserRolesRelatedRedirect(
+      applicantUrl,
+      adminUrl,
+      userRoles,
+    );
 
   return (
     <div className="govuk-grid-column-one-third">
