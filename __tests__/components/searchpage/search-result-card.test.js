@@ -23,7 +23,7 @@ describe('SearchResultCard', () => {
     renderWithRouter(component);
     const li = screen.getByRole('listitem');
     expect(li).toBeDefined();
-    expect(li.getAttribute('id')).toBe('Test');
+    expect(li.getAttribute('id')).toBe('Test Name');
   });
 
   it('should render the heading with the correct links', () => {
