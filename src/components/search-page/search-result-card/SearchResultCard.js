@@ -10,7 +10,7 @@ export function SearchResultCard({ item }) {
     item.grantApplicationCloseDate,
   );
   return (
-    <li id={item.label}>
+    <li id={item.grantName}>
       <h2 className="govuk-heading-m">
         <Link
           href={{
