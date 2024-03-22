@@ -14,7 +14,7 @@ const component = (
 const sidebartext =
   'See all the grant updates you have signed up for. You can unsubscribe here too.';
 
-const defaultValues = {
+let defaultValues = {
   isUserLoggedIn: false,
   roles: {
     isAdmin: false,
@@ -35,6 +35,14 @@ jest.mock('../../../pages/_app', () => ({
 describe('HomepageSidebar component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    defaultValues = {
+      isUserLoggedIn: false,
+      roles: {
+        isAdmin: false,
+        isSuperAdmin: false,
+        isApplicant: false,
+      },
+    };
   });
 
   it('should render heading of the sidebar', () => {
