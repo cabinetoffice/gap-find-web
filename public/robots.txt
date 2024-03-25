@@ -1,0 +1,9 @@
+//robots.txt
+
+# Block all crawlers for /_error
+User-agent: *
+Disallow: /_error
+
+# Allow all crawlers
+User-agent: *
+Allow: /
