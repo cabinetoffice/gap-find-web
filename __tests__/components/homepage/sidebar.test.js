@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { HomepageSidebar } from '../../../src/components/homepage/sidebar/HomepageSidebar';
 import { notificationRoutes } from '../../../src/utils/constants';
 
+const technicalSupportUrl = process.env.TECHNICAL_SUPPORT_DOMAIN;
 const applicantUrl = 'http://localhost:3002';
 const component = (
   <HomepageSidebar
@@ -20,6 +21,7 @@ let defaultValues = {
     isAdmin: false,
     isSuperAdmin: false,
     isApplicant: false,
+    isTechnicalSupport: false,
   },
 };
 
@@ -41,6 +43,7 @@ describe('HomepageSidebar component', () => {
         isAdmin: false,
         isSuperAdmin: false,
         isApplicant: false,
+        isTechnicalSupport: false,
       },
     };
   });
@@ -125,6 +128,15 @@ describe('HomepageSidebar component', () => {
     expect(
       screen.getByRole('link', { name: 'Sign in and apply' }).closest('a'),
     ).toHaveAttribute('href', `${applicantUrl}/dashboard`);
+  });
+
+  it('Should render sign in and apply differently for signed in technical support users', () => {
+    defaultValues.isUserLoggedIn = true;
+    defaultValues.roles.isTechnicalSupport = true;
+    render(component);
+    expect(
+      screen.getByRole('link', { name: 'Sign in and apply' }).closest('a'),
+    ).toHaveAttribute('href', `${technicalSupportUrl}/api-keys/manage`);
   });
 
   it('should render the improvement form link with the correct href', () => {
