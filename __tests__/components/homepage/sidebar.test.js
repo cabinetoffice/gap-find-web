@@ -136,7 +136,7 @@ describe('HomepageSidebar component', () => {
     render(component);
     expect(
       screen.getByRole('link', { name: 'Sign in and apply' }).closest('a'),
-    ).toHaveAttribute('href', `${technicalSupportUrl}/api-keys/manage`);
+    ).toHaveAttribute('href', `${technicalSupportUrl}/api-keys`);
   });
 
   it('should render the improvement form link with the correct href', () => {

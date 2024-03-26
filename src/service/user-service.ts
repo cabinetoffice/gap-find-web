@@ -37,6 +37,6 @@ export function getUserRolesRelatedRedirect(
   if (userRoles.isSuperAdmin) return `${adminUrl}/super-admin-dashboard`;
   else if (userRoles.isAdmin) return `${adminUrl}/dashboard`;
   else if (userRoles.isTechnicalSupport)
-    return `${TECHNICAL_SUPPORT_DOMAIN}/api-keys/manage`;
+    return `${TECHNICAL_SUPPORT_DOMAIN}/api-keys`;
   else if (userRoles.isApplicant) return `${applicantUrl}/dashboard`;
 }
