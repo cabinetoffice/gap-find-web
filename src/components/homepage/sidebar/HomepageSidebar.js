@@ -1,11 +1,23 @@
 import Link from 'next/link';
 import { notificationRoutes } from '../../../utils/constants';
+import { useAppContext, useAuth } from '../../../../pages/_app';
+import { getUserRolesRelatedRedirect } from '../../../service';
 
 export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
   const manageNotificationsLink =
     oneLoginEnabled === 'true'
       ? notificationRoutes.manageNotifications
       : notificationRoutes.checkEmail;
+
+  const { roles: userRoles, isUserLoggedIn } = useAuth();
+  const adminUrl = useAppContext().adminUrl;
+  let redirectHref = applicantUrl;
+  if (isUserLoggedIn)
+    redirectHref = getUserRolesRelatedRedirect(
+      applicantUrl,
+      adminUrl,
+      userRoles,
+    );
 
   return (
     <div className="govuk-grid-column-one-third">
@@ -33,7 +45,7 @@ export function HomepageSidebar({ header, applicantUrl, oneLoginEnabled }) {
       </p>
       <p>
         <a
-          href={applicantUrl}
+          href={redirectHref}
           className="govuk-link govuk-body"
           data-cy="cySignInAndApply-Link"
         >
