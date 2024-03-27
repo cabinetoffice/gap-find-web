@@ -72,7 +72,7 @@ function SearchButtons({ filterObj, query }) {
   return (
     <>
       {' '}
-      <div className="govuk-button-group govuk-!-margin-bottom-0 gap_filters-actions">
+      <div className="govuk-button-group govuk-!-margin-top-5 govuk-!-margin-bottom-0 gap_filters-actions">
         <SearchFilterButton />
 
         <SearchFilterClearButton

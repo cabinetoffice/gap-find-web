@@ -6,9 +6,9 @@ import NewsletterConfirmation, {
 import { validateSignupForm } from '../../../src/manager/signup_manager';
 import { generateSignedApiKey } from '../../../src/service/api-key-service';
 import { sendEmail } from '../../../src/service/gov_notify_service';
-import { parseBody } from 'next/dist/server/api-utils/node';
+import { parseBody } from '../../../src/utils/parseBody';
 
-jest.mock('next/dist/server/api-utils/node');
+jest.mock('../../../src/utils/parseBody');
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -59,7 +59,6 @@ describe('getServerSideProps', () => {
     },
     body: {
       user_email: 'test@email.com',
-      notification_privacy: 'on',
     },
   };
 

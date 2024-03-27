@@ -37,7 +37,7 @@ describe('Should Render Newsletter Landing Page', () => {
 
     const cancelLink = screen.getByRole('link', { name: 'Cancel' });
     expect(cancelLink).toBeDefined();
-    expect(cancelLink).toHaveAttribute('href', '/?searchTerm=testing');
+    expect(cancelLink).toHaveAttribute('href', '?searchTerm=testing');
     expect(cancelLink).toHaveClass('govuk-link');
   });
 

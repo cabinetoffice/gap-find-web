@@ -9,7 +9,7 @@ export const GovUKHeader = ({ isSuperAdmin }) => {
     <header className="govuk-header " role="banner" data-module="govuk-header">
       <div className="govuk-header__container govuk-width-container">
         <div className="govuk-header__logo">
-          <Link href="https://www.gov.uk/">
+          <Link href="https://www.gov.uk/" legacyBehavior>
             <a className="govuk-header__link govuk-header__link--homepage">
               <span className="govuk-header__logotype">
                 {isIE ? (

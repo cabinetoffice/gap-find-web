@@ -1,15 +1,15 @@
 import { render, screen } from '@testing-library/react';
-import { parseBody } from 'next/dist/server/api-utils/node';
 import Router from 'next/router';
 import SaveSearch, {
   getServerSideProps,
 } from '../../../pages/save-search/index';
 import { fetchFilters } from '../../../src/utils/contentFulPage';
 import { extractFiltersFields } from '../../../src/utils/transform';
+import { parseBody } from '../../../src/utils/parseBody';
 
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('../../../src/utils/transform');
-jest.mock('next/dist/server/api-utils/node');
+jest.mock('../../../src/utils/parseBody');
 
 describe('getServerSideProps', () => {
   const filterObjectFromQuery = {
@@ -57,6 +57,7 @@ describe('getServerSideProps', () => {
       req: {
         method: 'GET',
       },
+      res: {},
       query: {
         'fields.grantApplicantType.en-US': 1,
       },
@@ -121,7 +122,7 @@ describe('getServerSideProps', () => {
 
     expect(fetchFilters).toHaveBeenCalled();
     expect(extractFiltersFields).toHaveBeenCalledWith(context.query, filters);
-    expect(parseBody).toHaveBeenCalledWith(context.req, '1mb');
+    expect(parseBody).toHaveBeenCalledWith(context.req, context.res);
     expect(result).toEqual(expectedreturn);
   });
 
@@ -165,7 +166,7 @@ describe('getServerSideProps', () => {
 
     expect(fetchFilters).toHaveBeenCalled();
     expect(extractFiltersFields).toHaveBeenCalledWith(context.query, filters);
-    expect(parseBody).toHaveBeenCalledWith(context.req, '1mb');
+    expect(parseBody).toHaveBeenCalledWith(context.req, context.res);
     expect(result).toEqual(expectedreturn);
   });
 
@@ -201,7 +202,7 @@ describe('getServerSideProps', () => {
 
     expect(fetchFilters).toHaveBeenCalled();
     expect(extractFiltersFields).toHaveBeenCalledWith(context.query, filters);
-    expect(parseBody).toHaveBeenCalledWith(context.req, '1mb');
+    expect(parseBody).toHaveBeenCalledWith(context.req, context.res);
     expect(result).toEqual(expectedreturn);
   });
 });

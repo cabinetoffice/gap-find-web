@@ -77,10 +77,12 @@ const NewsletterLandingPage = ({
               >
                 Sign up for updates
               </a>
-              <Link href={{ pathname: returnParams.href, query: returnParams }}>
-                <a className="govuk-link" data-cy="cyCancelNewsletterSignup">
-                  Cancel
-                </a>
+              <Link
+                href={{ pathname: returnParams.href, query: returnParams }}
+                className="govuk-link"
+                data-cy="cyCancelNewsletterSignup"
+              >
+                Cancel
               </Link>
             </div>
           </div>

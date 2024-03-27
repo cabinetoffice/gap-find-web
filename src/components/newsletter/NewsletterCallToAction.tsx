@@ -50,13 +50,10 @@ const NewsletterCallToAction = ({ returnParams }: NewsletterCTAProps) => {
               isUserLoggedIn,
               returnParams,
             })}
+            className={`govuk-link govuk-link--no-visited-state govuk-!-font-size-19`}
+            data-cy="cySignUpNewsletter"
           >
-            <a
-              className={`govuk-link govuk-link--no-visited-state govuk-!-font-size-19`}
-              data-cy="cySignUpNewsletter"
-            >
-              Sign up and we will email you when new grants have been added.
-            </a>
+            Sign up and we will email you when new grants have been added.
           </Link>
         </div>
       </div>

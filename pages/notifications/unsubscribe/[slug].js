@@ -144,10 +144,12 @@ function notifications({ unsubscribeGrant, email, grantDetails }) {
                 >
                   Yes, unsubscribe
                 </button>
-                <Link href={notificationRoutes['manageNotifications']}>
-                  <a className="govuk-link" data-cy="cyCancelUnsubscribe">
-                    Cancel
-                  </a>
+                <Link
+                  href={notificationRoutes['manageNotifications']}
+                  className="govuk-link"
+                  data-cy="cyCancelUnsubscribe"
+                >
+                  Cancel
                 </Link>
               </div>
             </form>

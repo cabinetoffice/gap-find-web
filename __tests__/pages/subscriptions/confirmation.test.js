@@ -8,11 +8,11 @@ import { sendEmail } from '../../../src/service/gov_notify_service';
 import { notificationRoutes } from '../../../src/utils/constants';
 import { encrypt } from '../../../src/utils/encryption';
 import { hash } from '../../../src/utils/hash';
-import { parseBody } from 'next/dist/server/api-utils/node';
+import { parseBody } from '../../../src/utils/parseBody';
 
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/utils/hash');
-jest.mock('next/dist/server/api-utils/node');
+jest.mock('../../../src/utils/parseBody');
 
 const encryptedEmail = 'test-encrypted-email-string';
 const hashedEmail = 'test-hashed-email-string';

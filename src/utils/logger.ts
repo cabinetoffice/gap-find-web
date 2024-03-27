@@ -98,9 +98,9 @@ const asObject = (
 const formatRequest = (req: NextRequest) => ({
   url: req.url,
   method: req.method,
-  cookies: Array.from(req.cookies.values()).filter(
-    (value) => !value.startsWith('user-service-token'),
-  ),
+  cookies: req.cookies
+    .getAll()
+    .filter(({ name }) => name !== 'user-service-token'),
   headers: asObject(req.headers.entries(), ['cookie']),
 });
 

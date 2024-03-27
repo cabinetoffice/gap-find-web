@@ -3,9 +3,11 @@ import { createMockRouter } from '../../../src/utils/createMockRouter';
 import SignupSavedSearch, {
   getServerSideProps,
 } from '../../../pages/save-search/notifications';
-import { RouterContext } from 'next/dist/shared/lib/router-context';
-import { parseBody } from 'next/dist/server/api-utils/node';
-jest.mock('next/dist/server/api-utils/node');
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import { parseBody } from '../../../src/utils/parseBody';
+
+jest.mock('../../../src/utils/parseBody');
+
 describe('Rendering serverside props', () => {
   const queryWithNoErrors = {
     req: { method: 'GET' },

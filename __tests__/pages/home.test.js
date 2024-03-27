@@ -191,7 +191,7 @@ describe('Skip to main content', () => {
       name: 'Skip to main content',
     });
     expect(skipToMainContentLink).toBeDefined();
-    expect(skipToMainContentLink).toHaveAttribute('href', '/#main-content');
+    expect(skipToMainContentLink).toHaveAttribute('href', '#main-content');
   });
 
   it('should have an element tagged for focus', () => {

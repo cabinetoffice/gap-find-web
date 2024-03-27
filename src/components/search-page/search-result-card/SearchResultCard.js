@@ -10,17 +10,17 @@ export function SearchResultCard({ item }) {
     item.grantApplicationCloseDate,
   );
   return (
-    <li id={item.label}>
+    <li id={item.grantName}>
       <h2 className="govuk-heading-m">
         <Link
           href={{
             pathname: '/grants/[pid]',
             query: { pid: item.label },
           }}
+          className="govuk-link"
+          data-cy="cyGrantNameAndLink"
         >
-          <a className="govuk-link" data-cy="cyGrantNameAndLink">
-            {item.grantName}
-          </a>
+          {item.grantName}
         </Link>
       </h2>
       <p
@@ -29,55 +29,58 @@ export function SearchResultCard({ item }) {
       >
         {item.grantShortDescription}
       </p>
-      <p className="govuk-body govuk-!-margin-bottom-2">
-        <span className="govuk-!-font-weight-bold">
-          {gloss.browse.location + ' '}
-        </span>
-        {item.grantLocation?.join(', ')}
-      </p>
-      <p className="govuk-body govuk-!-margin-bottom-2">
-        <span className="govuk-!-font-weight-bold">
-          {gloss.browse.funders + ' '}
-        </span>
-        {item.grantFunder}
-      </p>
-      <p className="govuk-body govuk-!-margin-bottom-2">
-        <span className="govuk-!-font-weight-bold">
-          {gloss.browse.whoCanApply + ' '}
-        </span>
-        {item.grantApplicantType?.join(', ')}
-      </p>
-      <p className="govuk-body govuk-!-margin-bottom-2">
-        <span className="govuk-!-font-weight-bold">
-          {gloss.browse.size + ' '}
-        </span>
-        {`From ${item.grantMinimumAwardDisplay} to ${item.grantMaximumAwardDisplay}`}
-      </p>
-      <p className="govuk-body govuk-!-margin-bottom-2">
-        <span className="govuk-!-font-weight-bold">
-          {gloss.browse.schemeSize + ' '}
-        </span>
-        {item.grantTotalAwardDisplay}
-      </p>
-      <p className="govuk-body govuk-!-margin-bottom-2">
-        <span className="govuk-!-font-weight-bold">
-          {gloss.browse.opens + ' '}
-        </span>
-        <Moment format="D MMMM YYYY, h:mma" tz="GMT">
-          {adjustedOpenDate}
-        </Moment>
-      </p>
-      <p className="govuk-body govuk-!-margin-bottom-5">
-        <span className="govuk-!-font-weight-bold">
-          {gloss.browse.closes + ' '}
-        </span>
-        <Moment format="D MMMM YYYY, h:mma" tz="GMT">
-          {adjustedCloseDate}
-        </Moment>
-      </p>
-      <div className="govuk-!-margin-bottom-5">
-        <hr className="govuk-section-break govuk-section-break--visible" />
-      </div>
+
+      <dl className="govuk-summary-list">
+        <div className="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt className="govuk-summary-list__value">{gloss.browse.location}</dt>
+          <dd className="govuk-summary-list__value">
+            {item.grantLocation?.join(', ')}
+          </dd>
+        </div>
+        <div className="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt className="govuk-summary-list__value">{gloss.browse.funders}</dt>
+          <dd className="govuk-summary-list__value">{item.grantFunder}</dd>
+        </div>
+        <div className="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt className="govuk-summary-list__value">
+            {gloss.browse.whoCanApply}
+          </dt>
+          <dd className="govuk-summary-list__value">
+            {item.grantApplicantType?.join(', ')}
+          </dd>
+        </div>
+        <div className="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt className="govuk-summary-list__value">{gloss.browse.size}</dt>
+          <dd className="govuk-summary-list__value">
+            {`From ${item.grantMinimumAwardDisplay} to ${item.grantMaximumAwardDisplay}`}
+          </dd>
+        </div>
+        <div className="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt className="govuk-summary-list__value">
+            {gloss.browse.schemeSize}
+          </dt>
+          <dd className="govuk-summary-list__value">
+            {item.grantTotalAwardDisplay}
+          </dd>
+        </div>
+        <div className="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt className="govuk-summary-list__value">{gloss.browse.opens}</dt>
+          <dd className="govuk-summary-list__value">
+            <Moment format="D MMMM YYYY, h:mma" tz="GMT">
+              {adjustedOpenDate}
+            </Moment>
+          </dd>
+        </div>
+        <div className="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt className="govuk-summary-list__value">{gloss.browse.closes}</dt>
+          <dd className="govuk-summary-list__value">
+            <Moment format="D MMMM YYYY, h:mma" tz="GMT">
+              {adjustedCloseDate}
+            </Moment>
+          </dd>
+        </div>
+      </dl>
+      <div className="govuk-!-margin-bottom-9" />
     </li>
   );
 }

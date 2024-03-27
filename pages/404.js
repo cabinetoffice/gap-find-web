@@ -28,8 +28,8 @@ const Custom404 = () => {
             </p>
             <p className="govuk-body">
               To see a list of available grants, visit the{' '}
-              <Link href="/grants/">
-                <a className="govuk-link">Browse grants</a>
+              <Link href="/grants/" className="govuk-link">
+                Browse grants
               </Link>{' '}
               page.
             </p>

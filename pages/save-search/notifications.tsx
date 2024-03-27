@@ -4,13 +4,13 @@ import Layout from '../../src/components/partials/Layout';
 import ErrorBanner from '../../src/components/displayErrors/errorBanner/ErrorBanner';
 import SpecificErrorMessage from '../../src/components/displayErrors/specificMessageError/SpecificErrorMessage';
 import { GetServerSideProps } from 'next';
-import { parseBody } from 'next/dist/server/api-utils/node';
 import { buildQueryString } from '.';
 import gloss from '../../src/utils/glossary.json';
 import Link from 'next/link';
 import { URL_ACTIONS, notificationRoutes } from '../../src/utils/constants';
+import { parseBody } from '../../src/utils/parseBody';
 
-const validate = (saveSearchConsent) => {
+const validate = (saveSearchConsent: string) => {
   const errors = [];
 
   if (!saveSearchConsent) {
@@ -25,11 +25,12 @@ const validate = (saveSearchConsent) => {
 export const getServerSideProps: GetServerSideProps = async ({
   query,
   req,
+  res,
 }) => {
   let validationErrors = [];
 
   if (req.method === 'POST') {
-    const body = await parseBody(req, '1mb');
+    const body: { consent_radio: string } = await parseBody(req, res);
     validationErrors = validate(body.consent_radio);
     delete query.notifications_consent;
     const queryString = buildQueryString(query);
@@ -71,10 +72,12 @@ const SignupSavedSearch = ({ validationErrors, query }) => {
       <Layout>
         <div className="govuk-width-container">
           <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-            <Link href={{ pathname: '/save-search', query: query }}>
-              <a className="govuk-back-link" data-testid="govuk-back">
-                {gloss.buttons.back}
-              </a>
+            <Link
+              href={{ pathname: '/save-search', query: query }}
+              className="govuk-back-link"
+              data-testid="govuk-back"
+            >
+              {gloss.buttons.back}
             </Link>
           </div>
         </div>

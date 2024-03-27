@@ -11,6 +11,7 @@ import App from 'next/app';
 export const AuthContext = createContext({
   isUserLoggedIn: false,
   isSuperAdmin: false,
+  roles: null,
 });
 export const AppContext = createContext({
   applicantUrl: null,
@@ -30,6 +31,7 @@ const MyApp = ({
     adminUrl,
     oneLoginEnabled,
     isSuperAdmin,
+    roles,
   },
 }) => {
   const cookies = nookies.get({});
@@ -55,7 +57,7 @@ const MyApp = ({
     <>
       <Script src="/javascript/govuk.js" strategy="beforeInteractive" />
       <AppContext.Provider value={{ applicantUrl, adminUrl, oneLoginEnabled }}>
-        <AuthContext.Provider value={{ isUserLoggedIn, isSuperAdmin }}>
+        <AuthContext.Provider value={{ isUserLoggedIn, isSuperAdmin, roles }}>
           <Component {...pageProps} />
         </AuthContext.Provider>
       </AppContext.Provider>
@@ -69,6 +71,7 @@ MyApp.getInitialProps = async (context) => {
   let applicantUrl = null;
   let adminUrl = null;
   let isSuperAdmin = null;
+  let roles = null;
 
   if (process?.env) {
     oneLoginEnabled = process.env.ONE_LOGIN_ENABLED;
@@ -79,6 +82,7 @@ MyApp.getInitialProps = async (context) => {
     const { jwt } = getJwtFromCookies(context.ctx.req);
     const isUserLoggedIn = await checkUserLoggedIn(jwt);
     isSuperAdmin = (await getUserRoles(jwt)).isSuperAdmin;
+    roles = await getUserRoles(jwt);
     return {
       ...ctx,
       props: {
@@ -87,6 +91,7 @@ MyApp.getInitialProps = async (context) => {
         adminUrl,
         oneLoginEnabled,
         isSuperAdmin,
+        roles,
       },
     };
   } catch (err) {
@@ -98,6 +103,7 @@ MyApp.getInitialProps = async (context) => {
         adminUrl,
         oneLoginEnabled,
         isSuperAdmin,
+        roles,
       },
     };
   }
