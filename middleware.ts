@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { v4 } from 'uuid';
 import { checkUserLoggedIn } from './src/service';
-import { logger, getJwtFromCookies } from './src/utils';
+import { logger } from './src/utils';
 import {
   HEADERS,
   notificationRoutes,
@@ -10,6 +10,7 @@ import {
   LOGIN_NOTICE_TYPES,
   URL_ACTIONS,
 } from './src/utils/constants';
+import { getJwtFromMiddlewareCookies } from './src/utils';
 
 const HOST = process.env.HOST;
 const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
@@ -93,7 +94,8 @@ export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
 
 const authenticateRequest = async (req: NextRequest, res: NextResponse) => {
   try {
-    const { jwt, jwtPayload } = getJwtFromCookies(req);
+    const { jwt, jwtPayload } = getJwtFromMiddlewareCookies(req);
+
     const validJwtResponse = await checkUserLoggedIn(jwt);
 
     if (!validJwtResponse) {
@@ -159,10 +161,10 @@ const urlsToSkip = ['/_next/', '/assets/', '/javascript/'];
 
 const getConditionalLogger = (req, type: LoggerType) => {
   const userAgentHeader = req.headers.get('user-agent') || '';
-  return userAgentHeader.startsWith('ELB-HealthChecker') ||
-    urlsToSkip.some((url) => req.nextUrl.pathname.startsWith(url))
-    ? () => undefined
-    : httpLoggers[type];
+  const shouldSkipLogging =
+    userAgentHeader.startsWith('ELB-HealthChecker') ||
+    urlsToSkip.some((url) => req.nextUrl.pathname.startsWith(url));
+  return shouldSkipLogging ? () => undefined : httpLoggers[type];
 };
 
 export const middleware = async (req: NextRequest) => {

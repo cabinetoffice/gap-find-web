@@ -1,10 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import BrowseGrants, { getServerSideProps } from '../../pages/grants/index';
 import { ElasticSearchService } from '../../src/service/elastic_service';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 import { clearFiltersFromQuery } from '../../src/utils/transform';
+import { renderWithRouter } from '../../src/utils/test/render';
 
 jest.mock('next/router', () => {
   return {
@@ -96,12 +97,12 @@ describe('Rendering the browse grants page', () => {
   });
 
   it('Should render a back button', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByText('Back')).toBeDefined();
   });
 
   it('renders error message when error array in props is populated', () => {
-    render(invalidFilterComponent);
+    renderWithRouter(invalidFilterComponent);
     expect(
       screen.getByRole('heading', { name: 'There is a problem' }),
     ).toBeDefined();
@@ -116,7 +117,7 @@ describe('Rendering the browse grants page', () => {
   });
 
   it('should have a back button that retains search terms and goes back', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByText('Back')).toHaveAttribute(
       'href',
       '/?searchTerm=search',
@@ -124,7 +125,7 @@ describe('Rendering the browse grants page', () => {
   });
 
   it('Should render grant title link', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByRole('link', { name: 'Some Grant Name' })).toBeDefined();
     expect(
       screen.getByRole('link', { name: 'Some Grant Name' }),
@@ -132,26 +133,26 @@ describe('Rendering the browse grants page', () => {
   });
 
   it('Should render grant description', () => {
-    render(component);
+    renderWithRouter(component);
     expect(
       screen.getByText('Some grant description blah blah blah'),
     ).toBeDefined();
   });
 
   it('Should render grant location', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByText('Location')).toBeDefined();
     expect(screen.getByText('location one, location two')).toBeDefined();
   });
 
   it('Should render grant funder', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByText('Funding organisation')).toBeDefined();
     expect(screen.getByText('Grant Funder')).toBeDefined();
   });
 
   it('Should render grant applicant type', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getAllByText('Who can apply')).toHaveLength(2);
     expect(
       screen.getByText('applicant type one, applicant type two'),
@@ -159,23 +160,23 @@ describe('Rendering the browse grants page', () => {
   });
 
   it('Should render grant amount', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByText('How much you can get')).toBeDefined();
     expect(screen.getByText('From £500 to £10,000')).toBeDefined();
   });
 
   it('Should render grant size', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByText('Total size of grant scheme')).toBeDefined();
     expect(screen.getByText('£100 million')).toBeDefined();
   });
 
   it('Should render grant opening date', () => {
-    render(component);
+    renderWithRouter(component);
     expect(
       screen.getByText((content, element) => {
         return (
-          element.tagName.toLowerCase() === 'span' && content === 'Opening date'
+          element.tagName.toLowerCase() === 'dt' && content === 'Opening date'
         );
       }),
     ).toBeDefined();
@@ -183,11 +184,11 @@ describe('Rendering the browse grants page', () => {
   });
 
   it('Should render grant closing date', () => {
-    render(component);
+    renderWithRouter(component);
     expect(
       screen.getByText((content, element) => {
         return (
-          element.tagName.toLowerCase() === 'span' && content === 'Closing date'
+          element.tagName.toLowerCase() === 'dt' && content === 'Closing date'
         );
       }),
     ).toBeDefined();
@@ -195,12 +196,12 @@ describe('Rendering the browse grants page', () => {
   });
 
   it('Should render a label for the search form', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByText('Search grants')).toBeDefined();
   });
 
   it('Should render filters', () => {
-    render(component);
+    renderWithRouter(component);
     expect(
       screen.getByRole('heading', { name: 'Who can apply' }),
     ).toBeDefined();
@@ -212,7 +213,7 @@ describe('Rendering the browse grants page', () => {
   });
 
   it('Should render sort by options if theres 1 or more grants', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByTestId('js-select')).toBeDefined();
     const options = screen.getAllByRole('option');
     expect(options[0].innerText).toEqual('Opening date');
@@ -226,7 +227,7 @@ describe('Rendering the browse grants page', () => {
   });
 
   it('Should push new query when sort by is changed', () => {
-    render(component);
+    renderWithRouter(component);
     expect(screen.getByTestId('js-select')).toBeDefined();
     let options = screen.getAllByRole('option');
     userEvent.click(screen.getByRole('combobox', { name: 'Sort by' }));

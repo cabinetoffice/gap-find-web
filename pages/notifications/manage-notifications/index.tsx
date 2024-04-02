@@ -381,13 +381,10 @@ const ManageNotifications = ({
               href={`/grants?${
                 item.search_term ? `searchTerm=${item.search_term}&` : ''
               }${buildQueryString(item.filters)}`}
+              className="govuk-link"
+              data-cy={`cy${item.name}SavedSearchTableName`}
             >
-              <a
-                className="govuk-link"
-                data-cy={`cy${item.name}SavedSearchTableName`}
-              >
-                {item.name}
-              </a>
+              {item.name}
             </Link>
           ),
         },
@@ -404,17 +401,14 @@ const ManageNotifications = ({
                   ? `${notificationRoutes['unsubscribe']}/${item.contentfulGrantSubscriptionId}`
                   : `${notificationRoutes['deleteSaveSearch']}/${item.id}`
               }
+              className="govuk-link"
+              data-cy={
+                isGrant
+                  ? `cy${item.grantName}UnsubscribeLink`
+                  : `cy${item.name}DeleteLink`
+              }
             >
-              <a
-                className="govuk-link"
-                data-cy={
-                  isGrant
-                    ? `cy${item.grantName}UnsubscribeLink`
-                    : `cy${item.name}DeleteLink`
-                }
-              >
-                {isGrant ? 'Unsubscribe' : 'Delete'}
-              </a>
+              {isGrant ? 'Unsubscribe' : 'Delete'}
             </Link>
           ),
         },
@@ -495,10 +489,12 @@ const ManageNotifications = ({
                     "You are not signed up for any notifications, and you don't have any saved searches."
                   }
                 </p>
-                <Link href={'/grants'}>
-                  <a className="govuk-link" data-cy="cySearchForGrantsLink">
-                    Search for grants
-                  </a>
+                <Link
+                  href={'/grants'}
+                  className="govuk-link"
+                  data-cy="cySearchForGrantsLink"
+                >
+                  Search for grants
                 </Link>
               </div>
             )}

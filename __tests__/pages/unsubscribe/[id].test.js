@@ -1,10 +1,19 @@
 import '@testing-library/jest-dom';
 import { AxiosError } from 'axios';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
-import { getServerSideProps } from '../../../pages/unsubscribe/[id]';
+import Unsubscribe, {
+  getServerSideProps,
+} from '../../../pages/unsubscribe/[id]';
 import { SubscriptionService } from '../../../src/service/subscription-service';
 import { deleteSaveSearch } from '../../../src/service/saved_search_service';
 import { getUnsubscribeReferenceFromId } from '../../../src/service/unsubscribe.service';
+import { render, screen } from '@testing-library/react';
+
+jest.mock('next/router', () => ({
+  useRouter() {
+    return jest.fn();
+  },
+}));
 
 jest.mock('../../../pages/service-error/index.page', () => ({
   default: () => <p>ServiceErrorPage</p>,
@@ -115,6 +124,19 @@ describe('getServerSideProps()', () => {
       });
     },
   );
+
+  const component = <Unsubscribe error={false} />;
+
+  it('Should render the Unsubscribe confirmation page', () => {
+    render(component);
+    expect(screen.findByText('Unsubscribe Confirmation')).toBeDefined();
+    expect(screen.getByText('You have unsubscribed')).toBeDefined();
+    expect(
+      screen.getByText(
+        'We will not send you any more emails about new grants.',
+      ),
+    ).toBeDefined();
+  });
 });
 
 const getContext = ({ id }) => ({
