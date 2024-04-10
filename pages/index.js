@@ -33,7 +33,11 @@ const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
       <Head>
         <meta
           name="google-site-verification"
-          content="hy7DeFLs371VOo-XAyKeJLRsIXAlpVuoM1f3sOovqPk"
+          content="vv8MtDNoNo2U_CSmF9EF8L9r_lReZ9lwpJgPBYvnoak"
+        />
+        <meta
+          name="google-site-verification"
+          content="FIONA_GOES_HERE____________________________"
         />
         <title>Home - Find a grant</title>
       </Head>
