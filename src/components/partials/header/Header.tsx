@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { skipToMainContent } from '../../../utils/skipToMainContent';
 import { getAuthenticatedNavItems, navItems } from './links';
 import { GovUKHeader } from './GovUKHeader';
 import { useAppContext, useAuth } from '../../../../pages/_app';
@@ -81,7 +80,7 @@ const MobileViewMenu = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
 const BetaBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
   const { oneLoginEnabled } = useAppContext();
   return (
-    <div className="govuk-width-container ">
+    <aside className="govuk-width-container">
       <div className="govuk-phase-banner">
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-three-quarters">
@@ -106,7 +105,7 @@ const BetaBlock = ({ isUserLoggedIn }: { isUserLoggedIn: boolean }) => {
           {isUserLoggedIn && oneLoginEnabled === 'true' && <SignOut />}
         </div>
       </div>
-    </div>
+    </aside>
   );
 };
 
@@ -154,16 +153,6 @@ const Header = ({ isBasic = false, isUserLoggedIn = false }) => {
   const { isSuperAdmin } = useAuth();
   return (
     <>
-      <Link href="#main-content" legacyBehavior>
-        <a
-          className="govuk-skip-link"
-          data-module="govuk-skip-link"
-          data-cy="cySkipLink"
-          onClick={skipToMainContent}
-        >
-          Skip to main content
-        </a>
-      </Link>
       <GovUKHeader isSuperAdmin={isSuperAdmin} />
       <MobileViewMenu isUserLoggedIn={isUserLoggedIn} />
       {!isBasic && (
