@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
+import { logger } from '../../../src/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,7 +23,10 @@ export default async function handler(
 
     res.status(200).json(response.data);
   } catch (error) {
-    console.error(`Error deleting user ${req.query} :`, error.message);
+    logger.error(
+      `Error deleting user ${req.query}`,
+      logger.utils.addErrorInfo(error, req),
+    );
 
     if (error.response) {
       res.status(error.response.status).json(error.response.data);

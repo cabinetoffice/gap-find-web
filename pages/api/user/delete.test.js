@@ -1,7 +1,15 @@
+import { HEADERS } from '../../../src/utils/constants';
 import handler from './delete';
 import axios from 'axios';
 
 jest.mock('axios');
+
+const getMockRequest = (overrides = {}) => ({
+  headers: {
+    [HEADERS.CORRELATION_ID]: 'test-id',
+  },
+  ...overrides,
+});
 
 describe('handler', () => {
   it('should make request to backend host and successfully delete a user by sub', async () => {
@@ -9,11 +17,11 @@ describe('handler', () => {
 
     axios.mockResolvedValue(axiosResponse);
 
-    const req = {
+    const req = getMockRequest({
       query: {
         sub: 'urn:fdc:gov.uk:2022:ibd2rz2CgyidndXyq2zyfcnQwyYI57h34TyuGt87Uhs',
       },
-    };
+    });
 
     const res = {
       status: jest.fn(() => res),
@@ -38,11 +46,11 @@ describe('handler', () => {
 
     axios.mockResolvedValue(axiosResponse);
 
-    const req = {
+    const req = getMockRequest({
       query: {
         email: 'test-user@email.com',
       },
-    };
+    });
 
     const res = {
       status: jest.fn(() => res),
@@ -69,13 +77,15 @@ describe('handler', () => {
       data: { message: 'User Unsuccessfully deleted' },
     };
 
-    axios.mockRejectedValue(axiosError);
+    axios.mockImplementation(() => {
+      throw axiosError;
+    });
 
-    const req = {
+    const req = getMockRequest({
       query: {
         email: 'test-user@gov.uk',
       },
-    };
+    });
 
     const res = {
       status: jest.fn(() => res),
