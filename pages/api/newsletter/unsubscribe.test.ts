@@ -17,8 +17,8 @@ jest.mock('../../../src/utils/jwt');
 jest.mock('../../../src/utils/logger', () => ({
   logger: {
     error: jest.fn(),
+    utils: { addErrorInfo: (err) => err },
   },
-  addErrorInfo: (err) => err,
 }));
 
 const createMockRequest = (requestData) => ({

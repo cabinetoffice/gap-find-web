@@ -1,5 +1,7 @@
+import axios from 'axios';
+import Head from 'next/head';
 import { fetchEntry } from '../../src/utils/contentFulPage';
-
+import gloss from '../../src/utils/glossary.json';
 const logger = require('pino')();
 
 export async function getServerSideProps({ params }) {
@@ -11,7 +13,7 @@ export async function getServerSideProps({ params }) {
 
   const grantDetail = await fetchEntry(path);
 
-  if (grantDetail.props.grantDetail === undefined) {
+  if (grantDetail === undefined) {
     return {
       redirect: {
         permanent: false,
@@ -20,10 +22,10 @@ export async function getServerSideProps({ params }) {
     };
   }
 
-  if (grantDetail.props.grantDetail.fields.label) {
+  if (grantDetail.fields.label) {
     const child = logger.child({
       action: 'apply',
-      label: grantDetail.props.grantDetail.fields.label,
+      label: grantDetail.fields.label,
     });
     child.info('button clicked');
   } else {
@@ -31,21 +33,53 @@ export async function getServerSideProps({ params }) {
     child.info('button clicked');
   }
 
-  const linkHref =
-    newMandatoryQuestionsEnabled === 'true'
-      ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.props.grantDetail.fields.grantWebpageUrl}`
-      : grantDetail.props.grantDetail.fields.grantWebpageUrl;
+  const advertSummary = await getAdvertSchemeVersion(grantDetail.fields.label);
+
+  const isV1External =
+    !advertSummary.data ||
+    (advertSummary.data.schemeVersion === 1 &&
+      advertSummary.data.internalApplication === false);
+
+  const redirectUrl =
+    newMandatoryQuestionsEnabled === 'true' && !isV1External
+      ? `${applicantUrl}/api/redirect-from-find?slug=${path}&grantWebpageUrl=${grantDetail.fields.grantWebpageUrl}`
+      : grantDetail.fields.grantWebpageUrl;
 
   return {
-    redirect: {
-      permanent: false,
-      destination: linkHref,
+    props: {
+      redirectUrl,
+      grantDetail,
     },
   };
 }
 
-const ApplyRedirect = () => {
-  return <></>;
+export const getAdvertSchemeVersion = async (contentfulSlug) => {
+  return await axios
+    .get(
+      `${process.env.APPLICANT_BACKEND_HOST}/grant-adverts/${contentfulSlug}/scheme-version`,
+    )
+    .catch(function (error) {
+      return error;
+    });
+};
+
+const ApplyRedirect = ({ grantDetail, redirectUrl }) => {
+  const grant = grantDetail.fields;
+
+  return (
+    <>
+      <Head>
+        <title>
+          {grant.grantName} - {gloss.title}
+        </title>
+        {/* 
+          this meta element triggers a client-side redirect, which is required
+          for analytics reporting on this page
+        */}
+        <meta httpEquiv="Refresh" content={'0; URL=' + redirectUrl}></meta>
+      </Head>
+    </>
+  );
 };
 
 export default ApplyRedirect;

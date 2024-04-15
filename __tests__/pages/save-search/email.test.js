@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { parseBody } from 'next/dist/server/api-utils/node';
 import Router from 'next/router';
 import Email, { getServerSideProps } from '../../../pages/save-search/email';
 import { buildQueryString } from '../../../pages/save-search/index';
@@ -9,9 +8,10 @@ import { save } from '../../../src/service/saved_search_service';
 import { EMAIL_ADDRESS_FORMAT_VALIDATION_ERROR } from '../../../src/utils/constants';
 import { fetchFilters } from '../../../src/utils/contentFulPage';
 import { extractFiltersFields } from '../../../src/utils/transform';
+import { parseBody } from '../../../src/utils/parseBody';
 
 jest.mock('../../../pages/save-search/index');
-jest.mock('next/dist/server/api-utils/node');
+jest.mock('../../../src/utils/parseBody');
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('../../../src/utils/transform', () => ({
   ...jest.requireActual('../../../src/utils/transform'),
@@ -57,6 +57,7 @@ describe('getServerSideProps', () => {
       req: {
         method: 'POST',
       },
+      res: {},
       query: {
         'fields.whoCanApply': 1,
       },
@@ -94,7 +95,7 @@ describe('getServerSideProps', () => {
     const methodResponse = await getServerSideProps(context);
 
     expect(buildQueryString).toHaveBeenCalledWith(context.query);
-    expect(parseBody).toHaveBeenCalledWith(context.req, '1mb');
+    expect(parseBody).toHaveBeenCalledWith(context.req, context.res);
     expect(methodResponse).toEqual(expectedResponse);
   });
 
@@ -262,7 +263,7 @@ describe('getServerSideProps', () => {
     const methodResponse = await getServerSideProps(context);
 
     expect(buildQueryString).toHaveBeenCalledWith(context.query);
-    expect(parseBody).toHaveBeenCalledWith(context.req, '1mb');
+    expect(parseBody).toHaveBeenCalledWith(context.req, context.res);
     expect(methodResponse).toEqual(expectedResponse);
   });
 
@@ -389,7 +390,7 @@ describe('getServerSideProps', () => {
 
     const methodResponse = await getServerSideProps(context);
 
-    expect(parseBody).toHaveBeenCalledWith(context.req, '1mb');
+    expect(parseBody).toHaveBeenCalledWith(context.req, context.res);
     expect(fetchFilters).toHaveBeenCalled();
     expect(extractFiltersFields).toHaveBeenCalledWith(context.query, filters);
     expect(save).toHaveBeenCalledWith(searchToSave);

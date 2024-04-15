@@ -148,10 +148,12 @@ const BrowseByCategory = ({
       </Head>
       <Layout description="Find a grant">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <Link href={{ pathname: '../', query: { searchTerm } }}>
-            <a className="govuk-back-link" data-cy="cyBrowseBackText">
-              {gloss.buttons.back}
-            </a>
+          <Link
+            href={{ pathname: '../', query: { searchTerm } }}
+            className="govuk-back-link"
+            data-cy="cyBrowseBackText"
+          >
+            {gloss.buttons.back}
           </Link>
         </div>
         <ErrorBanner errors={errors} />

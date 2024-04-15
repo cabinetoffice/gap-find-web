@@ -13,8 +13,8 @@ import { notificationRoutes } from '../../src/utils/constants';
 import { encrypt } from '../../src/utils/encryption';
 import gloss from '../../src/utils/glossary.json';
 import { getPreviousFormValues } from '../../src/utils/request';
-import { addErrorInfo, logger } from '../../src/utils';
-import { parseBody } from 'next/dist/server/api-utils/node';
+import { logger } from '../../src/utils';
+import { parseBody } from '../../src/utils/parseBody';
 
 const generateConfirmationUrl = (apiKey) => {
   return new URL(
@@ -23,8 +23,8 @@ const generateConfirmationUrl = (apiKey) => {
   ).toString();
 };
 
-export async function getServerSideProps({ req }) {
-  const body = await parseBody(req, '1mb');
+export async function getServerSideProps({ req, res }) {
+  const body = await parseBody(req, res);
 
   const validationErrors = validateSignupForm(body);
   if (validationErrors.length > 0) {
@@ -62,7 +62,7 @@ export async function getServerSideProps({ req }) {
   } catch (e) {
     logger.error(
       'error sending subscription confirmation email',
-      addErrorInfo(e, req),
+      logger.utils.addErrorInfo(e, req),
     );
   }
 

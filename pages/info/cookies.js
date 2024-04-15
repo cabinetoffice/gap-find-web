@@ -146,10 +146,12 @@ const Cookies = () => {
             </p>
             <p className="govuk-body">
               Find out{' '}
-              <Link href="https://ico.org.uk/for-the-public/online/cookies">
-                <a className="govuk-link" target="_blank">
-                  how to manage cookies
-                </a>
+              <Link
+                href="https://ico.org.uk/for-the-public/online/cookies"
+                className="govuk-link"
+                target="_blank"
+              >
+                how to manage cookies
               </Link>{' '}
               from the Information Commissioner&apos;s Office.
             </p>

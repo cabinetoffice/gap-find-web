@@ -127,20 +127,24 @@ function deletingSavedSearches({ saveSearchId, errorMessage }) {
                     action={`/notifications/delete-saved-search/${saveSearchId}`}
                     method="POST"
                   >
-                    <button
-                      className="govuk-button"
-                      data-module="govuk-button"
-                      data-cy="cyDeleteConfirmationButton"
-                      aria-label="Confirm delete"
-                    >
-                      Yes, delete
-                    </button>
+                    <div className="govuk-button-group">
+                      <button
+                        className="govuk-button"
+                        data-module="govuk-button"
+                        data-cy="cyDeleteConfirmationButton"
+                        aria-label="Confirm delete"
+                      >
+                        Yes, delete
+                      </button>
+                      <Link
+                        href={notificationRoutes['manageNotifications']}
+                        className="govuk-link"
+                        data-cy="cyCancelUnsubscribe"
+                      >
+                        Cancel
+                      </Link>
+                    </div>
                   </form>
-                  <Link href={notificationRoutes['manageNotifications']}>
-                    <a className="govuk-link" data-cy="cyCancelUnsubscribe">
-                      Cancel
-                    </a>
-                  </Link>
                 </div>
               </div>
             </div>

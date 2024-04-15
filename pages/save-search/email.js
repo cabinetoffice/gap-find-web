@@ -1,4 +1,3 @@
-import { parseBody } from 'next/dist/server/api-utils/node';
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
@@ -24,7 +23,8 @@ import {
   extractFiltersFields,
   addPublishedDateFilter,
 } from '../../src/utils/transform';
-import { addErrorInfo, logger } from '../../src/utils';
+import { parseBody } from '../../src/utils/parseBody';
+import { logger } from '../../src/utils';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 
 //TODO confirm if we need to show only one error at a time or not
@@ -120,11 +120,11 @@ const buildSavedSearch = async (query, body) => {
   };
 };
 
-export async function getServerSideProps({ query, req }) {
+export async function getServerSideProps({ query, req, res }) {
   const queryString = buildQueryString(query);
 
   if (req.method === 'POST') {
-    const body = await parseBody(req, '1mb');
+    const body = await parseBody(req, res);
     const validationErrors = validate(body);
 
     if (validationErrors.length > 0) {
@@ -139,7 +139,7 @@ export async function getServerSideProps({ query, req }) {
     } catch (e) {
       logger.error(
         'error sending saved search confirmation email',
-        addErrorInfo(e, req),
+        logger.utils.addErrorInfo(e, req),
       );
     }
 
@@ -163,14 +163,13 @@ const Email = ({ query, errors, privacy, user_email, queryString }) => {
       </Head>
       <Layout description="Find a grant">
         <div className="govuk-!-margin-top-3 govuk-!-margin-bottom-0 padding-bottom40">
-          <Link href={{ pathname: '/save-search/notifications', query: query }}>
-            <a
-              className="govuk-back-link"
-              data-testid="govuk-back"
-              data-cy="cy-back-link"
-            >
-              {gloss.buttons.back}
-            </a>
+          <Link
+            href={{ pathname: '/save-search/notifications', query: query }}
+            className="govuk-back-link"
+            data-testid="govuk-back"
+            data-cy="cy-back-link"
+          >
+            {gloss.buttons.back}
           </Link>
         </div>
         <ErrorBanner errors={errors} />

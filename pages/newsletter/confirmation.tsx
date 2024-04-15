@@ -16,8 +16,8 @@ import {
 } from '../../src/types/newsletter';
 import gloss from '../../src/utils/glossary.json';
 import { getPreviousFormValues } from '../../src/utils/request';
-import { addErrorInfo, logger } from '../../src/utils';
-import { parseBody } from 'next/dist/server/api-utils/node';
+import { logger } from '../../src/utils';
+import { parseBody } from '../../src/utils/parseBody';
 
 const generateConfirmationUrl = (apiKey: string) => {
   return new URL(
@@ -29,9 +29,9 @@ const generateConfirmationUrl = (apiKey: string) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ) => {
-  const req = context.req;
+  const { req, res } = context;
 
-  const body = await parseBody(req, '1mb');
+  const body: { user_email: string } = await parseBody(req, res);
   const validationErrors = validateSignupForm(body);
   if (validationErrors.length > 0) {
     const errorParam = generateSignupErrorsRedirectParam(validationErrors);
@@ -46,10 +46,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const signedUpEmail: string = body.user_email;
-
   const newsletterSubscription: NewsletterSubscription = {
-    email: signedUpEmail,
+    email: body.user_email,
     newsletterType: NewsletterType.NEW_GRANTS,
   };
 
@@ -58,7 +56,7 @@ export const getServerSideProps = async (
 
   try {
     await sendEmail(
-      signedUpEmail,
+      body.user_email,
       {
         'Confirmation link for updates': confirmationUrl,
       },
@@ -67,12 +65,12 @@ export const getServerSideProps = async (
   } catch (e) {
     logger.error(
       'error sending newsletter signup confirmation email',
-      addErrorInfo(e, req as NextApiRequest),
+      logger.utils.addErrorInfo(e, req as NextApiRequest),
     );
   }
   return {
     props: {
-      signedUpEmail,
+      signedUpEmail: body.user_email,
     },
   };
 };
