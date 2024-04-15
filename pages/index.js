@@ -41,10 +41,6 @@ const Home = ({ searchTerm, applicantUrl, oneLoginEnabled }) => {
           // Fiona Findley
           content="tkgtcuQILVvz7BDqWjZJPyeci832YBZeCLjNUKYAFCw"
         />
-        <meta
-          name="google-site-verification"
-          content="GeXVFGpDMLVwoNYmpgH8M2kWsXNdnOAY0i16CeUvrxM"
-        />
         <title>Home - Find a grant</title>
       </Head>
       <Layout description="Find a grant">
