@@ -23,13 +23,14 @@ export function adjustDateTimes(openDate, closeDate) {
 }
 
 function getTimeSuffix(date) {
-  if (
-    moment.utc(date).format('HH:mm') === '23:59' ||
-    moment.utc(date).format('HH:mm') === '00:00' ||
-    moment.utc(date).format('HH:mm') === '00:01'
-  ) {
-    return ' (Midnight)';
-  } else if (moment.utc(date).format('HH:mm') === '12:00') {
-    return ' (Midday)';
-  } else return '';
+  switch (moment.utc(date).format('HH:mm')) {
+    case '23:59':
+    case '00:00':
+    case '00:01':
+      return ' (Midnight)';
+    case '12:00':
+      return ' (Midday)';
+    default:
+      return '';
+  }
 }
