@@ -5,7 +5,7 @@ import gloss from '../../../utils/glossary.json';
 import { adjustDateTimes } from '../../../utils/adjustDateTimes';
 
 export function SearchResultCard({ item }) {
-  const { adjustedOpenDate, adjustedCloseDate } = adjustDateTimes(
+  const { adjustedOpenDate, adjustedCloseDate, timeSuffixes } = adjustDateTimes(
     item.grantApplicationOpenDate,
     item.grantApplicationCloseDate,
   );
@@ -69,6 +69,7 @@ export function SearchResultCard({ item }) {
             <Moment format="D MMMM YYYY, h:mma" tz="GMT">
               {adjustedOpenDate}
             </Moment>
+            {timeSuffixes.open}
           </dd>
         </div>
         <div className="govuk-summary-list__row govuk-summary-list__row--no-actions">
@@ -77,6 +78,7 @@ export function SearchResultCard({ item }) {
             <Moment format="D MMMM YYYY, h:mma" tz="GMT">
               {adjustedCloseDate}
             </Moment>
+            {timeSuffixes.close}
           </dd>
         </div>
       </dl>
