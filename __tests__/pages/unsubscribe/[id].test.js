@@ -8,11 +8,10 @@ import { SubscriptionService } from '../../../src/service/subscription-service';
 import { deleteSaveSearch } from '../../../src/service/saved_search_service';
 import { getUnsubscribeReferenceFromId } from '../../../src/service/unsubscribe.service';
 import { render, screen } from '@testing-library/react';
+import { HEADERS } from '../../../src/utils/constants';
 
 jest.mock('next/router', () => ({
-  useRouter() {
-    return jest.fn();
-  },
+  useRouter: () => jest.fn(),
 }));
 
 jest.mock('../../../pages/service-error/index.page', () => ({
@@ -142,6 +141,11 @@ describe('getServerSideProps()', () => {
 const getContext = ({ id }) => ({
   query: {
     id,
+  },
+  req: {
+    headers: {
+      [HEADERS.CORRELATION_ID]: 'test-id',
+    },
   },
 });
 

@@ -11,8 +11,10 @@ import {
   getTypeFromNotificationIds,
   getUnsubscribeReferenceFromId,
 } from '../../src/service/unsubscribe.service';
+import { GetServerSidePropsContext } from 'next';
+import { logger } from '../../src/utils';
 
-export async function getServerSideProps({ query: { id = '' } = {} }) {
+export async function getServerSideProps({ query: { id = '' } = {}, req }) {
   let emailAddress: string,
     notificationId: NotificationKey,
     notificationType: keyof typeof UNSUBSCRIBE_HANDLER_MAP;
@@ -36,7 +38,7 @@ export async function getServerSideProps({ query: { id = '' } = {} }) {
 
     return { props: { error: false } };
   } catch (error: unknown) {
-    return handleServerSideError(error, {
+    return handleServerSideError(error, req, {
       id,
       emailAddress,
       notificationId,
@@ -47,6 +49,7 @@ export async function getServerSideProps({ query: { id = '' } = {} }) {
 
 const handleServerSideError = (
   error: unknown,
+  req: GetServerSidePropsContext['req'],
   {
     id,
     notificationId,
@@ -55,16 +58,14 @@ const handleServerSideError = (
   }: HandleServerSideErrorProps,
 ) => {
   if (!notificationId || !emailAddress) {
-    console.error(
-      `Failed to get user from notification with type: ${notificationType}, id: ${id}. Error: ${JSON.stringify(
-        error,
-      )}`,
+    logger.error(
+      `Failed to get user from notification with type: ${notificationType}, id: ${id}`,
+      logger.utils.addErrorInfo(error, req),
     );
   } else {
-    console.error(
-      `Failed to unsubscribe from notification id: ${notificationId}, with email: ${emailAddress}. Error: ${JSON.stringify(
-        error,
-      )}`,
+    logger.error(
+      `Failed to unsubscribe from notification id: ${notificationId}, with email: ${emailAddress}`,
+      logger.utils.addErrorInfo(error, req),
     );
   }
 
