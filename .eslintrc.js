@@ -6,8 +6,6 @@ module.exports = {
     es6: true,
   },
   globals: {
-    cy: true,
-    cypress: true,
     after: true,
   },
   overrides: [

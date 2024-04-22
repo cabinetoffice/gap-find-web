@@ -33,4 +33,3 @@ Please attach screenshots of the change if it is a UI change:
 - [ ] I have performed a self-review of my code.
 - [ ] I have commented my code in hard-to-understand areas.
 - [ ] I have made corresponding changes to the documentation where applicable.
-- [ ] I have ran cypress tests and they all pass locally.
