@@ -6,8 +6,6 @@ module.exports = {
     es6: true,
   },
   globals: {
-    cy: true,
-    cypress: true,
     after: true,
   },
   overrides: [
@@ -24,6 +22,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/no-explicit-any': 'warn',
+        '@next/next/no-server-import-in-page': 'off',
         // Following ruleset allows us to use underscore as a marker for unused variables without tripping ESLint warnings
         'no-unused-vars': 'off', // must disable the base rule as it can report incorrect errors
         '@typescript-eslint/no-unused-vars': [

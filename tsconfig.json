@@ -16,5 +16,5 @@
     "jsx": "preserve"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/lib/ie11_nodelist_polyfill.js"],
-  "exclude": ["node_modules", "./cypress.config.ts"]
+  "exclude": ["node_modules"]
 }

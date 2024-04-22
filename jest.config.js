@@ -13,7 +13,7 @@ const customJestConfig = {
   moduleDirectories: ['node_modules', '<rootDir>/'],
   setupFilesAfterEnv: ['<rootDir>/setupTestEnv.js'],
   testEnvironment: 'jest-environment-jsdom',
-  testPathIgnorePatterns: ['<rootDir>/cypress/', '.data.js'],
+  testPathIgnorePatterns: ['.data.js'],
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest',
   },
