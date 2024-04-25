@@ -28,8 +28,8 @@ const mockGrant = {
   grantMinimumAwardDisplay: '£500',
   grantMaximumAwardDisplay: '£10,000',
   grantTotalAwardDisplay: '£100 million',
-  grantApplicationOpenDate: '2022-02-03T00:01+00:00',
-  grantApplicationCloseDate: '2022-04-03T00:01+00:00',
+  grantApplicationOpenDate: '2022-02-03T00:02+00:00',
+  grantApplicationCloseDate: '2022-04-03T00:02+00:00',
 };
 
 const mockFilters = [
@@ -73,6 +73,44 @@ const component = (
 const invalidFilterComponent = (
   <BrowseGrants
     searchResult={[mockGrant]}
+    searchTerm="search"
+    searchHeading="Search grants"
+    filters={mockFilters}
+    errors={[{ field: 'datepicker', error: 'Test' }]}
+    filterObj={{ errors: [{ field: 'datepicker', error: 'Test' }] }}
+    totalGrants={1}
+    query={{}}
+  />
+);
+
+const midnightGrantComponent = (
+  <BrowseGrants
+    searchResult={[
+      {
+        ...mockGrant,
+        grantApplicationOpenDate: '2022-02-03T00:00+00:00',
+        grantApplicationCloseDate: '2022-04-03T00:00+00:00',
+      },
+    ]}
+    searchTerm="search"
+    searchHeading="Search grants"
+    filters={mockFilters}
+    errors={[{ field: 'datepicker', error: 'Test' }]}
+    filterObj={{ errors: [{ field: 'datepicker', error: 'Test' }] }}
+    totalGrants={1}
+    query={{}}
+  />
+);
+
+const middayGrantComponent = (
+  <BrowseGrants
+    searchResult={[
+      {
+        ...mockGrant,
+        grantApplicationOpenDate: '2022-02-03T12:00+00:00',
+        grantApplicationCloseDate: '2022-04-03T12:00+00:00',
+      },
+    ]}
     searchTerm="search"
     searchHeading="Search grants"
     filters={mockFilters}
@@ -171,7 +209,7 @@ describe('Rendering the browse grants page', () => {
     expect(screen.getByText('£100 million')).toBeDefined();
   });
 
-  it('Should render grant opening date', () => {
+  it('Should render grant opening date without a suffix', () => {
     renderWithRouter(component);
     expect(
       screen.getByText((content, element) => {
@@ -180,10 +218,10 @@ describe('Rendering the browse grants page', () => {
         );
       }),
     ).toBeDefined();
-    expect(screen.getByText('3 February 2022, 12:01am')).toBeDefined();
+    expect(screen.getByText('3 February 2022, 12:02am')).toBeDefined();
   });
 
-  it('Should render grant closing date', () => {
+  it('Should render grant closing date without a suffix', () => {
     renderWithRouter(component);
     expect(
       screen.getByText((content, element) => {
@@ -192,7 +230,63 @@ describe('Rendering the browse grants page', () => {
         );
       }),
     ).toBeDefined();
-    expect(screen.getByText('3 April 2022, 12:01am')).toBeDefined();
+    expect(screen.getByText('3 April 2022, 12:02am')).toBeDefined();
+  });
+
+  it('Should render grant opening date with (Midnight)', () => {
+    renderWithRouter(midnightGrantComponent);
+    expect(
+      screen.getByText((content, element) => {
+        return (
+          element.tagName.toLowerCase() === 'dt' && content === 'Opening date'
+        );
+      }),
+    ).toBeDefined();
+    const date = screen.getByText('3 February 2022, 12:01am');
+    expect(date).toBeDefined();
+    expect(date.parentElement.textContent).toContain('(Midnight)');
+  });
+
+  it('Should render grant closing date with (Midnight)', () => {
+    renderWithRouter(midnightGrantComponent);
+    expect(
+      screen.getByText((content, element) => {
+        return (
+          element.tagName.toLowerCase() === 'dt' && content === 'Closing date'
+        );
+      }),
+    ).toBeDefined();
+    const date = screen.getByText('2 April 2022, 11:59pm');
+    expect(date).toBeDefined();
+    expect(date.parentElement.textContent).toContain('(Midnight)');
+  });
+
+  it('Should render grant opening date with (Midday)', () => {
+    renderWithRouter(middayGrantComponent);
+    expect(
+      screen.getByText((content, element) => {
+        return (
+          element.tagName.toLowerCase() === 'dt' && content === 'Opening date'
+        );
+      }),
+    ).toBeDefined();
+    const date = screen.getByText('3 February 2022, 12:00pm');
+    expect(date).toBeDefined();
+    expect(date.parentElement.textContent).toContain('(Midday)');
+  });
+
+  it('Should render grant closing date with (Midday)', () => {
+    renderWithRouter(middayGrantComponent);
+    expect(
+      screen.getByText((content, element) => {
+        return (
+          element.tagName.toLowerCase() === 'dt' && content === 'Closing date'
+        );
+      }),
+    ).toBeDefined();
+    const date = screen.getByText('3 April 2022, 12:00pm');
+    expect(date).toBeDefined();
+    expect(date.parentElement.textContent).toContain('(Midday)');
   });
 
   it('Should render a label for the search form', () => {

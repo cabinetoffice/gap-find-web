@@ -15,7 +15,8 @@ const requestInterceptor = (request: InternalAxiosRequestConfig) => {
 };
 
 const responseInterceptor = (response: AxiosResponse) => {
-  logger.http('Incoming response', response);
+  const { request: _, ...propertiesToLog } = response;
+  logger.http('Incoming response', propertiesToLog);
   return response;
 };
 

@@ -5,7 +5,7 @@ import moment from 'moment';
 import { adjustDateTimes } from '../../../utils/adjustDateTimes';
 
 export function GrantDetailsHeader({ grant }) {
-  const { adjustedOpenDate, adjustedCloseDate } = adjustDateTimes(
+  const { adjustedOpenDate, adjustedCloseDate, timeSuffixes } = adjustDateTimes(
     grant.grantApplicationOpenDate,
     grant.grantApplicationCloseDate,
   );
@@ -28,6 +28,7 @@ export function GrantDetailsHeader({ grant }) {
             <Moment format="D MMMM YYYY, h:mma" tz="GMT">
               {moment.utc(adjustedOpenDate)}
             </Moment>
+            {timeSuffixes.open}
           </span>
         </li>
         <li>
@@ -36,6 +37,7 @@ export function GrantDetailsHeader({ grant }) {
             <Moment format="D MMMM YYYY, h:mma" tz="GMT">
               {moment.utc(adjustedCloseDate)}
             </Moment>
+            {timeSuffixes.close}
           </span>
         </li>
       </ul>

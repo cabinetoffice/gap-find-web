@@ -8,8 +8,8 @@
   typeof exports === 'object' && typeof module !== 'undefined'
     ? factory(exports)
     : typeof define === 'function' && define.amd
-    ? define('DatePickerDialog', ['exports'], factory)
-    : factory((global.DatePickerDialog = {}));
+      ? define('DatePickerDialog', ['exports'], factory)
+      : factory((global.DatePickerDialog = {}));
 })(this, function (exports) {
   'use strict';
 

@@ -32,4 +32,10 @@ ignore:
         Dev dependency - upgrade requires migration to contentful 10.4.0
       expires: 2024-04-01T15:43:45.894Z
       created: 2024-02-07T15:43:45.901Z
+  SNYK-JS-FOLLOWREDIRECTS-6444610:
+    - '*': 
+      reason: >-
+        Subdependency of Contenful - no direct upgrade path
+      expires: 2024-08-12T13:23:00.901Z
+      created: 2024-05-12T13:23:00.901Z
 patch: {}

@@ -1,25 +1,29 @@
+import { HEADERS } from '../../../src/utils/constants';
 import handler from './migrate';
 import axios from 'axios';
 
 jest.mock('axios');
+
+const req = {
+  headers: {
+    [HEADERS.CORRELATION_ID]: 'test-id',
+  },
+  body: {
+    email: 'test-user@gov.uk',
+    sub: 'urn:fdc:gov.uk:2022:ibd2rz2CgyidndXyq2zyfcnQwyYI57h34TyuGt87Uhs',
+  },
+};
+
+const res = {
+  status: jest.fn(() => res),
+  json: jest.fn(() => res),
+};
 
 describe('handler', () => {
   it('should make request to backend host and successfully migrate a user', async () => {
     const axiosResponse = { data: { isExistingUser: true, user: {} } };
 
     axios.mockResolvedValue(axiosResponse);
-
-    const req = {
-      body: {
-        email: 'test-user@gov.uk',
-        sub: 'urn:fdc:gov.uk:2022:ibd2rz2CgyidndXyq2zyfcnQwyYI57h34TyuGt87Uhs',
-      },
-    };
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(() => res),
-    };
 
     await handler(req, res);
 
@@ -43,19 +47,9 @@ describe('handler', () => {
       data: { message: 'User Unsuccessfully migrated' },
     };
 
-    axios.mockRejectedValue(axiosError);
-
-    const req = {
-      body: {
-        email: 'test-user@gov.uk',
-        sub: 'urn:fdc:gov.uk:2022:ibd2rz2CgyidndXyq2zyfcnQwyYI57h34TyuGt87Uhs',
-      },
-    };
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(() => res),
-    };
+    axios.mockImplementation(() => {
+      throw axiosError;
+    });
 
     await handler(req, res);
 
