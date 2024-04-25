@@ -1,12 +1,23 @@
 import { isIE } from 'react-device-detect';
 import Link from 'next/link';
 import Image from 'next/image';
+import { skipToMainContent } from '../../../utils/skipToMainContent';
 import { useAppContext } from '../../../../pages/_app';
 
 export const GovUKHeader = ({ isSuperAdmin }) => {
   const { adminUrl } = useAppContext();
   return (
     <header className="govuk-header " role="banner" data-module="govuk-header">
+      <Link href="#main-content">
+        <a
+          className="govuk-skip-link"
+          data-module="govuk-skip-link"
+          data-cy="cySkipLink"
+          onClick={skipToMainContent}
+        >
+          Skip to main content
+        </a>
+      </Link>
       <div className="govuk-header__container govuk-width-container">
         <div className="govuk-header__logo">
           <Link href="https://www.gov.uk/" legacyBehavior>
