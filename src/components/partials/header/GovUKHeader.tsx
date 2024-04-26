@@ -8,7 +8,7 @@ export const GovUKHeader = ({ isSuperAdmin }) => {
   const { adminUrl } = useAppContext();
   return (
     <header className="govuk-header " role="banner" data-module="govuk-header">
-      <Link href="#main-content">
+      <Link href="#main-content" legacyBehavior>
         <a
           className="govuk-skip-link"
           data-module="govuk-skip-link"
