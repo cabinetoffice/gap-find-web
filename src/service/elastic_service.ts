@@ -124,6 +124,7 @@ export class ElasticSearchService {
           ELASTIC_INDEX_FIELDS.summary,
           ELASTIC_INDEX_FIELDS.eligibility,
           ELASTIC_INDEX_FIELDS.shortDescription,
+          ELASTIC_INDEX_FIELDS.grantFunder,
         ],
       },
     });

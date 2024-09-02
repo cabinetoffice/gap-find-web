@@ -45,7 +45,7 @@ jobs:
         id: nvm
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
           cache: 'yarn'
@@ -55,7 +55,7 @@ jobs:
 
       # Based on steps described here - https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
       - name: Next cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ github.workspace }}/.next/cache
           key: next-cache-${{ steps.yarn-lock-hash.outputs.name }}-${{ steps.source-file-hash.outputs.name  }}
@@ -86,13 +86,13 @@ jobs:
       docker-image-name: ${{ steps.docker-image-name.outputs.name }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # Fetch all commits since we use the total commit count to determine the build version
           fetch-depth: 0
 
       - name: Setup AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: github-gap-find-web
@@ -128,7 +128,7 @@ jobs:
         run: docker save --output ${{ steps.docker-image-name.outputs.name }}.tar $ECR_REGISTRY/find-a-grant-client:${{ env.BUILD_VERSION }}
 
       - name: Upload Docker image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.docker-image-name.outputs.name }}
           path: ${{ steps.docker-image-name.outputs.name }}.tar
@@ -147,13 +147,13 @@ jobs:
         contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # Fetch all commits since we use the total commit count to determine the build version
           fetch-depth: 0
 
       - name: Setup AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: github-gap-find-web
@@ -170,7 +170,7 @@ jobs:
           echo BUILD_VERSION is ${{ env.BUILD_VERSION }}
 
       - name: Download Docker image
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.docker-image-name }}
 
