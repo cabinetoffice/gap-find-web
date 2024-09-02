@@ -86,13 +86,13 @@ jobs:
       docker-image-name: ${{ steps.docker-image-name.outputs.name }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # Fetch all commits since we use the total commit count to determine the build version
           fetch-depth: 0
 
       - name: Setup AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: github-gap-find-web
@@ -128,7 +128,7 @@ jobs:
         run: docker save --output ${{ steps.docker-image-name.outputs.name }}.tar $ECR_REGISTRY/find-a-grant-client:${{ env.BUILD_VERSION }}
 
       - name: Upload Docker image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.docker-image-name.outputs.name }}
           path: ${{ steps.docker-image-name.outputs.name }}.tar
@@ -147,7 +147,7 @@ jobs:
         contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # Fetch all commits since we use the total commit count to determine the build version
           fetch-depth: 0
