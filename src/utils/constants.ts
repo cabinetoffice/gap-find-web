@@ -99,6 +99,7 @@ export const URL_ACTION_MESSAGES = new Map([
 
 export const ELASTIC_INDEX_FIELDS = {
   grantName: 'fields.grantName.en-US',
+  grantFunder: 'fields.grantFunder.en-US',
   shortDescription: 'fields.grantShortDescription.en-US',
   summary: 'fields.grantSummaryTab.en-US.content.content.*',
   eligibility: 'fields.grantEligibilityTab.en-US.content.content.*',
