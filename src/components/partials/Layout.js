@@ -6,7 +6,11 @@ import { useAuth } from '../../../pages/_app';
 
 const Layout = ({ children, isBasicHeader = false }) => {
   const { isUserLoggedIn } = useAuth();
-  const clx = ['js-enabled', 'govuk-template__body'];
+  const clx = [
+    'js-enabled',
+    'govuk-template__body',
+    'govuk-template--rebranded',
+  ];
   useEffect(() => {
     document.querySelector('body').classList.add(...clx);
   });
