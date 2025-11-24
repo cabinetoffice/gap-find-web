@@ -16,10 +16,25 @@ const Layout = ({ children, isBasicHeader = false }) => {
   });
 
   useEffect(() => {
-    const GOVUKFrontend = window.GOVUKFrontend;
-    if (typeof GOVUKFrontend !== 'undefined') {
-      GOVUKFrontend?.initAll();
-    }
+    // Initialize GOV.UK Frontend components
+    const initGOVUKFrontend = () => {
+      const GOVUKFrontend = window.GOVUKFrontend;
+      if (typeof GOVUKFrontend !== 'undefined') {
+        GOVUKFrontend?.initAll();
+      }
+    };
+
+    // Wait for the script to load and then initialize
+    const checkAndInit = () => {
+      if (window.GOVUKFrontend) {
+        initGOVUKFrontend();
+      } else {
+        // Retry after a short delay
+        setTimeout(checkAndInit, 100);
+      }
+    };
+
+    checkAndInit();
   }, []);
 
   return (

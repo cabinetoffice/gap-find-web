@@ -55,7 +55,9 @@ const MyApp = ({
 
   return (
     <>
-      <Script src="/javascript/govuk.js" strategy="beforeInteractive" />
+      
+      <Script src="/javascript/govuk-frontend.min.js" strategy="beforeInteractive"/>
+      {/* <Script src="/javascript/govuk.js" strategy="beforeInteractive"/> */}
       <AppContext.Provider value={{ applicantUrl, adminUrl, oneLoginEnabled }}>
         <AuthContext.Provider value={{ isUserLoggedIn, isSuperAdmin, roles }}>
           <Component {...pageProps} />

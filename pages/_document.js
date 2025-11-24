@@ -30,9 +30,15 @@ export default function Document() {
         <meta
           property="og:image"
           content="/assets/rebrand/images/govuk-opengraph-image.png"
-        />
+        />        
       </Head>
       <body>
+        {/* GOV.UK Frontend support detection script */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');`,
+          }}
+        />
         <Main />
         <NextScript />
       </body>

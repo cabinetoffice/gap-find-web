@@ -15,7 +15,7 @@ export function SearchFilterContainer({ filters, filterObj, query }) {
       '[data-module="gap-accordion"]',
     );
     if ($filterAccordion && window.GOVUKFrontend !== undefined) {
-      new window.GOVUKFrontend.Accordion($filterAccordion).init();
+      // new window.GOVUKFrontend.Accordion($filterAccordion).init();
     }
   }, []);
 
