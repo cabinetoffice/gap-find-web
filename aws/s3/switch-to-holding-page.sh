@@ -1,9 +1,31 @@
 #!/bin/bash
 set -e
 
-ENVIRONMENT="qa"
-DIST_ID="E2YMATUXLSFFJV"
-HOLDING_PAGE_ORIGIN="gap-qa-holding-page.s3-website.eu-west-2.amazonaws.com"
+# Prompt for environment
+while true; do
+  read -rp "Which environment do you want to switch to the holding page? (qa/prod): " ENVIRONMENT
+  case "$ENVIRONMENT" in
+    qa|prod) break ;;
+    *) echo "Invalid option. Please enter 'qa' or 'prod'." ;;
+  esac
+done
+
+# Set environment-specific values
+if [ "$ENVIRONMENT" = "prod" ]; then
+  DIST_ID="E3GJQ1JB1DFNU4"
+  HOLDING_PAGE_ORIGIN="gap-prod-holding-page.s3-website.eu-west-2.amazonaws.com"
+else
+  DIST_ID="E2YMATUXLSFFJV"
+  HOLDING_PAGE_ORIGIN="gap-qa-holding-page.s3-website.eu-west-2.amazonaws.com"
+fi
+
+# Confirm before proceeding
+echo ""
+read -rp "You are about to switch the $ENVIRONMENT environment to the holding page. Are you sure? (y/n): " CONFIRM
+if [ "$CONFIRM" != "y" ]; then
+  echo "Aborted."
+  exit 0
+fi
 
 echo "Fetching current distribution config..."
 aws cloudfront get-distribution-config --id "$DIST_ID" > /tmp/dist-current.json
@@ -16,7 +38,7 @@ ETAG=$(python3 -c "import json,sys; print(json.load(sys.stdin)['ETag'])" < /tmp/
 echo "ETag: $ETAG"
 
 echo "Updating cache behaviors to point to holding page..."
-python3 - <<'EOF'
+python3 - <<EOF
 import json
 
 with open('/tmp/dist-current.json') as f:
@@ -24,7 +46,7 @@ with open('/tmp/dist-current.json') as f:
 
 config = data['DistributionConfig']
 
-holding_page_origin = "gap-qa-holding-page.s3-website.eu-west-2.amazonaws.com"
+holding_page_origin = "$HOLDING_PAGE_ORIGIN"
 holding_page_paths = {
     "/",
     "/*",
@@ -39,7 +61,6 @@ for behavior in config['CacheBehaviors']['Items']:
     if behavior['PathPattern'] in holding_page_paths:
         print(f"  Switching {behavior['PathPattern']} -> holding page")
         behavior['TargetOriginId'] = holding_page_origin
-        # Holding page is static, only needs GET/HEAD/OPTIONS
         behavior['AllowedMethods'] = {
             "Quantity": 3,
             "Items": ["HEAD", "GET", "OPTIONS"],
@@ -56,7 +77,7 @@ print("Done.")
 EOF
 
 echo "Adding 404 custom error response to serve holding page index..."
-python3 - <<'EOF'
+python3 - <<'PYEOF'
 import json
 
 with open('/tmp/dist-updated.json') as f:
@@ -84,7 +105,7 @@ with open('/tmp/dist-updated.json', 'w') as f:
     json.dump(config, f, indent=2)
 
 print("Done.")
-EOF
+PYEOF
 
 echo "Applying updated distribution config..."
 aws cloudfront update-distribution \
@@ -104,4 +125,4 @@ INVALIDATION=$(aws cloudfront create-invalidation \
 echo "Invalidation created: $INVALIDATION"
 
 echo ""
-echo "Done. Holding page is now live."
+echo "Done. Holding page is now live for $ENVIRONMENT."

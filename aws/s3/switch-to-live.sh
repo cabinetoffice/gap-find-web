@@ -1,9 +1,33 @@
 #!/bin/bash
 set -e
 
-DIST_ID="E2YMATUXLSFFJV"
-FIND_LB_ORIGIN="find-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
-APPLY_LB_ORIGIN="apply-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
+# Prompt for environment
+while true; do
+  read -rp "Which environment do you want to restore to live? (qa/prod): " ENVIRONMENT
+  case "$ENVIRONMENT" in
+    qa|prod) break ;;
+    *) echo "Invalid option. Please enter 'qa' or 'prod'." ;;
+  esac
+done
+
+# Set environment-specific values
+if [ "$ENVIRONMENT" = "prod" ]; then
+  DIST_ID="E3GJQ1JB1DFNU4"
+  FIND_LB_ORIGIN="find-lb.find-a-grant-support.service.cabinetoffice.gov.uk"
+  APPLY_LB_ORIGIN="apply-lb.find-a-grant-support.service.cabinetoffice.gov.uk"
+else
+  DIST_ID="E2YMATUXLSFFJV"
+  FIND_LB_ORIGIN="find-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
+  APPLY_LB_ORIGIN="apply-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
+fi
+
+# Confirm before proceeding
+echo ""
+read -rp "You are about to restore the $ENVIRONMENT environment to live. Are you sure? (y/n): " CONFIRM
+if [ "$CONFIRM" != "y" ]; then
+  echo "Aborted."
+  exit 0
+fi
 
 echo "Fetching current distribution config..."
 aws cloudfront get-distribution-config --id "$DIST_ID" > /tmp/dist-current.json
@@ -16,11 +40,11 @@ ETAG=$(python3 -c "import json,sys; print(json.load(sys.stdin)['ETag'])" < /tmp/
 echo "ETag: $ETAG"
 
 echo "Restoring cache behaviors to live origins..."
-python3 - <<'EOF'
+python3 - <<EOF
 import json
 
-FIND_LB = "find-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
-APPLY_LB = "apply-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
+FIND_LB = "$FIND_LB_ORIGIN"
+APPLY_LB = "$APPLY_LB_ORIGIN"
 
 # Mapping of path -> (origin, allowed_methods_count)
 # 7 methods = full REST (admin/applicant pages), 3 methods = GET only (grants/find)
@@ -65,7 +89,7 @@ print("Done.")
 EOF
 
 echo "Removing holding page 404 custom error response..."
-python3 - <<'EOF'
+python3 - <<'PYEOF'
 import json
 
 with open('/tmp/dist-updated.json') as f:
@@ -85,7 +109,7 @@ with open('/tmp/dist-updated.json', 'w') as f:
     json.dump(config, f, indent=2)
 
 print("Done.")
-EOF
+PYEOF
 
 echo "Applying updated distribution config..."
 aws cloudfront update-distribution \
@@ -105,4 +129,4 @@ INVALIDATION=$(aws cloudfront create-invalidation \
 echo "Invalidation created: $INVALIDATION"
 
 echo ""
-echo "Done. Live site is restored."
+echo "Done. Live site is restored for $ENVIRONMENT."
