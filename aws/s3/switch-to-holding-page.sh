@@ -19,6 +19,17 @@ else
   HOLDING_PAGE_ORIGIN="gap-qa-holding-page.s3-website.eu-west-2.amazonaws.com"
 fi
 
+# Extra warning for prod
+if [ "$ENVIRONMENT" = "prod" ]; then
+  echo ""
+  echo "WARNING: You have selected the PRODUCTION environment. This will affect live users."
+  read -rp "Are you sure you want to continue? (y/n): " PROD_CONFIRM
+  if [ "$PROD_CONFIRM" != "y" ]; then
+    echo "Aborted."
+    exit 0
+  fi
+fi
+
 # Confirm before proceeding
 echo ""
 read -rp "You are about to switch the $ENVIRONMENT environment to the holding page. Are you sure? (y/n): " CONFIRM

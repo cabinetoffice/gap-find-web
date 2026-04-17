@@ -21,6 +21,17 @@ else
   APPLY_LB_ORIGIN="apply-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
 fi
 
+# Extra warning for prod
+if [ "$ENVIRONMENT" = "prod" ]; then
+  echo ""
+  echo "WARNING: You have selected the PRODUCTION environment. This will affect live users."
+  read -rp "Are you sure you want to continue? (y/n): " PROD_CONFIRM
+  if [ "$PROD_CONFIRM" != "y" ]; then
+    echo "Aborted."
+    exit 0
+  fi
+fi
+
 # Confirm before proceeding
 echo ""
 read -rp "You are about to restore the $ENVIRONMENT environment to live. Are you sure? (y/n): " CONFIRM
