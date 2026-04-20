@@ -6,7 +6,7 @@ SOURCE_HTML="$SCRIPT_DIR/holding-page/index.html"
 
 # Prompt for environment
 while true; do
-  read -rp "Which environment do you want to update the holding page for? (qa/prod): " ENVIRONMENT
+  read -rp "Which environment do you want to use? (qa/prod): " ENVIRONMENT
   case "$ENVIRONMENT" in
     qa|prod) break ;;
     *) echo "Invalid option. Please enter 'qa' or 'prod'." ;;

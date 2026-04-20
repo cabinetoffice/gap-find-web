@@ -3,7 +3,7 @@ set -e
 
 # Prompt for environment
 while true; do
-  read -rp "Which environment do you want to restore to live? (qa/prod): " ENVIRONMENT
+  read -rp "Which environment do you want to use? (qa/prod): " ENVIRONMENT
   case "$ENVIRONMENT" in
     qa|prod) break ;;
     *) echo "Invalid option. Please enter 'qa' or 'prod'." ;;
