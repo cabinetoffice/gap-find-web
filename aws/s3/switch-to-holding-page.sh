@@ -13,7 +13,7 @@ done
 # Set environment-specific values
 if [ "$ENVIRONMENT" = "prod" ]; then
   DIST_ID="E3GJQ1JB1DFNU4"
-  HOLDING_PAGE_ORIGIN="gap-prod-holding-page.s3-website.eu-west-2.amazonaws.com"
+  HOLDING_PAGE_ORIGIN="gap-prod-holding-page.s3.eu-west-2.amazonaws.com"
 else
   DIST_ID="E2YMATUXLSFFJV"
   HOLDING_PAGE_ORIGIN="gap-qa-holding-page.s3-website.eu-west-2.amazonaws.com"
