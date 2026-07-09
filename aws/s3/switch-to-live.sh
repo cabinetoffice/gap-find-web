@@ -1,30 +1,46 @@
 #!/bin/bash
 set -e
 
-# Prompt for environment
+# --- Select target distribution ---
+#   test / prod        = the primary (live) distribution for that environment - affects all users.
+#   test/prod + custom = any other distribution ID for that environment, e.g. a continuous-
+#                        deployment staging distribution reachable only via the aws-cf-cd-* test
+#                        header, so you can exercise this exact script with no impact on live users.
+echo "Select target:"
+echo "  1) test  (primary / live test distribution)"
+echo "  2) test with custom distribution ID (e.g. a test staging distribution)"
+echo "  3) prod  (primary / live prod distribution)"
+echo "  4) prod with custom distribution ID (e.g. a prod staging distribution)"
 while true; do
-  read -rp "Which environment do you want to use? (qa/prod): " ENVIRONMENT
-  case "$ENVIRONMENT" in
-    qa|prod) break ;;
-    *) echo "Invalid option. Please enter 'qa' or 'prod'." ;;
+  read -rp "Enter choice (1/2/3/4): " CHOICE
+  case "$CHOICE" in
+    1) ENVIRONMENT="qa";   DIST_ID="E2YMATUXLSFFJV"; TARGET_KIND="primary"; break ;;
+    2) ENVIRONMENT="qa";   TARGET_KIND="custom"
+       read -rp "Enter the distribution ID: " DIST_ID
+       if [ -z "$DIST_ID" ]; then echo "No distribution ID entered. Aborting."; exit 1; fi
+       break ;;
+    3) ENVIRONMENT="prod"; DIST_ID="E3GJQ1JB1DFNU4"; TARGET_KIND="primary"; break ;;
+    4) ENVIRONMENT="prod"; TARGET_KIND="custom"
+       read -rp "Enter the distribution ID: " DIST_ID
+       if [ -z "$DIST_ID" ]; then echo "No distribution ID entered. Aborting."; exit 1; fi
+       break ;;
+    *) echo "Invalid option. Please enter 1, 2, 3 or 4." ;;
   esac
 done
 
-# Set environment-specific values
+# Set the live origins for the chosen environment
 if [ "$ENVIRONMENT" = "prod" ]; then
-  DIST_ID="E3GJQ1JB1DFNU4"
   FIND_LB_ORIGIN="find-lb.find-a-grant-support.service.cabinetoffice.gov.uk"
   APPLY_LB_ORIGIN="apply-lb.find-a-grant-support.service.cabinetoffice.gov.uk"
 else
-  DIST_ID="E2YMATUXLSFFJV"
   FIND_LB_ORIGIN="find-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
   APPLY_LB_ORIGIN="apply-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
 fi
 
-# Extra warning for prod
-if [ "$ENVIRONMENT" = "prod" ]; then
+# Extra warning only when this will affect live users
+if [ "$TARGET_KIND" = "primary" ] && [ "$ENVIRONMENT" = "prod" ]; then
   echo ""
-  echo "WARNING: You have selected the PRODUCTION environment. This will affect live users."
+  echo "WARNING: You are targeting the PRIMARY PRODUCTION distribution. This will affect live users."
   read -rp "Are you sure you want to continue? (y/n): " PROD_CONFIRM
   if [ "$PROD_CONFIRM" != "y" ]; then
     echo "Aborted."
@@ -34,7 +50,11 @@ fi
 
 # Confirm before proceeding
 echo ""
-read -rp "You are about to restore the $ENVIRONMENT environment to live. Are you sure? (y/n): " CONFIRM
+echo "About to restore to live origins:"
+echo "  Target          : $TARGET_KIND ($ENVIRONMENT)"
+echo "  Distribution ID : $DIST_ID"
+echo ""
+read -rp "Are you sure? (y/n): " CONFIRM
 if [ "$CONFIRM" != "y" ]; then
   echo "Aborted."
   exit 0
@@ -54,8 +74,29 @@ echo "Restoring cache behaviors to live origins..."
 python3 - <<EOF
 import json
 
-FIND_LB = "$FIND_LB_ORIGIN"
-APPLY_LB = "$APPLY_LB_ORIGIN"
+FIND_LB_DOMAIN = "$FIND_LB_ORIGIN"
+APPLY_LB_DOMAIN = "$APPLY_LB_ORIGIN"
+
+with open('/tmp/dist-current.json') as f:
+    data = json.load(f)
+
+config = data['DistributionConfig']
+
+# A CloudFront origin's Id can differ from its DomainName, so resolve the real Ids
+# from the distribution rather than assuming Id == domain.
+def origin_id_for(domain):
+    origin_id = next(
+        (o['Id'] for o in config['Origins']['Items'] if o['DomainName'] == domain),
+        None
+    )
+    if origin_id is None:
+        raise SystemExit(f"ERROR: no origin with domain {domain} on this distribution")
+    return origin_id
+
+FIND_LB = origin_id_for(FIND_LB_DOMAIN)
+APPLY_LB = origin_id_for(APPLY_LB_DOMAIN)
+print(f"find origin id:  {FIND_LB}")
+print(f"apply origin id: {APPLY_LB}")
 
 # Mapping of path -> (origin, allowed_methods_count)
 # 7 methods = full REST (admin/applicant pages), 3 methods = GET only (grants/find)
@@ -79,11 +120,6 @@ get_only_methods = {
     "Items": ["HEAD", "GET", "OPTIONS"],
     "CachedMethods": {"Quantity": 2, "Items": ["HEAD", "GET"]}
 }
-
-with open('/tmp/dist-current.json') as f:
-    data = json.load(f)
-
-config = data['DistributionConfig']
 
 for behavior in config['CacheBehaviors']['Items']:
     path = behavior['PathPattern']
@@ -140,4 +176,4 @@ INVALIDATION=$(aws cloudfront create-invalidation \
 echo "Invalidation created: $INVALIDATION"
 
 echo ""
-echo "Done. Live site is restored for $ENVIRONMENT."
+echo "Done. Live site is restored on the $TARGET_KIND $ENVIRONMENT distribution ($DIST_ID)."

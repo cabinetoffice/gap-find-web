@@ -1,28 +1,44 @@
 #!/bin/bash
 set -e
 
-# Prompt for environment
+# --- Select target distribution ---
+#   test / prod        = the primary (live) distribution for that environment - affects all users.
+#   test/prod + custom = any other distribution ID for that environment, e.g. a continuous-
+#                        deployment staging distribution reachable only via the aws-cf-cd-* test
+#                        header, so you can exercise this exact script with no impact on live users.
+echo "Select target:"
+echo "  1) test  (primary / live test distribution)"
+echo "  2) test with custom distribution ID (e.g. a test staging distribution)"
+echo "  3) prod  (primary / live prod distribution)"
+echo "  4) prod with custom distribution ID (e.g. a prod staging distribution)"
 while true; do
-  read -rp "Which environment do you want to use? (qa/prod): " ENVIRONMENT
-  case "$ENVIRONMENT" in
-    qa|prod) break ;;
-    *) echo "Invalid option. Please enter 'qa' or 'prod'." ;;
+  read -rp "Enter choice (1/2/3/4): " CHOICE
+  case "$CHOICE" in
+    1) ENVIRONMENT="qa";   DIST_ID="E2YMATUXLSFFJV"; TARGET_KIND="primary"; break ;;
+    2) ENVIRONMENT="qa";   TARGET_KIND="custom"
+       read -rp "Enter the distribution ID: " DIST_ID
+       if [ -z "$DIST_ID" ]; then echo "No distribution ID entered. Aborting."; exit 1; fi
+       break ;;
+    3) ENVIRONMENT="prod"; DIST_ID="E3GJQ1JB1DFNU4"; TARGET_KIND="primary"; break ;;
+    4) ENVIRONMENT="prod"; TARGET_KIND="custom"
+       read -rp "Enter the distribution ID: " DIST_ID
+       if [ -z "$DIST_ID" ]; then echo "No distribution ID entered. Aborting."; exit 1; fi
+       break ;;
+    *) echo "Invalid option. Please enter 1, 2, 3 or 4." ;;
   esac
 done
 
-# Set environment-specific values
+# Set the holding-page origin for the chosen environment
 if [ "$ENVIRONMENT" = "prod" ]; then
-  DIST_ID="E3GJQ1JB1DFNU4"
   HOLDING_PAGE_ORIGIN="gap-prod-holding-page.s3-website.eu-west-2.amazonaws.com"
 else
-  DIST_ID="E2YMATUXLSFFJV"
   HOLDING_PAGE_ORIGIN="gap-qa-holding-page.s3-website.eu-west-2.amazonaws.com"
 fi
 
-# Extra warning for prod
-if [ "$ENVIRONMENT" = "prod" ]; then
+# Extra warning only when this will affect live users
+if [ "$TARGET_KIND" = "primary" ] && [ "$ENVIRONMENT" = "prod" ]; then
   echo ""
-  echo "WARNING: You have selected the PRODUCTION environment. This will affect live users."
+  echo "WARNING: You are targeting the PRIMARY PRODUCTION distribution. This will affect live users."
   read -rp "Are you sure you want to continue? (y/n): " PROD_CONFIRM
   if [ "$PROD_CONFIRM" != "y" ]; then
     echo "Aborted."
@@ -32,7 +48,12 @@ fi
 
 # Confirm before proceeding
 echo ""
-read -rp "You are about to switch the $ENVIRONMENT environment to the holding page. Are you sure? (y/n): " CONFIRM
+echo "About to switch to the holding page:"
+echo "  Target          : $TARGET_KIND ($ENVIRONMENT)"
+echo "  Distribution ID : $DIST_ID"
+echo "  Holding origin  : $HOLDING_PAGE_ORIGIN"
+echo ""
+read -rp "Are you sure? (y/n): " CONFIRM
 if [ "$CONFIRM" != "y" ]; then
   echo "Aborted."
   exit 0
@@ -57,7 +78,18 @@ with open('/tmp/dist-current.json') as f:
 
 config = data['DistributionConfig']
 
-holding_page_origin = "$HOLDING_PAGE_ORIGIN"
+# The holding page is identified by its S3 website DomainName. A CloudFront origin's
+# Id can differ from its DomainName (it does on prod: Id uses .s3. but the domain uses
+# .s3-website.), so resolve the real Id here rather than assuming Id == domain.
+holding_page_domain = "$HOLDING_PAGE_ORIGIN"
+holding_page_origin = next(
+    (o['Id'] for o in config['Origins']['Items'] if o['DomainName'] == holding_page_domain),
+    None
+)
+if holding_page_origin is None:
+    raise SystemExit(f"ERROR: no origin with domain {holding_page_domain} on this distribution")
+print(f"Holding page origin id: {holding_page_origin}")
+
 holding_page_paths = {
     "/",
     "/*",
@@ -136,4 +168,4 @@ INVALIDATION=$(aws cloudfront create-invalidation \
 echo "Invalidation created: $INVALIDATION"
 
 echo ""
-echo "Done. Holding page is now live for $ENVIRONMENT."
+echo "Done. Holding page is now live on the $TARGET_KIND $ENVIRONMENT distribution ($DIST_ID)."
