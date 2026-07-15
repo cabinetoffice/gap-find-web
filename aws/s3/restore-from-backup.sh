@@ -1,33 +1,6 @@
 #!/bin/bash
 set -e
 
-# Prompt for environment
-while true; do
-  read -rp "Which environment do you want to use? (qa/prod): " ENVIRONMENT
-  case "$ENVIRONMENT" in
-    qa|prod) break ;;
-    *) echo "Invalid option. Please enter 'qa' or 'prod'." ;;
-  esac
-done
-
-# Set environment-specific values
-if [ "$ENVIRONMENT" = "prod" ]; then
-  DIST_ID="E3GJQ1JB1DFNU4"
-else
-  DIST_ID="E2YMATUXLSFFJV"
-fi
-
-# Extra warning for prod
-if [ "$ENVIRONMENT" = "prod" ]; then
-  echo ""
-  echo "WARNING: You have selected the PRODUCTION environment. This will affect live users."
-  read -rp "Are you sure you want to continue? (y/n): " PROD_CONFIRM
-  if [ "$PROD_CONFIRM" != "y" ]; then
-    echo "Aborted."
-    exit 0
-  fi
-fi
-
 if [ -z "$1" ]; then
   echo "Usage: ./restore-from-backup.sh <backup-file>"
   echo ""
@@ -43,8 +16,17 @@ if [ ! -f "$BACKUP_FILE" ]; then
   exit 1
 fi
 
+# Distribution ID is never hardcoded - enter it manually
+read -rp "Enter the CloudFront distribution ID to restore: " DIST_ID
+if [ -z "$DIST_ID" ]; then
+  echo "No distribution ID entered. Aborting."
+  exit 1
+fi
+
 echo ""
-read -rp "You are about to restore from backup in the $ENVIRONMENT environment. Are you sure? (y/n): " CONFIRM
+echo "About to restore distribution $DIST_ID from backup $BACKUP_FILE."
+echo "If this is the live/primary distribution, this will affect all users."
+read -rp "Are you sure you want to continue? (y/n): " CONFIRM
 if [ "$CONFIRM" != "y" ]; then
   echo "Aborted."
   exit 0
@@ -81,4 +63,4 @@ aws cloudfront wait invalidation-completed \
   --id "$INVALIDATION"
 
 echo ""
-echo "Done. $ENVIRONMENT distribution restored from $BACKUP_FILE."
+echo "Done. Distribution $DIST_ID restored from $BACKUP_FILE."

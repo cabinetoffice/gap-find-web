@@ -1,40 +1,52 @@
 #!/bin/bash
 set -e
 
-# Prompt for environment
+# --- Select environment ---
+# The environment only determines which live load balancer origins the behaviours point at.
+# The distribution ID is always entered manually (never hardcoded), so this script can
+# target either a primary distribution or a continuous-deployment staging distribution.
+echo "Select environment:"
+echo "  1) test"
+echo "  2) prod"
 while true; do
-  read -rp "Which environment do you want to use? (qa/prod): " ENVIRONMENT
-  case "$ENVIRONMENT" in
-    qa|prod) break ;;
-    *) echo "Invalid option. Please enter 'qa' or 'prod'." ;;
+  read -rp "Enter choice (1/2): " CHOICE
+  case "$CHOICE" in
+    1) ENVIRONMENT="qa";   break ;;
+    2) ENVIRONMENT="prod"; break ;;
+    *) echo "Invalid option. Please enter 1 or 2." ;;
   esac
 done
 
-# Set environment-specific values
+# Distribution ID is never hardcoded - enter the primary or staging distribution ID
+read -rp "Enter the CloudFront distribution ID: " DIST_ID
+if [ -z "$DIST_ID" ]; then
+  echo "No distribution ID entered. Aborting."
+  exit 1
+fi
+
+# Set the live origins for the chosen environment
 if [ "$ENVIRONMENT" = "prod" ]; then
-  DIST_ID="E3GJQ1JB1DFNU4"
   FIND_LB_ORIGIN="find-lb.find-a-grant-support.service.cabinetoffice.gov.uk"
   APPLY_LB_ORIGIN="apply-lb.find-a-grant-support.service.cabinetoffice.gov.uk"
 else
-  DIST_ID="E2YMATUXLSFFJV"
   FIND_LB_ORIGIN="find-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
   APPLY_LB_ORIGIN="apply-lb.find-a-grant-support-test.service.cabinetoffice.gov.uk"
 fi
 
-# Extra warning for prod
+# Extra caution for production distributions
 if [ "$ENVIRONMENT" = "prod" ]; then
   echo ""
-  echo "WARNING: You have selected the PRODUCTION environment. This will affect live users."
-  read -rp "Are you sure you want to continue? (y/n): " PROD_CONFIRM
-  if [ "$PROD_CONFIRM" != "y" ]; then
-    echo "Aborted."
-    exit 0
-  fi
+  echo "WARNING: You have selected a PRODUCTION distribution ($DIST_ID)."
+  echo "If this is the live/primary distribution, this will affect all users."
 fi
 
 # Confirm before proceeding
 echo ""
-read -rp "You are about to restore the $ENVIRONMENT environment to live. Are you sure? (y/n): " CONFIRM
+echo "About to restore to live origins:"
+echo "  Environment     : $ENVIRONMENT"
+echo "  Distribution ID : $DIST_ID"
+echo ""
+read -rp "Are you sure you want to continue? (y/n): " CONFIRM
 if [ "$CONFIRM" != "y" ]; then
   echo "Aborted."
   exit 0
@@ -54,8 +66,29 @@ echo "Restoring cache behaviors to live origins..."
 python3 - <<EOF
 import json
 
-FIND_LB = "$FIND_LB_ORIGIN"
-APPLY_LB = "$APPLY_LB_ORIGIN"
+FIND_LB_DOMAIN = "$FIND_LB_ORIGIN"
+APPLY_LB_DOMAIN = "$APPLY_LB_ORIGIN"
+
+with open('/tmp/dist-current.json') as f:
+    data = json.load(f)
+
+config = data['DistributionConfig']
+
+# A CloudFront origin's Id can differ from its DomainName, so resolve the real Ids
+# from the distribution rather than assuming Id == domain.
+def origin_id_for(domain):
+    origin_id = next(
+        (o['Id'] for o in config['Origins']['Items'] if o['DomainName'] == domain),
+        None
+    )
+    if origin_id is None:
+        raise SystemExit(f"ERROR: no origin with domain {domain} on this distribution")
+    return origin_id
+
+FIND_LB = origin_id_for(FIND_LB_DOMAIN)
+APPLY_LB = origin_id_for(APPLY_LB_DOMAIN)
+print(f"find origin id:  {FIND_LB}")
+print(f"apply origin id: {APPLY_LB}")
 
 # Mapping of path -> (origin, allowed_methods_count)
 # 7 methods = full REST (admin/applicant pages), 3 methods = GET only (grants/find)
@@ -79,11 +112,6 @@ get_only_methods = {
     "Items": ["HEAD", "GET", "OPTIONS"],
     "CachedMethods": {"Quantity": 2, "Items": ["HEAD", "GET"]}
 }
-
-with open('/tmp/dist-current.json') as f:
-    data = json.load(f)
-
-config = data['DistributionConfig']
 
 for behavior in config['CacheBehaviors']['Items']:
     path = behavior['PathPattern']
@@ -140,4 +168,4 @@ INVALIDATION=$(aws cloudfront create-invalidation \
 echo "Invalidation created: $INVALIDATION"
 
 echo ""
-echo "Done. Live site is restored for $ENVIRONMENT."
+echo "Done. Live site is restored on the $ENVIRONMENT distribution ($DIST_ID)."

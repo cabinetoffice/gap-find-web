@@ -23,12 +23,17 @@ if [ "$ENVIRONMENT" = "prod" ]; then
     exit 0
   fi
   S3_BUCKET="gap-prod-holding-page"
-  DIST_ID="E3GJQ1JB1DFNU4"
   STYLESHEET_URL="https://find-government-grants.service.gov.uk/style.css"
 else
   S3_BUCKET="gap-qa-holding-page"
-  DIST_ID="E2YMATUXLSFFJV"
   STYLESHEET_URL="https://test-env.find-a-grant-support-test.service.cabinetoffice.gov.uk/style.css"
+fi
+
+# Distribution ID is never hardcoded - enter it manually
+read -rp "Enter the CloudFront distribution ID: " DIST_ID
+if [ -z "$DIST_ID" ]; then
+  echo "No distribution ID entered. Aborting."
+  exit 1
 fi
 
 # Prompt for custom message
@@ -44,11 +49,12 @@ fi
 # Confirm
 echo ""
 echo "The following will be uploaded to the $ENVIRONMENT holding page:"
-echo "  Message : $MESSAGE"
-echo "  CSS URL : $STYLESHEET_URL"
-echo "  S3 bucket: $S3_BUCKET"
+echo "  Message         : $MESSAGE"
+echo "  CSS URL         : $STYLESHEET_URL"
+echo "  S3 bucket       : $S3_BUCKET"
+echo "  Distribution ID : $DIST_ID"
 echo ""
-read -rp "Are you sure? (y/n): " CONFIRM
+read -rp "Are you sure you want to continue? (y/n): " CONFIRM
 if [ "$CONFIRM" != "y" ]; then
   echo "Aborted."
   exit 0
