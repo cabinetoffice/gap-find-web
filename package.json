@@ -32,8 +32,8 @@
     "mailparser": "^3.7.0",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.35",
-    "next": "^13.5.9",
-    "next-logger": "4.0.0",
+    "next": "^15.5.23",
+    "next-logger": "5.0.2",
     "nodemailer": "^6.9.13",
     "nookies": "^2.5.2",
     "notifications-node-client": "^8.0.0",
@@ -83,6 +83,7 @@
     ]
   },
   "resolutions": {
+    "sharp": "0.35.3",
     "http-cache-semantics": "^4.1.1",
     "loader-utils": "^3.2.1",
     "postcss": "^8.2.13",
