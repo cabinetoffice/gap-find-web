@@ -14,12 +14,14 @@ Start by copying the latest scripts from S3 into your current CloudShell directo
 aws s3 cp "s3://gap-setup-holding-page" . --recursive
 ```
 
-## Environments and IDs
+## Environments
 
-| Environment | CloudFront distribution ID | Holding page S3 bucket | Holding page origin |
-|---|---|---|---|
-| `qa` | `E2YMATUXLSFFJV` | `gap-qa-holding-page` | `gap-qa-holding-page.s3-website.eu-west-2.amazonaws.com` |
-| `prod` | `E3GJQ1JB1DFNU4` | `gap-prod-holding-page` | `gap-prod-holding-page.s3-website.eu-west-2.amazonaws.com` |
+The scripts never store CloudFront distribution IDs. Each script prompts for the distribution ID at runtime, so look up the correct ID in the AWS console before running.
+
+| Environment | Holding page S3 bucket | Holding page origin |
+|---|---|---|
+| `qa` (test) | `gap-qa-holding-page` | `gap-qa-holding-page.s3-website.eu-west-2.amazonaws.com` |
+| `prod` | `gap-prod-holding-page` | `gap-prod-holding-page.s3-website.eu-west-2.amazonaws.com` |
 
 ## What the switch scripts change
 
@@ -46,13 +48,13 @@ It also:
 - Removes the `404 -> /index.html` custom error response
 - Creates a full cache invalidation for `/*`
 
-Both switch scripts prompt for `qa` or `prod`, include explicit confirmation prompts, and create a timestamped backup file (`dist-backup-YYYYMMDD-HHMMSS.json`) before making changes.
+Both switch scripts prompt for the environment (`test` or `prod`) and then for the CloudFront distribution ID (never hardcoded), include explicit confirmation prompts (with an extra caution when `prod` is selected), and create a timestamped backup file (`dist-backup-YYYYMMDD-HHMMSS.json`) before making changes.
 
 ## Scripts
 
 ### `s3/switch-to-holding-page.sh`
 
-Switches selected paths to the S3 holding page for the chosen environment (`qa` or `prod`), then invalidates CloudFront.
+Switches selected paths to the S3 holding page for the chosen environment (`test` or `prod`) and entered distribution ID, then invalidates CloudFront.
 
 ```bash
 sh ./switch-to-holding-page.sh
@@ -60,7 +62,7 @@ sh ./switch-to-holding-page.sh
 
 ### `s3/switch-to-live.sh`
 
-Restores selected paths to live load balancer origins for the chosen environment (`qa` or `prod`), then invalidates CloudFront.
+Restores selected paths to live load balancer origins for the chosen environment (`test` or `prod`) and entered distribution ID, then invalidates CloudFront.
 
 ```bash
 sh ./switch-to-live.sh
@@ -69,7 +71,7 @@ sh ./switch-to-live.sh
 ### `s3/restore-from-backup.sh` - Be careful with this!
 
 Restores from a backup file and invalidates CloudFront.
-Prompts for environment (`qa` or `prod`) before restoring.
+Prompts for the CloudFront distribution ID before restoring.
 
 ```bash
 sh ./restore-from-backup.sh dist-backup-20260414-162948.json
@@ -84,6 +86,7 @@ Updates `holding-page/index.html`, uploads the generated page to the selected en
 What it prompts for:
 
 - Environment (`qa`/`prod`)
+- CloudFront distribution ID (never hardcoded)
 - Optional custom page message (defaults to `Please try again later.`)
 - Confirmation (plus an extra production warning prompt for `prod`)
 
@@ -93,7 +96,7 @@ sh ./update-holding-page.sh
 
 ### `s3/clear-cache-invalidate.sh`
 
-Prompts for environment (`qa` or `prod`) and creates a full invalidation (`/*`) for that distribution.
+Prompts for a CloudFront distribution ID and creates a full invalidation (`/*`) for that distribution.
 
 ```bash
 sh ./clear-cache-invalidate.sh
