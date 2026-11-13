@@ -51,7 +51,11 @@ describe('add favourite handler', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env = { ...originalEnv, APPLICANT_HOST: 'https://apply.example' };
+    process.env = {
+      ...originalEnv,
+      APPLICANT_HOST: 'https://apply.example',
+      FAVOURITES_ENABLED: 'true',
+    };
     mockGetUser.mockReturnValue({
       jwt: 'user-jwt',
       sub: 'user-sub',
@@ -80,6 +84,17 @@ describe('add favourite handler', () => {
       303,
       '/grants?searchTerm=farming&page=2&sortBy=closingDate&favouriteAdded=grant123',
     );
+  });
+
+  it('should return 404 when favourites are switched off', async () => {
+    process.env.FAVOURITES_ENABLED = 'false';
+    const res = getResponse();
+
+    await handler(getRequest(), res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(mockGetUser).not.toHaveBeenCalled();
+    expect(mockAddFavourite).not.toHaveBeenCalled();
   });
 
   it('should only accept POST', async () => {

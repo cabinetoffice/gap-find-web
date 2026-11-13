@@ -5,6 +5,7 @@ import {
   getFavouriteUserFromRequest,
 } from '../../../src/service/favourite-service';
 import { FAVOURITE_QUERY_PARAMS } from '../../../src/utils/constants';
+import { isFavouritesEnabled } from '../../../src/utils/featureFlags';
 import { logger } from '../../../src/utils/logger';
 
 const SEARCH_PAGE = '/grants';
@@ -52,6 +53,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (!isFavouritesEnabled()) return res.status(404).end();
+
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).end(`Method ${req.method} Not Allowed`);

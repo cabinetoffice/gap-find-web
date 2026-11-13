@@ -22,6 +22,7 @@ import {
   GRANTS_PER_PAGE,
 } from '../../src/utils/constants';
 import { fetchFilters } from '../../src/utils/contentFulPage';
+import { isFavouritesEnabled } from '../../src/utils/featureFlags';
 import gloss from '../../src/utils/glossary.json';
 import {
   addPublishedDateFilter,
@@ -102,15 +103,22 @@ export async function getServerSideProps({ query, req, res }) {
 
   const total = searchResult.totalGrants;
 
-  const favouriteGrantIds = await getFavouriteGrantIdsForRequest(req);
-  const favouriteAddedGrantName = findGrantNameById(
-    searchResult.parsedElasticResults,
-    query[FAVOURITE_QUERY_PARAMS.ADDED],
-  );
-  const favouriteErrorGrantName = findGrantNameById(
-    searchResult.parsedElasticResults,
-    query[FAVOURITE_QUERY_PARAMS.ERROR],
-  );
+  const favouritesEnabled = isFavouritesEnabled();
+  const favouriteGrantIds = favouritesEnabled
+    ? await getFavouriteGrantIdsForRequest(req)
+    : [];
+  const favouriteAddedGrantName = favouritesEnabled
+    ? findGrantNameById(
+        searchResult.parsedElasticResults,
+        query[FAVOURITE_QUERY_PARAMS.ADDED],
+      )
+    : null;
+  const favouriteErrorGrantName = favouritesEnabled
+    ? findGrantNameById(
+        searchResult.parsedElasticResults,
+        query[FAVOURITE_QUERY_PARAMS.ERROR],
+      )
+    : null;
 
   const titleContent = buildTitleContent(
     filterObjFromQuery,
@@ -142,7 +150,8 @@ export async function getServerSideProps({ query, req, res }) {
       favouriteGrantIds,
       favouriteAddedGrantName,
       favouriteErrorGrantName,
-      csrfToken: getCsrfToken(res),
+      favouritesEnabled,
+      csrfToken: favouritesEnabled ? getCsrfToken(res) : null,
     },
   };
 }
@@ -179,13 +188,17 @@ const BrowseByCategory = ({
   favouriteGrantIds = [],
   favouriteAddedGrantName = null,
   favouriteErrorGrantName = null,
+  favouritesEnabled = false,
   csrfToken = null,
 }) => {
   const router = useRouter();
   const { isUserLoggedIn } = useAuth();
   const { oneLoginEnabled } = useAppContext();
   const canFavourite =
-    oneLoginEnabled === 'true' && Boolean(isUserLoggedIn) && Boolean(csrfToken);
+    favouritesEnabled &&
+    oneLoginEnabled === 'true' &&
+    Boolean(isUserLoggedIn) &&
+    Boolean(csrfToken);
 
   // Remove the favourite result from the address once the banner has shown,
   // so refreshing or re-sorting does not show it again

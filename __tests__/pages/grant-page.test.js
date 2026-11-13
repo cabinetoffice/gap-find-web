@@ -342,6 +342,7 @@ describe('getServerSideProps', () => {
   let elasticSearchServiceMock;
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env.FAVOURITES_ENABLED = 'false';
 
     fetchFilters.mockReturnValue(mockFilters);
 
@@ -414,6 +415,7 @@ describe('getServerSideProps', () => {
       favouriteGrantIds: [],
       favouriteAddedGrantName: null,
       favouriteErrorGrantName: null,
+      favouritesEnabled: false,
       csrfToken: null,
     },
   });
@@ -603,6 +605,7 @@ describe('favourites', () => {
             totalGrants={1}
             query={{}}
             csrfToken="token-123"
+            favouritesEnabled
             {...props}
           />
         </AuthContext.Provider>
@@ -644,6 +647,12 @@ describe('favourites', () => {
       expect(
         document.querySelector('#add-favourite-form input[name="_csrf"]'),
       ).toHaveValue('token-123');
+    });
+
+    it('should not show the mark when favourites are switched off', () => {
+      renderPage({ isUserLoggedIn: true, favouritesEnabled: false });
+      expect(addButton()).not.toBeInTheDocument();
+      expect(document.querySelector('#add-favourite-form')).toBeNull();
     });
 
     it('should not show the mark when there is no CSRF token', () => {
@@ -715,6 +724,7 @@ describe('favourites', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
+      process.env.FAVOURITES_ENABLED = 'true';
       fetchFilters.mockReturnValue(mockFilters);
       jest
         .spyOn(ElasticSearchService.prototype, 'search')
@@ -724,6 +734,27 @@ describe('favourites', () => {
           ],
           totalGrants: 1,
         }));
+    });
+
+    it('should not look up favourites when switched off', async () => {
+      process.env.FAVOURITES_ENABLED = 'false';
+      const res = { getHeader: jest.fn(() => 'token-123') };
+
+      const result = await getServerSideProps({
+        query: { favouriteAdded: 'grant123' },
+        req,
+        res,
+      });
+
+      expect(getFavouriteGrantIdsForRequest).not.toHaveBeenCalled();
+      expect(result.props).toEqual(
+        expect.objectContaining({
+          favouritesEnabled: false,
+          favouriteGrantIds: [],
+          favouriteAddedGrantName: null,
+          csrfToken: null,
+        }),
+      );
     });
 
     it('should return the CSRF token set by the middleware', async () => {

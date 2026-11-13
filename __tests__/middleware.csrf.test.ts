@@ -29,7 +29,20 @@ const postFavourite = (body: Record<string, string>) =>
 describe('Middleware CSRF protection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env.FAVOURITES_ENABLED = 'true';
     mockGetSecret.mockResolvedValue(secret);
+  });
+
+  it('should not do any CSRF work when favourites are switched off', async () => {
+    process.env.FAVOURITES_ENABLED = 'false';
+
+    const page = await middleware(new NextRequest(`${HOST}/grants`));
+    const post = await middleware(postFavourite({ grantId: 'grant123' }));
+
+    expect(mockGetSecret).not.toHaveBeenCalled();
+    expect(page.headers.get('x-csrf-token')).toBeNull();
+    // the add route itself returns 404 when switched off
+    expect(post.headers.get('Location')).toBeNull();
   });
 
   it('should give the search page a CSRF token', async () => {

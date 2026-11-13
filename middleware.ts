@@ -12,6 +12,7 @@ import {
 } from './src/utils/constants';
 import { getJwtFromMiddlewareCookies } from './src/utils';
 import { csrfMiddleware } from './src/utils/csrfMiddleware';
+import { isFavouritesEnabled } from './src/utils/featureFlags';
 
 const HOST = process.env.HOST;
 const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
@@ -145,6 +146,7 @@ const csrfProtectedPaths = ['/grants', favouriteRoutes.add].map(
 
 const isCsrfProtectedPath = (pathname: string) =>
   ONE_LOGIN_ENABLED == 'true' &&
+  isFavouritesEnabled() &&
   csrfProtectedPaths.some((csrfPath) => csrfPath.test({ pathname }));
 
 const applyCsrfProtection = async (req: NextRequest, res: NextResponse) => {
