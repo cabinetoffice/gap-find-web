@@ -1,4 +1,3 @@
-// eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { v4 } from 'uuid';
 import { checkUserLoggedIn } from './src/service';
@@ -7,10 +6,12 @@ import {
   HEADERS,
   notificationRoutes,
   newsletterRoutes,
+  favouriteRoutes,
   LOGIN_NOTICE_TYPES,
   URL_ACTIONS,
 } from './src/utils/constants';
 import { getJwtFromMiddlewareCookies } from './src/utils';
+import { csrfMiddleware } from './src/utils/csrfMiddleware';
 
 const HOST = process.env.HOST;
 const ONE_LOGIN_ENABLED = process.env.ONE_LOGIN_ENABLED;
@@ -136,6 +137,32 @@ const isAuthenticatedPath = (pathname: string) =>
     authenticatedPath.test({ pathname }),
   );
 
+// The search page gets a CSRF token for its favourite form, and the
+// add favourite route checks it
+const csrfProtectedPaths = ['/grants', favouriteRoutes.add].map(
+  (path) => new URLPattern({ pathname: path }),
+);
+
+const isCsrfProtectedPath = (pathname: string) =>
+  ONE_LOGIN_ENABLED == 'true' &&
+  csrfProtectedPaths.some((csrfPath) => csrfPath.test({ pathname }));
+
+const applyCsrfProtection = async (req: NextRequest, res: NextResponse) => {
+  try {
+    await csrfMiddleware(req, res);
+    return res;
+  } catch (err) {
+    logger.error(
+      'CSRF middleware failure',
+      logger.utils.addErrorInfo(err, req),
+    );
+    // A page load still works without a token (the favourite mark is hidden);
+    // a form submission without a valid token is rejected
+    if (req.method === 'GET' || req.method === 'HEAD') return res;
+    return NextResponse.redirect(`${HOST}/grants`, 303);
+  }
+};
+
 const httpLoggers = {
   req: (req: NextRequest) => {
     const correlationId = v4();
@@ -175,6 +202,10 @@ export const middleware = async (req: NextRequest) => {
 
   if (isAuthenticatedPath(req.nextUrl.pathname)) {
     res = await authenticateRequest(req, res);
+  }
+
+  if (isCsrfProtectedPath(req.nextUrl.pathname)) {
+    res = await applyCsrfProtection(req, res);
   }
 
   logResponse(req, res);

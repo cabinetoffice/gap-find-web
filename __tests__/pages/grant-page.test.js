@@ -6,6 +6,8 @@ import { ElasticSearchService } from '../../src/service/elastic_service';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 import { clearFiltersFromQuery } from '../../src/utils/transform';
 import { renderWithRouter } from '../../src/utils/test/render';
+import { getFavouriteGrantIdsForRequest } from '../../src/service/favourite-service';
+import { AppContext, AuthContext } from '../../pages/_app';
 
 jest.mock('next/router', () => {
   return {
@@ -17,6 +19,9 @@ jest.mock('../../src/utils/transform', () => ({
   clearFiltersFromQuery: jest.fn(),
 }));
 jest.mock('../../src/utils/contentFulPage');
+jest.mock('../../src/service/favourite-service', () => ({
+  getFavouriteGrantIdsForRequest: jest.fn(() => Promise.resolve([])),
+}));
 
 const mockGrant = {
   grantName: 'Some Grant Name',
@@ -406,6 +411,10 @@ describe('getServerSideProps', () => {
       titleContent: ` Searching for \n  ${
         searchTerm && !searchTermInvalid ? searchTerm : 'all grants'
       }, \n  1 \n   \n  result  \n- Find a grant`,
+      favouriteGrantIds: [],
+      favouriteAddedGrantName: null,
+      favouriteErrorGrantName: null,
+      csrfToken: null,
     },
   });
 
@@ -569,6 +578,210 @@ describe('getServerSideProps', () => {
       expect(result.props.searchHeading).toBe(
         'Showing grants added between 9 May 2022 to 16 May 2022',
       );
+    });
+  });
+});
+
+describe('favourites', () => {
+  const grantWithId = { ...mockGrant, id: 'grant123' };
+
+  const renderPage = ({
+    isUserLoggedIn = false,
+    oneLoginEnabled = 'true',
+    ...props
+  } = {}) =>
+    renderWithRouter(
+      <AppContext.Provider value={{ oneLoginEnabled }}>
+        <AuthContext.Provider value={{ isUserLoggedIn }}>
+          <BrowseGrants
+            searchResult={[grantWithId]}
+            searchTerm="search"
+            searchHeading="Search grants"
+            filters={mockFilters}
+            errors={[]}
+            filterObj={{ errors: [] }}
+            totalGrants={1}
+            query={{}}
+            csrfToken="token-123"
+            {...props}
+          />
+        </AuthContext.Provider>
+      </AppContext.Provider>,
+    );
+
+  const addButton = () =>
+    screen.queryByRole('button', {
+      name: 'Add Some Grant Name to favourites',
+    });
+
+  describe('rendering', () => {
+    let replaceMock;
+
+    beforeEach(() => {
+      replaceMock = jest.fn();
+      useRouter.mockReturnValue({
+        pathname: '/grants',
+        push: jest.fn(),
+        replace: replaceMock,
+        query: { searchTerm: 'search' },
+      });
+    });
+
+    it('should not show the add to favourites mark when logged out', () => {
+      renderPage({ isUserLoggedIn: false });
+      expect(addButton()).not.toBeInTheDocument();
+    });
+
+    it('should not show the mark when One Login is not enabled', () => {
+      renderPage({ isUserLoggedIn: true, oneLoginEnabled: 'false' });
+      expect(addButton()).not.toBeInTheDocument();
+    });
+
+    it('should show the add to favourites mark when logged in', () => {
+      renderPage({ isUserLoggedIn: true });
+      expect(addButton()).toBeInTheDocument();
+      expect(addButton()).toHaveAttribute('form', 'add-favourite-form');
+      expect(
+        document.querySelector('#add-favourite-form input[name="_csrf"]'),
+      ).toHaveValue('token-123');
+    });
+
+    it('should not show the mark when there is no CSRF token', () => {
+      renderPage({ isUserLoggedIn: true, csrfToken: null });
+      expect(addButton()).not.toBeInTheDocument();
+      expect(document.querySelector('#add-favourite-form')).toBeNull();
+    });
+
+    it('should not render the favourite form when logged out', () => {
+      renderPage({ isUserLoggedIn: false });
+      expect(document.querySelector('#add-favourite-form')).toBeNull();
+    });
+
+    it('should show grants already in favourites as marked', () => {
+      renderPage({ isUserLoggedIn: true, favouriteGrantIds: ['grant123'] });
+      expect(addButton()).not.toBeInTheDocument();
+      expect(
+        screen.getByText('Some Grant Name is in your favourites'),
+      ).toBeInTheDocument();
+    });
+
+    it('should confirm when a grant has been added', () => {
+      renderPage({
+        isUserLoggedIn: true,
+        favouriteAddedGrantName: 'Some Grant Name',
+      });
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        'Some Grant Name has been added to your favourites.',
+      );
+    });
+
+    it('should show an error when a grant could not be added', () => {
+      renderPage({
+        isUserLoggedIn: true,
+        favouriteErrorGrantName: 'Some Grant Name',
+      });
+      expect(
+        screen.getByText(
+          'Sorry, we could not add Some Grant Name to your favourites. Please try again later.',
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('should remove the favourite result from the address after showing it', () => {
+      useRouter.mockReturnValue({
+        pathname: '/grants',
+        push: jest.fn(),
+        replace: replaceMock,
+        query: { searchTerm: 'search', favouriteAdded: 'grant123' },
+      });
+
+      renderPage({ isUserLoggedIn: true });
+
+      expect(replaceMock).toHaveBeenCalledWith(
+        { pathname: '/grants', query: { searchTerm: 'search' } },
+        undefined,
+        { shallow: true, scroll: false },
+      );
+    });
+
+    it('should not change the address when there is no favourite result', () => {
+      renderPage({ isUserLoggedIn: true });
+      expect(replaceMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getServerSideProps', () => {
+    const req = { cookies: {}, headers: {} };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      fetchFilters.mockReturnValue(mockFilters);
+      jest
+        .spyOn(ElasticSearchService.prototype, 'search')
+        .mockImplementationOnce(() => ({
+          parsedElasticResults: [
+            { id: 'grant123', grantName: 'Some Grant Name' },
+          ],
+          totalGrants: 1,
+        }));
+    });
+
+    it('should return the CSRF token set by the middleware', async () => {
+      const res = {
+        getHeader: jest.fn((name) =>
+          name === 'x-csrf-token' ? 'token-123' : undefined,
+        ),
+      };
+
+      const result = await getServerSideProps({ query: {}, req, res });
+
+      expect(result.props.csrfToken).toBe('token-123');
+    });
+
+    it('should return no CSRF token when the middleware did not set one', async () => {
+      const res = { getHeader: jest.fn(() => undefined) };
+
+      const result = await getServerSideProps({ query: {}, req, res });
+
+      expect(result.props.csrfToken).toBeNull();
+    });
+
+    it('should return the user’s favourite grant IDs', async () => {
+      getFavouriteGrantIdsForRequest.mockResolvedValueOnce(['grant123']);
+
+      const result = await getServerSideProps({ query: {}, req });
+
+      expect(getFavouriteGrantIdsForRequest).toHaveBeenCalledWith(req);
+      expect(result.props.favouriteGrantIds).toStrictEqual(['grant123']);
+    });
+
+    it('should return the name of the grant just added', async () => {
+      const result = await getServerSideProps({
+        query: { favouriteAdded: 'grant123' },
+        req,
+      });
+
+      expect(result.props.favouriteAddedGrantName).toBe('Some Grant Name');
+      expect(result.props.favouriteErrorGrantName).toBeNull();
+    });
+
+    it('should return the name of the grant that could not be added', async () => {
+      const result = await getServerSideProps({
+        query: { favouriteError: 'grant123' },
+        req,
+      });
+
+      expect(result.props.favouriteErrorGrantName).toBe('Some Grant Name');
+      expect(result.props.favouriteAddedGrantName).toBeNull();
+    });
+
+    it('should not confirm a grant that is not in the results', async () => {
+      const result = await getServerSideProps({
+        query: { favouriteAdded: 'another-grant' },
+        req,
+      });
+
+      expect(result.props.favouriteAddedGrantName).toBeNull();
     });
   });
 });

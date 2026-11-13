@@ -1,18 +1,26 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ErrorBanner from '../../src/components/displayErrors/errorBanner/ErrorBanner';
 import { NewsletterCallToAction } from '../../src/components/newsletter/NewsletterCallToAction';
+import { ImportantBanner } from '../../src/components/notification-banner';
+import { useAppContext, useAuth } from '../_app';
 import { Pagination } from '../../src/components/pagination/Pagination';
 import Layout from '../../src/components/partials/Layout';
 import { SearchFilterContainer } from '../../src/components/search-page/search-filter-container/SearchFilterContainer';
 import { SearchForm } from '../../src/components/search-page/search-form/SearchForm';
 import { SearchResultCard } from '../../src/components/search-page/search-result-card/SearchResultCard';
+import { FavouriteForm } from '../../src/components/search-page/favourite-mark/FavouriteMark';
 import { SearchResultCounter } from '../../src/components/search-page/search-results-counter/SearchResultCounter';
 import { SearchSortBy } from '../../src/components/search-page/search-sortby/SearchSortBy';
 import { ElasticSearchService } from '../../src/service/elastic_service';
-import { GRANTS_PER_PAGE } from '../../src/utils/constants';
+import { getFavouriteGrantIdsForRequest } from '../../src/service/favourite-service';
+import {
+  CSRF_HEADER_NAME,
+  FAVOURITE_QUERY_PARAMS,
+  GRANTS_PER_PAGE,
+} from '../../src/utils/constants';
 import { fetchFilters } from '../../src/utils/contentFulPage';
 import gloss from '../../src/utils/glossary.json';
 import {
@@ -49,7 +57,18 @@ const buildTitleContent = (filterObjFromQuery, searchTerm, total) => `${
 
 const validateSearchTerm = (searchTerm = '') => searchTerm.trim().length < 100;
 
-export async function getServerSideProps({ query }) {
+const findGrantNameById = (grants, grantId) =>
+  (typeof grantId === 'string' &&
+    grants.find((grant) => grant.id === grantId)?.grantName) ||
+  null;
+
+// Set on the response by the CSRF middleware
+const getCsrfToken = (res) => {
+  const token = res?.getHeader?.(CSRF_HEADER_NAME);
+  return typeof token === 'string' && token ? token : null;
+};
+
+export async function getServerSideProps({ query, req, res }) {
   const filteredQuery = conditionallyClearFiltersFromQuery(
     Boolean(query.clearFilters),
     Boolean(query.clearDateFilters),
@@ -83,6 +102,16 @@ export async function getServerSideProps({ query }) {
 
   const total = searchResult.totalGrants;
 
+  const favouriteGrantIds = await getFavouriteGrantIdsForRequest(req);
+  const favouriteAddedGrantName = findGrantNameById(
+    searchResult.parsedElasticResults,
+    query[FAVOURITE_QUERY_PARAMS.ADDED],
+  );
+  const favouriteErrorGrantName = findGrantNameById(
+    searchResult.parsedElasticResults,
+    query[FAVOURITE_QUERY_PARAMS.ERROR],
+  );
+
   const titleContent = buildTitleContent(
     filterObjFromQuery,
     searchTerm,
@@ -110,9 +139,30 @@ export async function getServerSideProps({ query }) {
       query: { ...query, href: '/grants' },
       currentPage,
       titleContent,
+      favouriteGrantIds,
+      favouriteAddedGrantName,
+      favouriteErrorGrantName,
+      csrfToken: getCsrfToken(res),
     },
   };
 }
+
+const FavouriteBanner = ({ addedGrantName, errorGrantName }) => {
+  if (errorGrantName)
+    return (
+      <ImportantBanner
+        heading={`Sorry, we could not add ${errorGrantName} to your favourites. Please try again later.`}
+      />
+    );
+  if (addedGrantName)
+    return (
+      <ImportantBanner
+        isSuccess
+        heading={`${addedGrantName} has been added to your favourites.`}
+      />
+    );
+  return null;
+};
 
 const BrowseByCategory = ({
   searchResult: fields,
@@ -126,8 +176,38 @@ const BrowseByCategory = ({
   query,
   currentPage,
   titleContent,
+  favouriteGrantIds = [],
+  favouriteAddedGrantName = null,
+  favouriteErrorGrantName = null,
+  csrfToken = null,
 }) => {
   const router = useRouter();
+  const { isUserLoggedIn } = useAuth();
+  const { oneLoginEnabled } = useAppContext();
+  const canFavourite =
+    oneLoginEnabled === 'true' && Boolean(isUserLoggedIn) && Boolean(csrfToken);
+
+  // Remove the favourite result from the address once the banner has shown,
+  // so refreshing or re-sorting does not show it again
+  useEffect(() => {
+    const favouriteParams = Object.values(FAVOURITE_QUERY_PARAMS);
+    if (!router?.query || !favouriteParams.some((p) => p in router.query))
+      return;
+
+    const remainingQuery = Object.fromEntries(
+      Object.entries(router.query).filter(
+        ([key]) => !favouriteParams.includes(key),
+      ),
+    );
+    router.replace(
+      { pathname: router.pathname, query: remainingQuery },
+      undefined,
+      {
+        shallow: true,
+        scroll: false,
+      },
+    );
+  }, [router]);
 
   const handleSortByChange = (sort) => {
     const newQuery = {
@@ -156,6 +236,10 @@ const BrowseByCategory = ({
             {gloss.buttons.back}
           </Link>
         </div>
+        <FavouriteBanner
+          addedGrantName={favouriteAddedGrantName}
+          errorGrantName={favouriteErrorGrantName}
+        />
         <ErrorBanner errors={errors} />
         <form action="/grants" method="GET">
           <div className="govuk-grid-row govuk-body govuk-!-margin-bottom-0">
@@ -199,7 +283,11 @@ const BrowseByCategory = ({
                 {fields.map((item, i) => (
                   <React.Fragment key={i}>
                     {item.grantName && item.label && (
-                      <SearchResultCard item={item} />
+                      <SearchResultCard
+                        item={item}
+                        canFavourite={canFavourite}
+                        isFavourite={favouriteGrantIds.includes(item.id)}
+                      />
                     )}
                   </React.Fragment>
                 ))}
@@ -215,6 +303,7 @@ const BrowseByCategory = ({
             <NewsletterCallToAction returnParams={query} />
           </div>
         </form>
+        {canFavourite && <FavouriteForm csrfToken={csrfToken} />}
       </Layout>
     </>
   );

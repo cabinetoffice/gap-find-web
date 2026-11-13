@@ -90,4 +90,42 @@ describe('SearchResultCard', () => {
     expect(screen.getByText('21 April 2022, 12:01am')).toBeDefined();
     expect(screen.getByText('20 May 2022, 11:59pm')).toBeDefined();
   });
+
+  describe('favourite mark', () => {
+    const itemWithId = { ...item, id: 'grant123' };
+
+    it('should not show the mark by default', () => {
+      renderWithRouter(<SearchResultCard item={itemWithId} />);
+      expect(
+        screen.queryByRole('button', { name: /favourites/ }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/is in your favourites/),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should show the add button when the user can favourite', () => {
+      renderWithRouter(
+        <SearchResultCard item={itemWithId} canFavourite isFavourite={false} />,
+      );
+      expect(
+        screen.getByRole('button', { name: 'Add Test Name to favourites' }),
+      ).toHaveAttribute('value', 'grant123');
+    });
+
+    it('should show the grant is a favourite when already added', () => {
+      renderWithRouter(
+        <SearchResultCard item={itemWithId} canFavourite isFavourite />,
+      );
+      expect(
+        screen.getByText('Test Name is in your favourites'),
+      ).toBeInTheDocument();
+      expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    });
+
+    it('should not show the mark for a result with no ID', () => {
+      renderWithRouter(<SearchResultCard item={item} canFavourite />);
+      expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    });
+  });
 });

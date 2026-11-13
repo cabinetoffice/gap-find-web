@@ -3,26 +3,40 @@ import Link from 'next/link';
 import Moment from 'react-moment';
 import gloss from '../../../utils/glossary.json';
 import { adjustDateTimes } from '../../../utils/adjustDateTimes';
+import { FavouriteMark } from '../favourite-mark/FavouriteMark';
 
-export function SearchResultCard({ item }) {
+export function SearchResultCard({
+  item,
+  canFavourite = false,
+  isFavourite = false,
+}) {
   const { adjustedOpenDate, adjustedCloseDate, timeSuffixes } = adjustDateTimes(
     item.grantApplicationOpenDate,
     item.grantApplicationCloseDate,
   );
   return (
     <li id={item.grantName}>
-      <h2 className="govuk-heading-m">
-        <Link
-          href={{
-            pathname: '/grants/[pid]',
-            query: { pid: item.label },
-          }}
-          className="govuk-link"
-          data-cy="cyGrantNameAndLink"
-        >
-          {item.grantName}
-        </Link>
-      </h2>
+      <div className="gap-search-result__heading">
+        <h2 className="govuk-heading-m">
+          <Link
+            href={{
+              pathname: '/grants/[pid]',
+              query: { pid: item.label },
+            }}
+            className="govuk-link"
+            data-cy="cyGrantNameAndLink"
+          >
+            {item.grantName}
+          </Link>
+        </h2>
+        {canFavourite && item.id && (
+          <FavouriteMark
+            grantId={item.id}
+            grantName={item.grantName}
+            isFavourite={isFavourite}
+          />
+        )}
+      </div>
       <p
         className="govuk-body"
         data-cy={`cyGrantShortDescriptions-${item.label}`}
