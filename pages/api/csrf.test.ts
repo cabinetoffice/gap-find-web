@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { NextApiRequest, NextApiResponse } from 'next';
 import csrfHandler from './csrf';
 
