@@ -1,0 +1,42 @@
+.mark {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #0b0c0c;
+  cursor: pointer;
+}
+
+.icon {
+  width: 24px;
+  height: 32px;
+  fill: #ffffff;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+button.mark:hover .icon {
+  fill: #f3f2f1;
+}
+
+button.mark:focus {
+  outline: 3px solid transparent;
+  background-color: #ffdd00;
+  box-shadow: 0 4px #0b0c0c;
+}
+
+.added {
+  color: #d4351c;
+  cursor: default;
+}
+
+.added .icon {
+  fill: currentColor;
+}

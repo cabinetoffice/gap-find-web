@@ -200,3 +200,10 @@ For custom accordion and filters page
   width: 350px;
   height: 61px;
 }
+
+.gap-search-result__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}

@@ -53,6 +53,9 @@ USER nextjs
 EXPOSE 3000
 
 ENV PORT 3000
+# Listen on all interfaces so the app can reach its own /api/csrf route on localhost.
+# Without this, server.js binds to the container hostname only.
+ENV HOSTNAME "0.0.0.0"
 ENV NODE_OPTIONS "-r next-logger/presets/next-only"
 
 CMD ["node", "server.js"]

@@ -34,6 +34,22 @@ export const notificationRoutes = {
   subscriptionSignUp: '/subscriptions/signup',
 } as const;
 
+export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+export const CSRF_HEADER_NAME = 'x-csrf-token';
+export const CSRF_FORM_KEY = '_csrf';
+
+export const FAVOURITE_FORM_ID = 'add-favourite-form';
+
+export const favouriteRoutes = {
+  add: '/api/favourites/add',
+} as const;
+
+export const FAVOURITE_QUERY_PARAMS = {
+  ADDED: 'favouriteAdded',
+  ERROR: 'favouriteError',
+} as const;
+
 export const newsletterRoutes = {
   home: '/newsletter',
   confirmation: '/newsletter/confirmation',
