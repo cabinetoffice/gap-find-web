@@ -2,7 +2,11 @@ import { middleware } from '../middleware';
 import { NextRequest } from 'next/server';
 import { checkUserLoggedIn } from '../src/service';
 import { getJwtFromMiddlewareCookies } from '../src/utils';
-import { LOGIN_NOTICE_TYPES, notificationRoutes } from '../src/utils/constants';
+import {
+  LOGIN_NOTICE_TYPES,
+  newsletterRoutes,
+  notificationRoutes,
+} from '../src/utils/constants';
 
 jest.mock('../src/service');
 jest.mock('../src/utils/jwt', () => ({
@@ -105,7 +109,13 @@ describe('Middleware', () => {
     });
   });
   describe('routes that act on the signed-in user', () => {
-    const protectedRoutes = [['POST', notificationRoutes.unsubscribeApi]];
+    const protectedRoutes = [
+      ['POST', notificationRoutes.unsubscribeApi],
+      ['POST', newsletterRoutes.unsubscribeApi],
+      ['POST', `${notificationRoutes.deleteSaveSearch}/123`],
+      ['GET', `${notificationRoutes.deleteSaveSearch}/123`],
+      ['GET', `${notificationRoutes.unsubscribe}/grant-id`],
+    ];
 
     it.each(protectedRoutes)(
       'rejects a forged token on %s %s',

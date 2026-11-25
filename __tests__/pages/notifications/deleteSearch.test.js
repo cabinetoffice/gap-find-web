@@ -14,12 +14,14 @@ import {
 } from '../../../src/service/saved_search_service';
 import { decrypt } from '../../../src/utils/encryption';
 import { AxiosError } from 'axios';
+import { getVerifiedJwtFromCookies } from '../../../src/service/user-service';
 
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('../../../src/utils/cookieAndJwtChecker');
 jest.mock('../../../src/service/saved_search_service');
+jest.mock('../../../src/service/user-service');
 
 const encryptedEmail = 'test-encrypted-email-string';
 const decryptedEmail = 'test-decrypted-email-string';
@@ -125,8 +127,8 @@ describe('get server side props', () => {
     cookieExistsAndContainsValidJwt.mockReturnValue(true);
     const result = await getServerSideProps(contextGetRequest);
 
-    expect(decrypt).toHaveBeenCalledTimes(1);
-    expect(decrypt).toHaveBeenCalledWith(encryptedEmail);
+    // The user is only looked up when deleting
+    expect(decrypt).not.toHaveBeenCalled();
     expect(result).toStrictEqual(expectedProps);
   });
 
@@ -222,5 +224,51 @@ describe('get server side props', () => {
     deleteSaveSearch.mockRejectedValue(error);
 
     await expect(getServerSideProps(context)).rejects.toThrowError(error);
+  });
+  describe('One Login enabled', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      process.env.ONE_LOGIN_ENABLED = 'true';
+    });
+
+    it('deletes the saved search for the user in a valid token (POST request)', async () => {
+      getVerifiedJwtFromCookies.mockResolvedValue({
+        jwtPayload: { sub: 'user-sub' },
+        jwt: 'a.b.c',
+      });
+      getBySavedSearchId.mockResolvedValue({ name: 'Test Name' });
+      deleteSaveSearch.mockResolvedValue();
+
+      const result = await getServerSideProps(context);
+
+      expect(deleteSaveSearch).toHaveBeenCalledWith('1', 'user-sub');
+      expect(result).toEqual({
+        redirect: {
+          statusCode: 302,
+          destination: `${notificationRoutes['manageNotifications']}?action=${URL_ACTIONS.DELETE_SAVED_SEARCH}&savedSearchName=Test Name`,
+        },
+      });
+    });
+
+    it('does not delete anything for a forged or invalid token and sends the user to sign in (POST request)', async () => {
+      getVerifiedJwtFromCookies.mockResolvedValue(null);
+
+      const result = await getServerSideProps(context);
+
+      expect(deleteSaveSearch).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        redirect: {
+          statusCode: 302,
+          destination: process.env.APPLICANT_HOST,
+        },
+      });
+    });
+
+    it('shows the confirmation page without checking the token (GET request)', async () => {
+      const result = await getServerSideProps(contextGetRequest);
+
+      expect(getVerifiedJwtFromCookies).not.toHaveBeenCalled();
+      expect(result).toStrictEqual(expectedProps);
+    });
   });
 });

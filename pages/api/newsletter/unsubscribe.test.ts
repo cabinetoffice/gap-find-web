@@ -9,11 +9,11 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import subject from './unsubscribe';
 import { logger } from '../../../src/utils/logger';
-import { getJwtFromCookies } from '../../../src/utils';
+import { getVerifiedJwtFromCookies } from '../../../src/service/user-service';
 
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/encryption');
-jest.mock('../../../src/utils/jwt');
+jest.mock('../../../src/service/user-service');
 jest.mock('../../../src/utils/logger', () => ({
   logger: {
     error: jest.fn(),
@@ -33,7 +33,7 @@ describe('newsletter unsubscribe api', () => {
     NewsletterSubscriptionService,
     'getInstance',
   );
-  const mockGetJwtFromCookies = getJwtFromCookies as jest.Mock;
+  const mockGetVerifiedJwtFromCookies = getVerifiedJwtFromCookies as jest.Mock;
   const mockDecrypt = decrypt as jest.Mock;
   const mockNewsletterService = {
     getByEmailAndNewsletterType: jest.fn(),
@@ -177,7 +177,7 @@ describe('newsletter unsubscribe api', () => {
       newsletterSubscriptionServiceSpy.mockReturnValue(mockNewsletterService);
       const email = 'test@email.com';
       const sub = 'sub';
-      mockGetJwtFromCookies.mockReturnValue({
+      mockGetVerifiedJwtFromCookies.mockResolvedValue({
         jwtPayload: {
           email,
           sub,
@@ -196,8 +196,8 @@ describe('newsletter unsubscribe api', () => {
       await subject(req as any, res as any);
 
       expect(newsletterSubscriptionServiceSpy).toBeCalledTimes(1);
-      expect(mockGetJwtFromCookies).toBeCalledTimes(1);
-      expect(mockGetJwtFromCookies).toBeCalledWith(req);
+      expect(mockGetVerifiedJwtFromCookies).toBeCalledTimes(1);
+      expect(mockGetVerifiedJwtFromCookies).toBeCalledWith(req);
       expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(
         1,
       );
@@ -218,7 +218,7 @@ describe('newsletter unsubscribe api', () => {
       newsletterSubscriptionServiceSpy.mockReturnValue(mockNewsletterService);
       const email = 'test@email.com';
       const sub = 'sub';
-      mockGetJwtFromCookies.mockReturnValue({
+      mockGetVerifiedJwtFromCookies.mockResolvedValue({
         jwtPayload: {
           email,
           sub,
@@ -241,8 +241,8 @@ describe('newsletter unsubscribe api', () => {
       await subject(req as any, res as any);
 
       expect(newsletterSubscriptionServiceSpy).toBeCalledTimes(1);
-      expect(mockGetJwtFromCookies).toBeCalledTimes(1);
-      expect(mockGetJwtFromCookies).toBeCalledWith(req);
+      expect(mockGetVerifiedJwtFromCookies).toBeCalledTimes(1);
+      expect(mockGetVerifiedJwtFromCookies).toBeCalledWith(req);
       expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(
         1,
       );
@@ -258,6 +258,24 @@ describe('newsletter unsubscribe api', () => {
       );
       expect(res.redirect).toBeCalledTimes(1);
       expect(res.redirect).toBeCalledWith(expectedUrl);
+      process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
+    });
+    it('does not unsubscribe for a forged or invalid token and sends the user to sign in', async () => {
+      const oneLoginEnabledBackup = process.env.ONE_LOGIN_ENABLED;
+      process.env.ONE_LOGIN_ENABLED = 'true';
+      newsletterSubscriptionServiceSpy.mockReturnValue(mockNewsletterService);
+      mockGetVerifiedJwtFromCookies.mockResolvedValue(null);
+
+      const req = createMockRequest({ cookies: {} });
+      const res = { redirect: jest.fn() };
+
+      await subject(req as any, res as any);
+
+      expect(mockNewsletterService.unsubscribeFromNewsletter).toBeCalledTimes(
+        0,
+      );
+      expect(res.redirect).toBeCalledTimes(1);
+      expect(res.redirect).toBeCalledWith(303, process.env.APPLICANT_HOST);
       process.env.ONE_LOGIN_ENABLED = oneLoginEnabledBackup;
     });
   });

@@ -8,7 +8,8 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import { NewsletterSubscriptionService } from '../../../src/service/newsletter/newsletter-subscription-service';
 import { NewsletterType } from '../../../src/types/newsletter';
-import { getJwtFromCookies, logger } from '../../../src/utils';
+import { logger } from '../../../src/utils';
+import { getVerifiedJwtFromCookies } from '../../../src/service/user-service';
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,9 +19,11 @@ export default async function handler(
   let decryptedEmailAddress;
   let sub = null;
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
-    const { jwtPayload } = getJwtFromCookies(req);
-    decryptedEmailAddress = jwtPayload.email;
-    sub = jwtPayload.sub;
+    const verifiedJwt = await getVerifiedJwtFromCookies(req);
+    if (!verifiedJwt) return res.redirect(303, process.env.APPLICANT_HOST);
+
+    decryptedEmailAddress = verifiedJwt.jwtPayload.email;
+    sub = verifiedJwt.jwtPayload.sub;
   } else {
     if (!req.cookies[cookieName.currentEmailAddress]) {
       return {

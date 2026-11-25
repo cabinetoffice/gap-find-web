@@ -141,11 +141,13 @@ const authenticatedPaths = [
   notificationRoutes.manageNotifications,
   notificationRoutes.subscriptionSignUp,
   notificationRoutes.saveSearch,
-  notificationRoutes.deleteSaveSearch,
+  `${notificationRoutes.deleteSaveSearch}/:slug`,
+  `${notificationRoutes.unsubscribe}/:slug`,
   notificationRoutes.unsubscribeApi,
   newsletterRoutes.signup,
   newsletterRoutes.confirmation,
   newsletterRoutes.unsubscribe,
+  newsletterRoutes.unsubscribeApi,
 ].map((path) => new URLPattern({ pathname: path }));
 
 const isAuthenticatedPath = (pathname: string) =>

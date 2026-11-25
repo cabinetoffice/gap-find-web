@@ -14,7 +14,7 @@ import {
 import { decrypt } from '../../../src/utils/encryption';
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import cookieExistsAndContainsValidJwt from '../../../src/utils/cookieAndJwtChecker';
-import { getJwtFromCookies } from '../../../src/utils';
+import { getVerifiedJwtFromCookies } from '../../../src/service/user-service';
 import { axios } from '../../../src/utils/axios';
 
 const redirect = (uri) => {
@@ -33,13 +33,14 @@ async function getEmailAddressFromCookies(ctx) {
   return decrypt(decodedEmailCookie.email);
 }
 
+// Returns null when the user token isn't valid
 const getUserId = async (ctx) => {
   if (process.env.ONE_LOGIN_ENABLED !== 'true') {
     return getEmailAddressFromCookies(ctx);
   }
-  const { jwtPayload } = getJwtFromCookies(ctx.req);
+  const verifiedJwt = await getVerifiedJwtFromCookies(ctx.req);
 
-  return jwtPayload.sub;
+  return verifiedJwt ? verifiedJwt.jwtPayload.sub : null;
 };
 
 export async function getServerSideProps(ctx) {
@@ -55,12 +56,13 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  const userId = await getUserId(ctx);
-
   let errorMessage = '';
   const slug = ctx.query.slug;
 
   if (ctx.req.method === 'POST') {
+    const userId = await getUserId(ctx);
+    if (!userId) return redirect(process.env.APPLICANT_HOST);
+
     try {
       const savedSearch = await getBySavedSearchId(slug);
       await deleteSaveSearch(slug, userId);

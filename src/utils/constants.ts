@@ -40,6 +40,7 @@ export const newsletterRoutes = {
   confirmation: '/newsletter/confirmation',
   signup: '/newsletter/signup',
   unsubscribe: '/newsletter/unsubscribe',
+  unsubscribeApi: '/api/newsletter/unsubscribe',
 } as const;
 
 export const tableHeadArr = [
