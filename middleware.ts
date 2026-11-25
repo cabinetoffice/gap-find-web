@@ -1,4 +1,3 @@
-// eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { v4 } from 'uuid';
 import { checkUserLoggedIn } from './src/service';
