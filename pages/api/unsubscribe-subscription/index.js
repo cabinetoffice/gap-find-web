@@ -1,6 +1,6 @@
 import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { SubscriptionService } from '../../../src/service/subscription-service';
-import { getJwtFromCookies } from '../../../src/utils';
+import { getVerifiedJwtFromCookies } from '../../../src/service/user-service';
 import {
   cookieName,
   notificationRoutes,
@@ -10,8 +10,13 @@ import { decrypt } from '../../../src/utils/encryption';
 
 export default async function handler(req, res) {
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
-    const { jwtPayload } = getJwtFromCookies(req);
-    await deleteSubscriptionBySubAndGrantId(jwtPayload.sub, req.body.grantId);
+    const verifiedJwt = await getVerifiedJwtFromCookies(req);
+    if (!verifiedJwt) return res.redirect(303, process.env.APPLICANT_HOST);
+
+    await deleteSubscriptionBySubAndGrantId(
+      verifiedJwt.jwtPayload.sub,
+      req.body.grantId,
+    );
   } else {
     const result = await deleteSubscriptionByEmailAndGrantId(req);
 

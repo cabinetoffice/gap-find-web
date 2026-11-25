@@ -26,6 +26,7 @@ export const notificationRoutes = {
   addSubscription: '/api/notification-signup/',
   emailConfirmation: '/notifications/email-confirmation',
   unsubscribe: '/notifications/unsubscribe',
+  unsubscribeApi: '/api/unsubscribe-subscription',
   manageNotifications: '/notifications/manage-notifications',
   confirmSubscription: '/api/confirm-email',
   notificationsHome: '/notifications',

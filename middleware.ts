@@ -1,4 +1,3 @@
-// eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { v4 } from 'uuid';
 import { checkUserLoggedIn } from './src/service';
@@ -40,6 +39,16 @@ const saveSearchPattern = new URLPattern({
   pathname: notificationRoutes.saveSearch,
 });
 
+// A form post (anything other than GET or HEAD). Its body is lost if the
+// browser is sent somewhere else and comes back.
+const isFormSubmission = (req: NextRequest) =>
+  req.method !== 'GET' && req.method !== 'HEAD';
+
+// 303 makes the browser follow a redirect with a GET. The default 307 would
+// re-send a form post, with its body, to the redirect target.
+const getRedirectStatus = (req: NextRequest) =>
+  isFormSubmission(req) ? 303 : 307;
+
 type ValueOf<T> = T[keyof T];
 
 const getLoginNoticeUrl = (noticeType: ValueOf<typeof LOGIN_NOTICE_TYPES>) =>
@@ -50,9 +59,11 @@ const handleManageNotificationsRedirect = (req: NextRequest) => {
   if (action === URL_ACTIONS.NEWSLETTER_SUBSCRIBE)
     return NextResponse.redirect(
       getLoginNoticeUrl(LOGIN_NOTICE_TYPES.NEWSLETTER),
+      getRedirectStatus(req),
     );
   return NextResponse.redirect(
     getLoginNoticeUrl(LOGIN_NOTICE_TYPES.MANAGE_NOTIFICATIONS),
+    getRedirectStatus(req),
   );
 };
 
@@ -61,6 +72,7 @@ const handleSubscriptionRedirect = (req: NextRequest) => {
     `${getLoginNoticeUrl(LOGIN_NOTICE_TYPES.SUBSCRIPTION_NOTIFICATIONS)}${
       req.nextUrl.search
     }`,
+    getRedirectStatus(req),
   );
 
   return res;
@@ -71,6 +83,7 @@ const handleSavedSearchRedirect = (req: NextRequest) => {
     `${getLoginNoticeUrl(LOGIN_NOTICE_TYPES.SAVED_SEARCH)}${
       req.nextUrl.search
     }`,
+    getRedirectStatus(req),
   );
 
   return res;
@@ -89,7 +102,7 @@ export function buildMiddlewareResponse(req: NextRequest, redirectUri: string) {
     return handleSavedSearchRedirect(req);
   }
 
-  return NextResponse.redirect(redirectUri);
+  return NextResponse.redirect(redirectUri, getRedirectStatus(req));
 }
 
 const authenticateRequest = async (req: NextRequest, res: NextResponse) => {
@@ -101,6 +114,10 @@ const authenticateRequest = async (req: NextRequest, res: NextResponse) => {
     if (!validJwtResponse) {
       return buildMiddlewareResponse(req, APPLICANT_HOST);
     }
+
+    // The token is valid, so a form post goes through. Sending it to refresh
+    // the token first would lose the form body.
+    if (isFormSubmission(req)) return res;
 
     const expiresAt = new Date(jwtPayload.expiresAt as string);
     if (isWithinNumberOfMinsOfExpiry(expiresAt, 30)) {
@@ -125,6 +142,7 @@ const authenticatedPaths = [
   notificationRoutes.subscriptionSignUp,
   notificationRoutes.saveSearch,
   notificationRoutes.deleteSaveSearch,
+  notificationRoutes.unsubscribeApi,
   newsletterRoutes.signup,
   newsletterRoutes.confirmation,
   newsletterRoutes.unsubscribe,

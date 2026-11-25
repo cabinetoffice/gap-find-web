@@ -4,16 +4,12 @@ import { decryptSignedApiKey } from '../../../src/service/api-key-service';
 import { notificationRoutes } from '../../../src/utils/constants';
 import { decrypt } from '../../../src/utils/encryption';
 import { hash } from '../../../src/utils/hash';
+import { getVerifiedJwtFromCookies } from '../../../src/service/user-service';
 
 jest.mock('../../../src/utils/encryption');
 jest.mock('../../../src/service/api-key-service');
 jest.mock('../../../src/utils/hash');
-jest.mock('../../../src/utils/jwt', () => ({
-  getJwtFromCookies: jest.fn(() => ({
-    jwtPayload: { sub: '1234' },
-    jwt: 'a.b.c',
-  })),
-}));
+jest.mock('../../../src/service/user-service');
 
 const req = {
   body: {
@@ -77,6 +73,57 @@ describe('handler function for the deletion or subscriptions', () => {
         permanent: false,
         destination: notificationRoutes['checkEmail'],
       },
+    });
+  });
+  describe('One Login enabled', () => {
+    const oneLoginReq = { body: { grantId: '12345678' }, cookies: {} };
+
+    beforeEach(() => {
+      process.env.ONE_LOGIN_ENABLED = 'true';
+    });
+
+    it('deletes the subscription for the user in a valid token', async () => {
+      getVerifiedJwtFromCookies.mockResolvedValue({
+        jwtPayload: { sub: '1234' },
+        jwt: 'a.b.c',
+      });
+      const subscriptionServiceMock = jest
+        .spyOn(
+          SubscriptionService.prototype,
+          'deleteSubscriptionByEmailOrSubAndGrantId',
+        )
+        .mockResolvedValueOnce('success');
+
+      await handler(oneLoginReq, res);
+
+      expect(getVerifiedJwtFromCookies).toHaveBeenCalledWith(oneLoginReq);
+      expect(subscriptionServiceMock).toHaveBeenCalledWith({
+        grantId: '12345678',
+        sub: '1234',
+      });
+      expect(res.redirect).toHaveBeenCalledWith(
+        new URL(
+          `${notificationRoutes['manageNotifications']}?grantId=12345678&action=unsubscribe`,
+          process.env.HOST,
+        ).toString(),
+      );
+    });
+
+    it('does not delete anything for a forged or invalid token and sends the user to sign in', async () => {
+      getVerifiedJwtFromCookies.mockResolvedValue(null);
+      const subscriptionServiceMock = jest.spyOn(
+        SubscriptionService.prototype,
+        'deleteSubscriptionByEmailOrSubAndGrantId',
+      );
+
+      await handler(oneLoginReq, res);
+
+      expect(subscriptionServiceMock).not.toHaveBeenCalled();
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith(
+        303,
+        process.env.APPLICANT_HOST,
+      );
     });
   });
 });
