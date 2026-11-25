@@ -3,32 +3,29 @@ import React from 'react';
 import Layout from '../../src/components/partials/Layout';
 import SignupForm from '../../src/components/sign-up/SignupForm';
 import gloss from '../../src/utils/glossary.json';
-import { getJwtFromCookies } from '../../src/utils/jwt';
 import { URL_ACTIONS, notificationRoutes } from '../../src/utils/constants';
 import { fetchGrantDetail } from '../../src/utils/grantDetails';
-import { client as axios } from '../../src/utils/axios';
+import { getVerifiedJwtFromCookies } from '../../src/service/user-service';
+import { SubscriptionService } from '../../src/service/subscription-service';
 
 export async function getServerSideProps(ctx) {
   if (process.env.ONE_LOGIN_ENABLED === 'true') {
-    const { jwtPayload } = getJwtFromCookies(ctx.req);
-
-    const response = await axios.post(
-      new URL(`${process.env.HOST}/api/subscription`).toString(),
-      {
-        contentfulGrantSubscriptionId: ctx.query.grantId,
-        emailAddress: jwtPayload.email,
-        sub: jwtPayload.sub,
-      },
-    );
-
-    if (response.errors) {
+    const verifiedJwt = await getVerifiedJwtFromCookies(ctx.req);
+    if (!verifiedJwt) {
       return {
         redirect: {
           permanent: false,
-          destination: '/static/page-not-found',
+          destination: process.env.APPLICANT_HOST,
         },
       };
     }
+
+    // The user's details come only from the verified token
+    await SubscriptionService.getInstance().addSubscription({
+      emailAddress: verifiedJwt.jwtPayload.email,
+      sub: verifiedJwt.jwtPayload.sub,
+      grantId: ctx.query.grantId,
+    });
 
     return {
       redirect: {

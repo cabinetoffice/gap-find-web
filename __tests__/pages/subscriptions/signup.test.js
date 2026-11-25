@@ -3,7 +3,8 @@ import Signup, {
   getServerSideProps,
 } from '../../../pages/subscriptions/signup';
 import { fetchEntry } from '../../../src/utils/contentFulPage';
-import { client } from '../../../src/utils/axios';
+import { getVerifiedJwtFromCookies } from '../../../src/service/user-service';
+import { SubscriptionService } from '../../../src/service/subscription-service';
 
 jest.mock('../../../src/utils/contentFulPage');
 jest.mock('next/router', () => ({
@@ -11,14 +12,7 @@ jest.mock('next/router', () => ({
     return jest.fn();
   },
 }));
-jest.mock('../../../src/utils/jwt', () => ({
-  getJwtFromCookies: jest.fn(() => ({ jwtPayload: {}, jwt: 'a.b.c' })),
-}));
-jest.mock('../../../src/utils/axios', () => ({
-  client: {
-    post: jest.fn(),
-  },
-}));
+jest.mock('../../../src/service/user-service');
 
 describe('Signing up with email and accepting privacy policy', () => {
   const grantDetail = {
@@ -207,25 +201,63 @@ describe('getServerSideProps', () => {
     expect(response).toEqual({ props: { grantDetail: getGrantDetail() } });
   });
 
-  it('should call subscription api and redirect to manage notifications when one login is enabled', async () => {
-    process.env.ONE_LOGIN_ENABLED = 'true';
+  describe('One Login enabled', () => {
     const request = {
+      req: { cookies: {} },
       query: {
         grantId: 'a-grant-id',
         grantLabel: 'a-grant-label',
       },
     };
-    client.post.mockResolvedValue({});
+    let addSubscriptionSpy;
 
-    const props = await getServerSideProps(request);
+    beforeEach(() => {
+      process.env.ONE_LOGIN_ENABLED = 'true';
+      addSubscriptionSpy = jest
+        .spyOn(SubscriptionService.prototype, 'addSubscription')
+        .mockResolvedValue(true);
+    });
 
-    expect(client.post).toHaveBeenCalledTimes(1);
-    expect(props).toEqual({
-      redirect: {
-        destination:
-          '/notifications/manage-notifications?action=subscribe&grantId=a-grant-id',
-        permanent: false,
-      },
+    afterEach(() => {
+      addSubscriptionSpy.mockRestore();
+    });
+
+    it('subscribes the user in a valid token and redirects to manage notifications', async () => {
+      getVerifiedJwtFromCookies.mockResolvedValue({
+        jwtPayload: { sub: 'user-sub', email: 'user@example.com' },
+        jwt: 'a.b.c',
+      });
+
+      const props = await getServerSideProps(request);
+
+      expect(getVerifiedJwtFromCookies).toHaveBeenCalledWith(request.req);
+      expect(addSubscriptionSpy).toHaveBeenCalledTimes(1);
+      expect(addSubscriptionSpy).toHaveBeenCalledWith({
+        emailAddress: 'user@example.com',
+        sub: 'user-sub',
+        grantId: 'a-grant-id',
+      });
+      expect(props).toEqual({
+        redirect: {
+          destination:
+            '/notifications/manage-notifications?action=subscribe&grantId=a-grant-id',
+          permanent: false,
+        },
+      });
+    });
+
+    it('does not subscribe anyone for a forged or invalid token and sends the user to sign in', async () => {
+      getVerifiedJwtFromCookies.mockResolvedValue(null);
+
+      const props = await getServerSideProps(request);
+
+      expect(addSubscriptionSpy).not.toHaveBeenCalled();
+      expect(props).toEqual({
+        redirect: {
+          destination: process.env.APPLICANT_HOST,
+          permanent: false,
+        },
+      });
     });
   });
 
